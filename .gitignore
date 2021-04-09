@@ -1,0 +1,5 @@
+.env
+.idea
+
+# Service Account key
+langame-dev-*.json
