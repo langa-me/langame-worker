@@ -1,5 +1,6 @@
 .env
 .idea
+__pychache__
 
-# Service Account key
-langame-dev-*.json
+# Service Account keys
+langame*.json

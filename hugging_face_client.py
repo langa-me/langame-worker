@@ -9,22 +9,14 @@ class HuggingFaceClient:
     def __init__(self, api_token):
         self._headers = {'Authorization': f'Bearer {api_token}'}
 
-    def batch_zero_shot_classification(self, inputs: List[str], labels: List[str]):
-        # TODO: might do real batch multi thread
-        results = []
-        for i, v in enumerate(inputs):
-            response = self.online_zero_shot_classification({
-                "inputs": inputs[i],
-                # Key option is "wait_for_model", use_cache: False is only necessary for testing
-                # purposes because we run the exact same requests.
-                "options": {"use_cache": False, "wait_for_model": True},
-                "parameters": {"candidate_labels": labels},
-            })
-            results.append(response)
-        return results
-
-    def online_zero_shot_classification(self, payload):
-        data = json.dumps(payload)
+    def online_zero_shot_classification(self, inputs: List[str], labels: List[str]):
+        data = json.dumps({
+            "inputs": inputs,
+            # Key option is "wait_for_model", use_cache: False is only necessary for testing
+            # purposes because we run the exact same requests.
+            "options": {"use_cache": False, "wait_for_model": True},
+            "parameters": {"candidate_labels": labels},
+        })
         response = requests.request('POST',
                                     'https://api-inference.huggingface.co/models/facebook/bart-large-mnli',
                                     headers=self._headers,
