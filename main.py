@@ -1,40 +1,35 @@
-import os
-from typing import List, Tuple
-
-from flask import Flask
+from typing import List
 import json
 from langame_client import LangameClient
+import argparse
+import logging
+logging.basicConfig(level=logging.INFO)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--generate", type=bool,
+                    help="generate question or classify from hard-coded ones", default=True)
+args = parser.parse_args()
 
 lg_client = LangameClient()
+topics = [t.content for t in lg_client.list_topics()]
+if not topics:
+    raise Exception("no_topics_found")
 
-with open('questions.json') as f:
-    data = json.load(f)
-    questions: List[str] = data.get('questions')
 
-    labels = [
-        'philosophy', 'sciences', 'health', 'wealth', 'nutrition',
-        'wisdom', 'career', 'biology', 'physics', 'mathematics',
-        'artificial intelligence', 'purpose', 'love', 'friends', 'religion',
-        'death', 'meditation', 'body', 'mind', 'trading', 'bitcoin'
-    ]
+def load_json_questions_and_tag():
+    with open('questions.json') as f:
+        data = json.load(f)
+        questions: List[str] = data.get('questions')
+        lg_client.tag_save_questions(questions, topics)
 
-    lg_client.classify_questions(questions, labels)
 
-#
-# app = Flask(__name__)
-#
-#
-# @app.route('/')
-# def hello_world():
-#     name = os.environ.get('NAME', 'World')
-#     return 'Hello {}!'.format(name)
-#
-#
-# if __name__ == '__main__':
-#     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
-#
-# users_ref = db.collection(u'users')
-# docs = users_ref.stream()
-#
-# for doc in docs:
-#     print(f'{doc.id} => {doc.to_dict()}')
+def openai_generate_questions():
+    lg_client.generate_save_questions(topics, 3)
+
+
+if args.generate:
+    logging.info("openai_generate_questions")
+    openai_generate_questions()
+else:
+    logging.info("load_json_questions_and_tag")
+    load_json_questions_and_tag()

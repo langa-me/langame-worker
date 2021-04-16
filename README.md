@@ -42,10 +42,18 @@ gcloud iam service-accounts add-iam-policy-binding \
     --role="roles/iam.serviceAccountUser"
 ```
 
+## Usage
+
+```bash
+python3 main.py True
+```
+
 ## Development
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
 # If using Hugging Face API
 export HUGGING_FACE_TOKEN="[TOKEN]"
+# If using OpenAI API
+export OPEN_AI_TOKEN="[TOKEN]"
 ```
