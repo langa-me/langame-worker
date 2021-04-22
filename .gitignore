@@ -1,7 +1,7 @@
 .env
 .idea
-__pychache__
-langame/protobuf/__pychache__
+__pycache__/
+*.pyc
 
 # Service Account keys
 langame*.json
