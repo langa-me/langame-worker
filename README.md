@@ -1,5 +1,7 @@
 # Langame worker
 
+**WARNING**: before running any command, check the current google cloud project, firebase project and environment variable pointing to the service account JSON!
+
 ## Installation
 
 [Follow Google documentation directly](https://cloud.google.com/container-registry/docs/access-control#before_you_begin
@@ -45,7 +47,72 @@ gcloud iam service-accounts add-iam-policy-binding \
 ## Usage
 
 ```bash
-python3 main.py True
+python3 main.py
+```
+
+## Transfer data between projects
+
+If both projects are of different regions (otherwise jump to export/import), it's a hacky manual, using UI process:
+
+```bash
+gsutil -m cp -r "gs://langame-exports/full-snapshot/"  .
+gsutil mb gs://langame-firestore
+gsutil mv full-snapshot/ gs://langame-firestore/
+gcloud firestore import gs://langame-firestore/full-snapshot/
+```
+
+### Export data
+
+If not created
+```bash
+gsutil mb gs://langame-exports
+```
+
+Get buckets
+```bash
+gsutil ls
+```
+
+Export questions, for example, to the bucket "langame-exports"
+```bash
+gcloud firestore export gs://langame-exports --collection-ids=questions
+```
+
+Load into BigQuery
+```bash
+bq --location=US load \
+--source_format=DATASTORE_BACKUP \
+questions.questions_data \
+gs://langame-exports/2021-04-17T10:32:57_17701/all_namespaces/kind_questions/all_namespaces_kind_questions.export_metadata
+```
+
+## Import data
+
+Check IAM
+```bash
+gsutil iam ch serviceAccount:[DESTINATION_PROJECT_ID]@appspot.gserviceaccount.com:admin gs://[SOURCE_BUCKET]
+```
+i.e.
+```bash
+gsutil iam ch serviceAccount:langame-dev@appspot.gserviceaccount.com:admin gs://langame-exports
+```
+
+```bash
+gcloud firestore import gs://[SOURCE_BUCKET]/[EXPORT_PREFIX] --async
+```
+i.e.
+```bash
+gcloud firestore import gs://langame-exports/full-snapshot --async
+```
+
+## Delete data
+
+```bash
+firebase firestore:delete langames -r --project langame-dev
+```
+All
+```bash
+firebase firestore:delete --all-collections --project langame-dev
 ```
 
 ## Development
@@ -56,4 +123,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
 export HUGGING_FACE_TOKEN="[TOKEN]"
 # If using OpenAI API
 export OPEN_AI_TOKEN="[TOKEN]"
+# https://programmablesearchengine.google.com/about/
+export GOOGLE_SEARCH_API_TOKEN="[TOKEN]"
+export GOOGLE_SEARCH_CSE_ID="[CSE_ID]"
 ```

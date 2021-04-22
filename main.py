@@ -17,14 +17,21 @@ if not topics:
 
 
 def load_json_questions_and_tag():
-    with open('questions.json') as f:
+    with open("questions.json") as f:
         data = json.load(f)
-        questions: List[str] = data.get('questions')
+        questions: List[str] = data.get("questions")
         lg_client.tag_save_questions(questions, topics)
 
 
 def openai_generate_questions():
-    lg_client.generate_save_questions(topics, 3)
+    lg_client.generate_save_questions(topics,
+                                      questions_per_topic=3,
+                                      wikipedia_description=True,
+                                      self_contexts=2,
+                                      synonymous_contexts=1,
+                                      related_contexts=1,
+                                      suggested_contexts=1,
+                                      )
 
 
 if args.generate:

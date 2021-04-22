@@ -3,6 +3,7 @@
 
 import sys
 _b=sys.version_info[0]<3 and (lambda x:x) or (lambda x:x.encode('latin1'))
+from google.protobuf.internal import enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
@@ -19,14 +20,12 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='langame.protobuf',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\"$\n\x05Topic\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\"\'\n\x08Question\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\"e\n\x03Tag\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\r\n\x05score\x18\x03 \x01(\x01\x12\r\n\x05human\x18\x04 \x01(\x08\x12\x10\n\x08question\x18\x05 \x01(\t\x12\x11\n\tgenerated\x18\x06 \x01(\x08\"\xd9\x01\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\x10\n\x08\x66\x61\x63\x65\x62ook\x18\x08 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x18\n\x10\x66\x61vourite_topics\x18\n \x03(\t\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\"\x9c\x01\n\x08Relation\x12%\n\x05other\x18\x01 \x01(\x0b\x32\x16.langame.protobuf.User\x12\x37\n\x05level\x18\x02 \x01(\x0e\x32(.langame.protobuf.Relation.RelationLevel\"0\n\rRelationLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x62\x06proto3')
+  serialized_pb=_b('\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\"$\n\x05Topic\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\"9\n\x08Question\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x10\n\x08\x63ontexts\x18\x03 \x03(\t\"e\n\x03Tag\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\r\n\x05score\x18\x03 \x01(\x01\x12\r\n\x05human\x18\x04 \x01(\x08\x12\x10\n\x08question\x18\x05 \x01(\t\x12\x11\n\tgenerated\x18\x06 \x01(\x08\"\xd9\x01\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\x10\n\x08\x66\x61\x63\x65\x62ook\x18\x08 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x18\n\x10\x66\x61vourite_topics\x18\n \x03(\t\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\"F\n\x0fUserPreferences\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12&\n\x1eunknown_people_recommendations\x18\x02 \x01(\x08*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3')
 )
 
-
-
-_RELATION_RELATIONLEVEL = _descriptor.EnumDescriptor(
-  name='RelationLevel',
-  full_name='langame.protobuf.Relation.RelationLevel',
+_INTERACTIONLEVEL = _descriptor.EnumDescriptor(
+  name='InteractionLevel',
+  full_name='langame.protobuf.InteractionLevel',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -42,13 +41,24 @@ _RELATION_RELATIONLEVEL = _descriptor.EnumDescriptor(
       name='GREAT', index=2, number=2,
       serialized_options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='LOVE', index=3, number=3,
+      serialized_options=None,
+      type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=563,
-  serialized_end=611,
+  serialized_start=544,
+  serialized_end=605,
 )
-_sym_db.RegisterEnumDescriptor(_RELATION_RELATIONLEVEL)
+_sym_db.RegisterEnumDescriptor(_INTERACTIONLEVEL)
+
+InteractionLevel = enum_type_wrapper.EnumTypeWrapper(_INTERACTIONLEVEL)
+BAD = 0
+AVERAGE = 1
+GREAT = 2
+LOVE = 3
+
 
 
 _TOPIC = _descriptor.Descriptor(
@@ -110,6 +120,13 @@ _QUESTION = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='contexts', full_name='langame.protobuf.Question.contexts', index=2,
+      number=3, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -123,7 +140,7 @@ _QUESTION = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=129,
+  serialized_end=147,
 )
 
 
@@ -188,8 +205,8 @@ _TAG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=131,
-  serialized_end=232,
+  serialized_start=149,
+  serialized_end=250,
 )
 
 
@@ -296,29 +313,29 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=235,
-  serialized_end=452,
+  serialized_start=253,
+  serialized_end=470,
 )
 
 
-_RELATION = _descriptor.Descriptor(
-  name='Relation',
-  full_name='langame.protobuf.Relation',
+_USERPREFERENCES = _descriptor.Descriptor(
+  name='UserPreferences',
+  full_name='langame.protobuf.UserPreferences',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='other', full_name='langame.protobuf.Relation.other', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='uid', full_name='langame.protobuf.UserPreferences.uid', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='level', full_name='langame.protobuf.Relation.level', index=1,
-      number=2, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
+      name='unknown_people_recommendations', full_name='langame.protobuf.UserPreferences.unknown_people_recommendations', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -327,7 +344,6 @@ _RELATION = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
-    _RELATION_RELATIONLEVEL,
   ],
   serialized_options=None,
   is_extendable=False,
@@ -335,18 +351,16 @@ _RELATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=455,
-  serialized_end=611,
+  serialized_start=472,
+  serialized_end=542,
 )
 
-_RELATION.fields_by_name['other'].message_type = _USER
-_RELATION.fields_by_name['level'].enum_type = _RELATION_RELATIONLEVEL
-_RELATION_RELATIONLEVEL.containing_type = _RELATION
 DESCRIPTOR.message_types_by_name['Topic'] = _TOPIC
 DESCRIPTOR.message_types_by_name['Question'] = _QUESTION
 DESCRIPTOR.message_types_by_name['Tag'] = _TAG
 DESCRIPTOR.message_types_by_name['User'] = _USER
-DESCRIPTOR.message_types_by_name['Relation'] = _RELATION
+DESCRIPTOR.message_types_by_name['UserPreferences'] = _USERPREFERENCES
+DESCRIPTOR.enum_types_by_name['InteractionLevel'] = _INTERACTIONLEVEL
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Topic = _reflection.GeneratedProtocolMessageType('Topic', (_message.Message,), dict(
@@ -377,12 +391,12 @@ User = _reflection.GeneratedProtocolMessageType('User', (_message.Message,), dic
   ))
 _sym_db.RegisterMessage(User)
 
-Relation = _reflection.GeneratedProtocolMessageType('Relation', (_message.Message,), dict(
-  DESCRIPTOR = _RELATION,
+UserPreferences = _reflection.GeneratedProtocolMessageType('UserPreferences', (_message.Message,), dict(
+  DESCRIPTOR = _USERPREFERENCES,
   __module__ = 'langame.protobuf.langame_pb2'
-  # @@protoc_insertion_point(class_scope:langame.protobuf.Relation)
+  # @@protoc_insertion_point(class_scope:langame.protobuf.UserPreferences)
   ))
-_sym_db.RegisterMessage(Relation)
+_sym_db.RegisterMessage(UserPreferences)
 
 
 # @@protoc_insertion_point(module_scope)
