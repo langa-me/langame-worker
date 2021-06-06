@@ -117,6 +117,37 @@ firebase firestore:delete --all-collections --project langame-dev
 
 ## Development
 
+### Using Conda
+
+```bash
+brew install --cask miniforge
+conda init "$(basename "${SHELL}")"
+conda create --name env
+conda activate env
+conda install --file requirements.txt
+```
+
+### Using virtualenv
+
+```bash
+virtualenv env
+source env/bin/activate
+arch -arch x86_64 /usr/bin/python3 -m pip install firebase-admin
+
+```
+
+### Docker JupyterHub
+
+```bash
+docker run -d --rm -p 8000:8000 -v $HOME/Documents:/app/ --name jupyterhub jupyterhub/jupyterhub jupyterhub
+docker exec -it jupyterhub bash
+pip3 install notebook
+pip3 install jupyterlab
+adduser basic
+```
+
+### Vars
+
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
 # If using Hugging Face API
