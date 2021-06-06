@@ -1,4 +1,2 @@
-Flask
-gunicorn
 firebase-admin
 pytrends

@@ -167,6 +167,24 @@ class LangameClient:
             q_model.id = q.id
             yield q_model
 
+    def list_questions(self) -> List[Question]:
+        """
+        List questions
+        :return:
+        """
+        for t in self._questions_ref.stream():
+            question = t.to_dict()
+            if not question:
+                continue
+            q = self._questions_ref.document(question_id).get()
+            q_model = Question()
+            content = q.to_dict().get("content")
+            if not content:
+                continue
+            q_model.content = content
+            q_model.id = q.id
+            yield q_model
+
     def purge(self):
         def delete_collection(coll_ref, batch_size=20):
             docs = coll_ref.limit(batch_size).stream()
