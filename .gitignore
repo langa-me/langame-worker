@@ -6,7 +6,5 @@ __pycache__/
 
 # Service Account keys
 langame*.json
-
-experiences.ipynb
+config.yaml
 .ipynb_checkpoints
-variables.sh

@@ -139,22 +139,25 @@ arch -arch x86_64 /usr/bin/python3 -m pip install firebase-admin
 ### Docker JupyterHub
 
 ```bash
-docker run -d --rm -p 8000:8000 -v $HOME/Documents:/app/ --name jupyterhub jupyterhub/jupyterhub jupyterhub
+docker run -d --rm -p 8000:8000 -v $HOME:/home/basic --name jupyterhub jupyterhub/jupyterhub jupyterhub
 docker exec -it jupyterhub bash
 pip3 install notebook
 pip3 install jupyterlab
 adduser basic
 ```
 
-### Vars
+### Conf
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
-# If using Hugging Face API
-export HUGGING_FACE_TOKEN="[TOKEN]"
-# If using OpenAI API
-export OPEN_AI_TOKEN="[TOKEN]"
-# https://programmablesearchengine.google.com/about/
-export GOOGLE_SEARCH_API_TOKEN="[TOKEN]"
-export GOOGLE_SEARCH_CSE_ID="[CSE_ID]"
+google:
+  service_account: ...
+  search_api:
+    token: ...
+    id: ...
+
+openai:
+  token: ...
+
+hugging_face:
+  token: ...
 ```

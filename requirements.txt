@@ -1,2 +1,5 @@
 firebase-admin
 pytrends
+openai
+beautifulsoup4
+confuse
