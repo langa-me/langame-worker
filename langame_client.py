@@ -13,7 +13,9 @@ from langame.protobuf.langame_pb2 import Meme, Tag
 from openai_client import OpenAIClient
 import time
 import confuse
-
+import json
+import random
+import re
 
 class LangameClient:
     def __init__(self):
@@ -50,19 +52,21 @@ class LangameClient:
             ret.append(self._memes_ref.add(prot))
         return ret
 
-    def generate_save_memes(self,
-                            topics_with_emojis: List[Tuple[str, Optional[str]]],
-                            memes_per_topic: int = 1,
-                            wikipedia_description: bool = True,
-                            openai_description: bool = True,
-                            anti_rate_limit_delay: float = 0.1,
-                            ) -> List[Tuple[Timestamp, DocumentReference]]:
+    def generate_save_memes_general(self,
+                                    topics_with_emojis: Tuple[str, Optional[str]],
+                                    memes_per_topic: int = 1,
+                                    memes_per_meme: int = 5,
+                                    wikipedia_description: bool = True,
+                                    openai_description: bool = True,
+                                    anti_rate_limit_delay: float = 0.1,
+                                    ) -> List[Tuple[Timestamp, DocumentReference]]:
         """
         Generate a bunch of memes given topics and save them with deterministic tags
         it is a possibility that it fail to generate a question (model related)
         :param wikipedia_description: add a Wikipedia context description?
         :param openai_description: add a OpenAI context description?
         :param anti_rate_limit_delay: add a delay between questions generation to prevent rate limit from google
+        :param memes_per_meme: memes per meme
         :param memes_per_topic: memes per topic
         :param topics:
         :return:
@@ -70,11 +74,21 @@ class LangameClient:
         res: List[Tuple[Timestamp, DocumentReference]] = []
         for t_e in topics_with_emojis:
             for _ in range(memes_per_topic):
-                meme: Optional[str] = self._openai_client.generate(t_e[0])
+                prompt = f"""This is a list of big talk conversation starters. \
+The objective is to propose good conversation starters that create interesting insights between people. \
+Today, the conversation topic is {t_e[0]}, this is a list of starters to ask to other persons:
+1."""
+                meme: Optional[str] = self._openai_client.call_completion(
+                    prompt, max_tokens=500, stop=[f"{memes_per_meme+1}."])
                 if not meme:
                     continue
+                new = []
+                for e in [e for e in meme.split("\n")]:
+                    cleaned = re.sub("^[0-9]*\.", "", e, 1)
+                    new.append(cleaned.strip() if cleaned else e)
+
                 meme_add = self._memes_ref.add({
-                    "content": meme,
+                    "content": "\n".join(new),
                     "createdAt": firestore.SERVER_TIMESTAMP
                 })
                 res.append(meme_add)
@@ -88,14 +102,16 @@ class LangameClient:
                         topic_tag.topic.emojis.append(e)
                 tag_as_dict = MessageToDict(topic_tag)
                 tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
-                self._memes_ref.document(meme_add[1].id).collection("tags").add(tag_as_dict)
+                self._memes_ref.document(meme_add[1].id).collection(
+                    "tags").add(tag_as_dict)
 
                 # Add a origin tag
                 origin_tag: Tag = Tag()
                 origin_tag.origin.openai.version = 1
                 tag_as_dict = MessageToDict(origin_tag)
                 tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
-                self._memes_ref.document(meme_add[1].id).collection("tags").add(tag_as_dict)
+                self._memes_ref.document(meme_add[1].id).collection(
+                    "tags").add(tag_as_dict)
 
                 if wikipedia_description:
                     w_d = self._openai_client.wikipedia_description(t_e[0])
@@ -106,8 +122,8 @@ class LangameClient:
                         wikipedia_tag.context.type = Tag.Context.Type.WIKIPEDIA
                         tag_as_dict = MessageToDict(wikipedia_tag)
                         tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
-                        self._memes_ref.document(meme_add[1].id).collection("tags").add(tag_as_dict)
-
+                        self._memes_ref.document(meme_add[1].id).collection(
+                            "tags").add(tag_as_dict)
 
                 if openai_description:
                     o_d = self._openai_client.openai_description(t_e[0])
@@ -118,20 +134,84 @@ class LangameClient:
                         openai_tag.context.type = Tag.Context.Type.OPENAI
                         tag_as_dict = MessageToDict(openai_tag)
                         tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
-                        self._memes_ref.document(meme_add[1].id).collection("tags").add(tag_as_dict)
+                        self._memes_ref.document(meme_add[1].id).collection(
+                            "tags").add(tag_as_dict)
 
                 if wikipedia_description:
                     time.sleep(anti_rate_limit_delay)
 
         return res
 
-    def list_questions(self) -> List[Meme]:
+    def generate_save_memes_ice_break(self,
+                                      memes: int = 1,
+                                      memes_per_meme: int = 3,
+                                      ) -> List[Tuple[Timestamp, DocumentReference]]:
+        """
+        :param memes_per_meme: memes per meme
+        :param memes: memes
+        :return:
+        """
+        res: List[Tuple[Timestamp, DocumentReference]] = []
+
+        big_talks_file = open("big-talks.json")
+        big_talks = json.load(big_talks_file).get("basic")
+        random.shuffle(big_talks)
+        for _ in range(memes):
+            prompt = f"""This is a list of big talk conversation starters. \
+The objective is to propose good conversation starters that break the ice between people.
+1.{big_talks.pop()}
+2.{big_talks.pop()}
+3."""
+            meme: Optional[str] = self._openai_client.call_completion(
+                prompt, max_tokens=500, stop=[f"{memes_per_meme+2}."])
+            if not meme:
+                continue
+            new = []
+            for e in [e for e in meme.split("\n")]:
+                cleaned = re.sub("^[0-9]*\.", "", e, 1)
+                new.append(cleaned.strip() if cleaned else e)
+
+            meme_add = self._memes_ref.add({
+                "content": "\n".join(new),
+                "createdAt": firestore.SERVER_TIMESTAMP
+            })
+            res.append(meme_add)
+
+            # Add a topic tag
+            topic_tag: Tag = Tag()
+            topic_tag.topic.content = "ice break"
+            for e in ["🤔", "😜", "💭"]:
+                topic_tag.topic.emojis.append(e)
+            tag_as_dict = MessageToDict(topic_tag)
+            tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
+            self._memes_ref.document(meme_add[1].id).collection(
+                "tags").add(tag_as_dict)
+
+            # Add a origin tag
+            origin_tag: Tag = Tag()
+            origin_tag.origin.openai.version = 1
+            tag_as_dict = MessageToDict(origin_tag)
+            tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
+            self._memes_ref.document(meme_add[1].id).collection(
+                "tags").add(tag_as_dict)
+
+        big_talks_file.close()
+        return res
+
+    def list_memes(self, topics: List[str] = []) -> List[Meme]:
         """
         List memes
         :return:
         """
-        for q in self._memes_ref.stream():
-            yield ParseDict(q.to_dict(), Meme())
+
+        if topics:
+            tags = self._firestore_client.collection_group(u"tags").where(u"topic.content", u"in", topics).stream()
+            for t in tags:
+                print("yolo", t)
+                yield ParseDict(t.reference.parent.parent.get().to_dict(), Meme())
+        else:
+            for q in self._memes_ref.stream():
+                yield ParseDict(q.to_dict(), Meme())
 
     def purge(self):
         def delete_collection(coll_ref, batch_size=20):
