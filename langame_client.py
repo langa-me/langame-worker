@@ -53,6 +53,64 @@ class LangameClient:
             ret.append(self._memes_ref.add(prot))
         return ret
 
+    def prompt_to_meme(self,
+                       topic_with_emoji: Tuple[str, Optional[str]],
+                       ) -> Tuple[Timestamp, DocumentReference]:
+        """
+        :param topics_with_emojis:
+        :return:
+        """
+        prompts = []
+        for e in self._firestore_client.collection("prompts")\
+                .where("type", "==", "TopicGeneralist")\
+                .limit(5)\
+                .stream():
+            t = None
+            # Just a hack to find the tags of parameters
+            for tag in e.reference.collection("tags").where("engine.parameters.maxTokens", ">=", 0).stream():
+                t = tag
+                break
+            prompts.append({
+                "prompt": e.to_dict()["template"].replace("[TOPIC]", topic_with_emoji[0]),
+                "parameters": t.to_dict()["engine"]["parameters"]
+            })
+        random.shuffle(prompts)
+        prompt = prompts.pop()
+
+        meme: Optional[str] = self._openai_client.call_completion(
+            prompt["prompt"],
+            prompt["parameters"]
+        )
+        if not meme:
+            return
+
+        meme_add = self._memes_ref.add({
+            "content": meme,
+            "createdAt": firestore.SERVER_TIMESTAMP
+        })
+
+        # Add a topic tag
+        topic_tag: Tag = Tag()
+        topic_tag.topic.content = topic_with_emoji[0]
+        if topic_with_emoji[1]:
+            # Split emojis
+            for e in list(topic_with_emoji[1]):
+                topic_tag.topic.emojis.append(e)
+        tag_as_dict = MessageToDict(topic_tag)
+        tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
+        self._memes_ref.document(meme_add[1].id).collection(
+            "tags").add(tag_as_dict)
+
+        # Add a origin tag
+        origin_tag: Tag = Tag()
+        origin_tag.origin.openai.version = 1
+        tag_as_dict = MessageToDict(origin_tag)
+        tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
+        self._memes_ref.document(meme_add[1].id).collection(
+            "tags").add(tag_as_dict)
+
+        return meme_add
+
     def generate_save_memes_general(self,
                                     topics_with_emojis: Tuple[str, Optional[str]],
                                     memes_per_topic: int = 1,
@@ -215,7 +273,8 @@ Here is a list of deep conversation starters, free from small talks.
         """
 
         if topics:
-            tags = self._firestore_client.collection_group(u"tags").where(u"topic.content", u"in", topics).stream()
+            tags = self._firestore_client.collection_group(
+                u"tags").where(u"topic.content", u"in", topics).stream()
             for t in tags:
                 yield ParseDict(t.reference.parent.parent.get().to_dict(), Meme())
         else:

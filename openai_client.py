@@ -21,8 +21,13 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
+                        engine="davinci",
+                        temperature=0.7,
+                        top_p=1,
                         stop: Optional[List[str]] = ["\"\n", "\n\n\n", "\n\""],
                         max_tokens: int = 100,
+                        frequency_penalty=0,
+                        presence_penalty=0,
                         max_tries: int = 5,
                         ):
         """
@@ -39,13 +44,13 @@ class OpenAIClient:
         while tries < max_tries:
             print(f"try n°{tries}/{max_tries}")
             response = openai.Completion.create(
-                engine="davinci",
+                engine=engine,
                 prompt=prompt,
-                temperature=0.7,
+                temperature=temperature,
                 max_tokens=max_tokens,
-                top_p=1,
-                frequency_penalty=1,
-                presence_penalty=1,
+                top_p=top_p,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
                 stop=stop,
                 best_of=1,
             )
