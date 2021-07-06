@@ -5,6 +5,6 @@ __pycache__/
 *.pyc
 
 # Service Account keys
-langame*.json
+svc*.json
 config.yaml
 .ipynb_checkpoints

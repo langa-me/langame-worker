@@ -2,6 +2,18 @@
 
 **WARNING**: before running any command, check the current google cloud project, firebase project and environment variable pointing to the service account JSON!
 
+## Service account cryptography
+
+```bash
+gpg --symmetric --cipher-algo AES256 svc.prod.json
+gpg --symmetric --cipher-algo AES256 svc.dev.json
+```
+
+```bash
+gpg --output svc.prod.json --decrypt svc.prod.json.gpg
+gpg --output svc.dev.json --decrypt svc.dev.json.gpg
+```
+
 ## Installation
 
 [Follow Google documentation directly](https://cloud.google.com/container-registry/docs/access-control#before_you_begin
