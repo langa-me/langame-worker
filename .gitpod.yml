@@ -1,5 +1,10 @@
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
-
+tasks:
+    - name: Auth gcloud
+      command: |
+        gcloud auth login --no-launch-browser
+        echo "now: gcloud config set project louis030195-256110"
+        echo "and: gsutil cp gs://louis030195-general/langame/* ."
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 
 image:
