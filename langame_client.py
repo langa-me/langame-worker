@@ -71,22 +71,26 @@ class LangameClient:
                 t = tag
                 break
             prompts.append({
+                "id": e.id,
                 "prompt": e.to_dict()["template"].replace("[TOPIC]", topic_with_emoji[0]),
                 "parameters": t.to_dict()["engine"]["parameters"]
             })
         random.shuffle(prompts)
         prompt = prompts.pop()
 
+        print(f"calling openai with {prompt}")
         meme: Optional[str] = self._openai_client.call_completion(
             prompt["prompt"],
-            prompt["parameters"]
+            prompt["parameters"],
         )
         if not meme:
             return
 
+        # TODO: transaction
         meme_add = self._memes_ref.add({
             "content": meme,
-            "createdAt": firestore.SERVER_TIMESTAMP
+            "createdAt": firestore.SERVER_TIMESTAMP,
+            "promptId": prompt["id"]
         })
 
         # Add a topic tag
@@ -100,15 +104,6 @@ class LangameClient:
         tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
         self._memes_ref.document(meme_add[1].id).collection(
             "tags").add(tag_as_dict)
-
-        # Add a origin tag
-        origin_tag: Tag = Tag()
-        origin_tag.origin.openai.version = 1
-        tag_as_dict = MessageToDict(origin_tag)
-        tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
-        self._memes_ref.document(meme_add[1].id).collection(
-            "tags").add(tag_as_dict)
-
         return meme_add
 
     def generate_save_memes_general(self,

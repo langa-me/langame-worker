@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\"l\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12#\n\x04tags\x18\x04 \x03(\x0b\x32\x15.langame.protobuf.Tag\"\xa0\x06\n\x03Tag\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05topic\x18\x02 \x01(\x0b\x32\x1b.langame.protobuf.Tag.TopicH\x00\x12>\n\x0e\x63lassification\x18\x03 \x01(\x0b\x32$.langame.protobuf.Tag.ClassificationH\x00\x12.\n\x06origin\x18\x04 \x01(\x0b\x32\x1c.langame.protobuf.Tag.OriginH\x00\x12\x32\n\x08\x66\x65\x65\x64\x62\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x12\x30\n\x07\x63ontext\x18\x06 \x01(\x0b\x32\x1d.langame.protobuf.Tag.ContextH\x00\x1a(\n\x05Topic\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06\x65mojis\x18\x03 \x03(\t\x1a?\n\x0e\x43lassification\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\r\n\x05human\x18\x03 \x01(\x08\x1a\x62\n\x06Origin\x12\x35\n\x06openai\x18\x02 \x01(\x0b\x32#.langame.protobuf.Tag.Origin.OpenAIH\x00\x1a\x19\n\x06OpenAI\x12\x0f\n\x07version\x18\x01 \x01(\rB\x06\n\x04type\x1a\x9c\x01\n\x08\x46\x65\x65\x64\x62\x61\x63k\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12<\n\x05score\x18\x02 \x01(\x0b\x32+.langame.protobuf.Tag.Feedback.GeneralScoreH\x00\x1a\x1d\n\x0cGeneralScore\x12\r\n\x05score\x18\x01 \x01(\r\x1a\x1a\n\tRelevance\x12\r\n\x05score\x18\x01 \x01(\rB\x06\n\x04type\x1ao\n\x07\x43ontext\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x30\n\x04type\x18\x02 \x01(\x0e\x32\".langame.protobuf.Tag.Context.Type\"!\n\x04Type\x12\r\n\tWIKIPEDIA\x10\x00\x12\n\n\x06OPENAI\x10\x01\x42\x06\n\x04type\"\x86\x02\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\x10\n\x08\x66\x61\x63\x65\x62ook\x18\x08 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x18\n\x10\x66\x61vourite_topics\x18\n \x03(\t\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\x0e\n\x06\x65rrors\x18\x0e \x03(\t\"\xaf\x01\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12&\n\x1eunknown_people_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x16\n\x0esearch_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\"\xbf\x02\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12%\n\x05memes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Meme\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x18\n\x10\x63urrent_question\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06\x65rrors\x18\n \x03(\t\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x18\n\x10\x63urrent_audio_id\x18\x0c \x01(\x05\"\xc2\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"\xd8\x0f\n\x05Paint\x12I\n\x13selection_rectangle\x18\x01 \x01(\x0b\x32*.langame.protobuf.Paint.SelectionRectangleH\x00\x12\x43\n\x10selection_circle\x18\x02 \x01(\x0b\x32\'.langame.protobuf.Paint.SelectionCircleH\x00\x12?\n\x0eselection_line\x18\x03 \x01(\x0b\x32%.langame.protobuf.Paint.SelectionLineH\x00\x12?\n\x0eselection_text\x18\x04 \x01(\x0b\x32%.langame.protobuf.Paint.SelectionTextH\x00\x12?\n\x0e\x64raw_rectangle\x18\x05 \x01(\x0b\x32%.langame.protobuf.Paint.DrawRectangleH\x00\x12\x39\n\x0b\x64raw_circle\x18\x06 \x01(\x0b\x32\".langame.protobuf.Paint.DrawCircleH\x00\x12\x35\n\tdraw_line\x18\x07 \x01(\x0b\x32 .langame.protobuf.Paint.DrawLineH\x00\x12\x39\n\x0b\x64raw_points\x18\x08 \x01(\x0b\x32\".langame.protobuf.Paint.DrawPointsH\x00\x12\x35\n\tdraw_text\x18\t \x01(\x0b\x32 .langame.protobuf.Paint.DrawTextH\x00\x12\x32\n\tclear_all\x18\n \x01(\x0b\x32\x1d.langame.protobuf.Paint.ClearH\x00\x12\x35\n\tedit_text\x18\x0b \x01(\x0b\x32 .langame.protobuf.Paint.EditTextH\x00\x1as\n\x12SelectionRectangle\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x0f\n\x07shift_x\x18\x02 \x01(\x01\x12\x0f\n\x07shift_y\x18\x03 \x01(\x01\x1ap\n\x0fSelectionCircle\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x0f\n\x07shift_x\x18\x02 \x01(\x01\x12\x0f\n\x07shift_y\x18\x03 \x01(\x01\x1ay\n\rSelectionLine\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\r\n\x05is_p1\x18\x02 \x01(\x08\x12\r\n\x05new_x\x18\x03 \x01(\x01\x12\r\n\x05new_y\x18\x04 \x01(\x01\x1aj\n\rSelectionText\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\r\n\x05new_x\x18\x02 \x01(\x01\x12\r\n\x05new_y\x18\x03 \x01(\x01\x1a\x63\n\tDrawShape\x12\n\n\x02id\x18\x01 \x01(\t\x12\t\n\x01r\x18\x06 \x01(\x05\x12\t\n\x01g\x18\x07 \x01(\x05\x12\t\n\x01\x62\x18\x08 \x01(\x05\x12\x13\n\x0bscreenWidth\x18\t \x01(\x01\x12\x14\n\x0cscreenHeight\x18\n \x01(\x01\x1a\xa4\x01\n\rDrawRectangle\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x15\n\rbottom_left_x\x18\x02 \x01(\x01\x12\x15\n\rbottom_left_y\x18\x03 \x01(\x01\x12\x13\n\x0btop_right_x\x18\x04 \x01(\x01\x12\x13\n\x0btop_right_y\x18\x05 \x01(\x01\x1a}\n\nDrawCircle\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x10\n\x08\x63\x65nter_x\x18\x02 \x01(\x01\x12\x10\n\x08\x63\x65nter_y\x18\x03 \x01(\x01\x12\x0e\n\x06radius\x18\x04 \x01(\x01\x1a\x7f\n\x08\x44rawLine\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x0c\n\x04p1_x\x18\x02 \x01(\x01\x12\x0c\n\x04p1_y\x18\x03 \x01(\x01\x12\x0c\n\x04p2_x\x18\x04 \x01(\x01\x12\x0c\n\x04p2_y\x18\x05 \x01(\x01\x1aq\n\nDrawPoints\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x12\n\nposition_x\x18\x04 \x01(\x01\x12\x12\n\nposition_y\x18\x05 \x01(\x01\x1ao\n\x08\x44rawText\x12;\n\x10shape_properties\x18\x01 \x01(\x0b\x32!.langame.protobuf.Paint.DrawShape\x12\x12\n\nposition_x\x18\x04 \x01(\x01\x12\x12\n\nposition_y\x18\x05 \x01(\x01\x1a\x07\n\x05\x43lear\x1a$\n\x08\x45\x64itText\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"6\n\x05Shape\x12\r\n\tRectangle\x10\x00\x12\n\n\x06\x43ircle\x10\x01\x12\x08\n\x04Line\x10\x02\x12\x08\n\x04Text\x10\x03\x42\x08\n\x06\x61\x63tion\"{\n\x0cNotification\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nsender_uid\x18\x02 \x01(\t\x12\x16\n\x0erecipients_uid\x18\x03 \x03(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x14\n\x0c\x63hannel_name\x18\x05 \x01(\t\x12\r\n\x05ready\x18\x06 \x01(\x08\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3'
+  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\"\x7f\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12#\n\x04tags\x18\x04 \x03(\x0b\x32\x15.langame.protobuf.Tag\x12\x11\n\tprompt_id\x18\x05 \x01(\t\"\x93\x08\n\x03Tag\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05topic\x18\x02 \x01(\x0b\x32\x1b.langame.protobuf.Tag.TopicH\x00\x12>\n\x0e\x63lassification\x18\x03 \x01(\x0b\x32$.langame.protobuf.Tag.ClassificationH\x00\x12.\n\x06\x65ngine\x18\x04 \x01(\x0b\x32\x1c.langame.protobuf.Tag.EngineH\x00\x12\x32\n\x08\x66\x65\x65\x64\x62\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x12\x30\n\x07\x63ontext\x18\x06 \x01(\x0b\x32\x1d.langame.protobuf.Tag.ContextH\x00\x12=\n\x13\x61ggregated_feedback\x18\x07 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x1a(\n\x05Topic\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06\x65mojis\x18\x03 \x03(\t\x1a?\n\x0e\x43lassification\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\r\n\x05human\x18\x03 \x01(\x08\x1a\xde\x01\n\x06\x45ngine\x12;\n\nparameters\x18\x01 \x01(\x0b\x32\'.langame.protobuf.Tag.Engine.Parameters\x1a\x96\x01\n\nParameters\x12\x13\n\x0btemperature\x18\x01 \x01(\x01\x12\x12\n\nmax_tokens\x18\x02 \x01(\r\x12\r\n\x05top_p\x18\x03 \x01(\r\x12\x19\n\x11\x66requency_penalty\x18\x04 \x01(\x01\x12\x18\n\x10presence_penalty\x18\x05 \x01(\x01\x12\x0c\n\x04stop\x18\x06 \x03(\t\x12\r\n\x05model\x18\x07 \x01(\t\x1a\xd3\x01\n\x08\x46\x65\x65\x64\x62\x61\x63k\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x39\n\x07general\x18\x02 \x01(\x0b\x32&.langame.protobuf.Tag.Feedback.GeneralH\x00\x12=\n\trelevance\x18\x03 \x01(\x0b\x32(.langame.protobuf.Tag.Feedback.RelevanceH\x00\x1a\x18\n\x07General\x12\r\n\x05score\x18\x01 \x01(\r\x1a\x1a\n\tRelevance\x12\r\n\x05score\x18\x01 \x01(\rB\x06\n\x04type\x1ao\n\x07\x43ontext\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x30\n\x04type\x18\x02 \x01(\x0e\x32\".langame.protobuf.Tag.Context.Type\"!\n\x04Type\x12\r\n\tWIKIPEDIA\x10\x00\x12\n\n\x06OPENAI\x10\x01\x42\x06\n\x04type\"\x82\x04\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x18\n\x10\x66\x61vourite_topics\x18\n \x03(\t\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\x0e\n\x06\x65rrors\x18\x0e \x03(\t\x12.\n\nlast_login\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_logout\x18\x10 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rcreation_time\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64isabled\x18\x12 \x01(\x08\x12.\n\x07\x64\x65vices\x18\x13 \x03(\x0b\x32\x1d.langame.protobuf.User.Device\x1a\x36\n\x06\x44\x65vice\x12\x17\n\x0flangame_version\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_info\x18\x02 \x01(\t\"\xaf\x01\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12&\n\x1eunknown_people_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x16\n\x0esearch_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\"\xb7\x03\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12\r\n\x05memes\x18\x04 \x03(\t\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x63urrent_meme\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06\x65rrors\x18\n \x03(\t\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\tnext_meme\x18\r \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x12\n\nmemes_seen\x18\x0e \x01(\x05\x12\x30\n\x0cmeme_changed\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04link\x18\x10 \x01(\t\x12\x16\n\x0ereserved_spots\x18\x12 \x03(\t\x12\x11\n\tis_locked\x18\x13 \x01(\x08\"\xc2\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"{\n\x0cNotification\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nsender_uid\x18\x02 \x01(\t\x12\x16\n\x0erecipients_uid\x18\x03 \x03(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x14\n\x0c\x63hannel_name\x18\x05 \x01(\t\x12\r\n\x05ready\x18\x06 \x01(\x08\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x83\x02\n\x10\x46unctionResponse\x12H\n\rversion_check\x18\x01 \x01(\x0b\x32/.langame.protobuf.FunctionResponse.VersionCheckH\x00\x1a\x9c\x01\n\x0cVersionCheck\x12N\n\x06update\x18\x01 \x01(\x0e\x32>.langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired\"<\n\x0eUpdateRequired\x12\x06\n\x02OK\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\x14\n\x10RETRO_COMPATIBLE\x10\x02\x42\x06\n\x04type\"M\n\x06Prompt\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x10\n\x08template\x18\x02 \x01(\t\x12#\n\x04tags\x18\x03 \x03(\x0b\x32\x15.langame.protobuf.Tag*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03*F\n\x13\x46irestoreCollection\x12\t\n\x05USERS\x10\x00\x12\t\n\x05MEMES\x10\x01\x12\x0b\n\x07PROMPTS\x10\x02\x12\x0c\n\x08LANGAMES\x10\x03\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -55,16 +55,56 @@ _INTERACTIONLEVEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4430,
-  serialized_end=4491,
+  serialized_start=3394,
+  serialized_end=3455,
 )
 _sym_db.RegisterEnumDescriptor(_INTERACTIONLEVEL)
 
 InteractionLevel = enum_type_wrapper.EnumTypeWrapper(_INTERACTIONLEVEL)
+_FIRESTORECOLLECTION = _descriptor.EnumDescriptor(
+  name='FirestoreCollection',
+  full_name='langame.protobuf.FirestoreCollection',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='USERS', index=0, number=0,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='MEMES', index=1, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='PROMPTS', index=2, number=2,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='LANGAMES', index=3, number=3,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=3457,
+  serialized_end=3527,
+)
+_sym_db.RegisterEnumDescriptor(_FIRESTORECOLLECTION)
+
+FirestoreCollection = enum_type_wrapper.EnumTypeWrapper(_FIRESTORECOLLECTION)
 BAD = 0
 AVERAGE = 1
 GREAT = 2
 LOVE = 3
+USERS = 0
+MEMES = 1
+PROMPTS = 2
+LANGAMES = 3
 
 
 _TAG_CONTEXT_TYPE = _descriptor.EnumDescriptor(
@@ -87,45 +127,40 @@ _TAG_CONTEXT_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=955,
-  serialized_end=988,
+  serialized_start=1217,
+  serialized_end=1250,
 )
 _sym_db.RegisterEnumDescriptor(_TAG_CONTEXT_TYPE)
 
-_PAINT_SHAPE = _descriptor.EnumDescriptor(
-  name='Shape',
-  full_name='langame.protobuf.Paint.Shape',
+_FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED = _descriptor.EnumDescriptor(
+  name='UpdateRequired',
+  full_name='langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired',
   filename=None,
   file=DESCRIPTOR,
   create_key=_descriptor._internal_create_key,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='Rectangle', index=0, number=0,
+      name='OK', index=0, number=0,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='Circle', index=1, number=1,
+      name='REQUIRED', index=1, number=1,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='Line', index=2, number=2,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-    _descriptor.EnumValueDescriptor(
-      name='Text', index=3, number=3,
+      name='RETRO_COMPATIBLE', index=2, number=2,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4207,
-  serialized_end=4261,
+  serialized_start=3245,
+  serialized_end=3305,
 )
-_sym_db.RegisterEnumDescriptor(_PAINT_SHAPE)
+_sym_db.RegisterEnumDescriptor(_FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED)
 
 
 _MEME = _descriptor.Descriptor(
@@ -157,6 +192,13 @@ _MEME = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='prompt_id', full_name='langame.protobuf.Meme.prompt_id', index=3,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -170,7 +212,7 @@ _MEME = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=85,
-  serialized_end=193,
+  serialized_end=212,
 )
 
 
@@ -208,8 +250,8 @@ _TAG_TOPIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=511,
-  serialized_end=551,
+  serialized_start=593,
+  serialized_end=633,
 )
 
 _TAG_CLASSIFICATION = _descriptor.Descriptor(
@@ -253,22 +295,64 @@ _TAG_CLASSIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=553,
-  serialized_end=616,
+  serialized_start=635,
+  serialized_end=698,
 )
 
-_TAG_ORIGIN_OPENAI = _descriptor.Descriptor(
-  name='OpenAI',
-  full_name='langame.protobuf.Tag.Origin.OpenAI',
+_TAG_ENGINE_PARAMETERS = _descriptor.Descriptor(
+  name='Parameters',
+  full_name='langame.protobuf.Tag.Engine.Parameters',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='version', full_name='langame.protobuf.Tag.Origin.OpenAI.version', index=0,
-      number=1, type=13, cpp_type=3, label=1,
+      name='temperature', full_name='langame.protobuf.Tag.Engine.Parameters.temperature', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='max_tokens', full_name='langame.protobuf.Tag.Engine.Parameters.max_tokens', index=1,
+      number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='top_p', full_name='langame.protobuf.Tag.Engine.Parameters.top_p', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='frequency_penalty', full_name='langame.protobuf.Tag.Engine.Parameters.frequency_penalty', index=3,
+      number=4, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='presence_penalty', full_name='langame.protobuf.Tag.Engine.Parameters.presence_penalty', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='stop', full_name='langame.protobuf.Tag.Engine.Parameters.stop', index=5,
+      number=6, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='model', full_name='langame.protobuf.Tag.Engine.Parameters.model', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -284,21 +368,21 @@ _TAG_ORIGIN_OPENAI = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=683,
-  serialized_end=708,
+  serialized_start=773,
+  serialized_end=923,
 )
 
-_TAG_ORIGIN = _descriptor.Descriptor(
-  name='Origin',
-  full_name='langame.protobuf.Tag.Origin',
+_TAG_ENGINE = _descriptor.Descriptor(
+  name='Engine',
+  full_name='langame.protobuf.Tag.Engine',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='openai', full_name='langame.protobuf.Tag.Origin.openai', index=0,
-      number=2, type=11, cpp_type=10, label=1,
+      name='parameters', full_name='langame.protobuf.Tag.Engine.parameters', index=0,
+      number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -306,7 +390,7 @@ _TAG_ORIGIN = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_TAG_ORIGIN_OPENAI, ],
+  nested_types=[_TAG_ENGINE_PARAMETERS, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -314,26 +398,21 @@ _TAG_ORIGIN = _descriptor.Descriptor(
   syntax='proto3',
   extension_ranges=[],
   oneofs=[
-    _descriptor.OneofDescriptor(
-      name='type', full_name='langame.protobuf.Tag.Origin.type',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
   ],
-  serialized_start=618,
-  serialized_end=716,
+  serialized_start=701,
+  serialized_end=923,
 )
 
-_TAG_FEEDBACK_GENERALSCORE = _descriptor.Descriptor(
-  name='GeneralScore',
-  full_name='langame.protobuf.Tag.Feedback.GeneralScore',
+_TAG_FEEDBACK_GENERAL = _descriptor.Descriptor(
+  name='General',
+  full_name='langame.protobuf.Tag.Feedback.General',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='score', full_name='langame.protobuf.Tag.Feedback.GeneralScore.score', index=0,
+      name='score', full_name='langame.protobuf.Tag.Feedback.General.score', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -351,8 +430,8 @@ _TAG_FEEDBACK_GENERALSCORE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=810,
-  serialized_end=839,
+  serialized_start=1077,
+  serialized_end=1101,
 )
 
 _TAG_FEEDBACK_RELEVANCE = _descriptor.Descriptor(
@@ -382,8 +461,8 @@ _TAG_FEEDBACK_RELEVANCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=841,
-  serialized_end=867,
+  serialized_start=1103,
+  serialized_end=1129,
 )
 
 _TAG_FEEDBACK = _descriptor.Descriptor(
@@ -402,8 +481,15 @@ _TAG_FEEDBACK = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='score', full_name='langame.protobuf.Tag.Feedback.score', index=1,
+      name='general', full_name='langame.protobuf.Tag.Feedback.general', index=1,
       number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='relevance', full_name='langame.protobuf.Tag.Feedback.relevance', index=2,
+      number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -411,7 +497,7 @@ _TAG_FEEDBACK = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_TAG_FEEDBACK_GENERALSCORE, _TAG_FEEDBACK_RELEVANCE, ],
+  nested_types=[_TAG_FEEDBACK_GENERAL, _TAG_FEEDBACK_RELEVANCE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -425,8 +511,8 @@ _TAG_FEEDBACK = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=719,
-  serialized_end=875,
+  serialized_start=926,
+  serialized_end=1137,
 )
 
 _TAG_CONTEXT = _descriptor.Descriptor(
@@ -464,8 +550,8 @@ _TAG_CONTEXT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=877,
-  serialized_end=988,
+  serialized_start=1139,
+  serialized_end=1250,
 )
 
 _TAG = _descriptor.Descriptor(
@@ -498,7 +584,7 @@ _TAG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='origin', full_name='langame.protobuf.Tag.origin', index=3,
+      name='engine', full_name='langame.protobuf.Tag.engine', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -518,10 +604,17 @@ _TAG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='aggregated_feedback', full_name='langame.protobuf.Tag.aggregated_feedback', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
-  nested_types=[_TAG_TOPIC, _TAG_CLASSIFICATION, _TAG_ORIGIN, _TAG_FEEDBACK, _TAG_CONTEXT, ],
+  nested_types=[_TAG_TOPIC, _TAG_CLASSIFICATION, _TAG_ENGINE, _TAG_FEEDBACK, _TAG_CONTEXT, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -535,10 +628,48 @@ _TAG = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=196,
-  serialized_end=996,
+  serialized_start=215,
+  serialized_end=1258,
 )
 
+
+_USER_DEVICE = _descriptor.Descriptor(
+  name='Device',
+  full_name='langame.protobuf.User.Device',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='langame_version', full_name='langame.protobuf.User.Device.langame_version', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='device_info', full_name='langame.protobuf.User.Device.device_info', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1721,
+  serialized_end=1775,
+)
 
 _USER = _descriptor.Descriptor(
   name='User',
@@ -598,50 +729,78 @@ _USER = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='facebook', full_name='langame.protobuf.User.facebook', index=7,
-      number=8, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='apple', full_name='langame.protobuf.User.apple', index=8,
+      name='apple', full_name='langame.protobuf.User.apple', index=7,
       number=9, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='favourite_topics', full_name='langame.protobuf.User.favourite_topics', index=9,
+      name='favourite_topics', full_name='langame.protobuf.User.favourite_topics', index=8,
       number=10, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tag', full_name='langame.protobuf.User.tag', index=10,
+      name='tag', full_name='langame.protobuf.User.tag', index=9,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tokens', full_name='langame.protobuf.User.tokens', index=11,
+      name='tokens', full_name='langame.protobuf.User.tokens', index=10,
       number=12, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='latest_interactions', full_name='langame.protobuf.User.latest_interactions', index=12,
+      name='latest_interactions', full_name='langame.protobuf.User.latest_interactions', index=11,
       number=13, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='errors', full_name='langame.protobuf.User.errors', index=13,
+      name='errors', full_name='langame.protobuf.User.errors', index=12,
       number=14, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_login', full_name='langame.protobuf.User.last_login', index=13,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_logout', full_name='langame.protobuf.User.last_logout', index=14,
+      number=16, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='creation_time', full_name='langame.protobuf.User.creation_time', index=15,
+      number=17, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='disabled', full_name='langame.protobuf.User.disabled', index=16,
+      number=18, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='devices', full_name='langame.protobuf.User.devices', index=17,
+      number=19, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -649,7 +808,7 @@ _USER = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_USER_DEVICE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -658,8 +817,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=999,
-  serialized_end=1261,
+  serialized_start=1261,
+  serialized_end=1775,
 )
 
 
@@ -725,8 +884,8 @@ _USERPREFERENCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1264,
-  serialized_end=1439,
+  serialized_start=1778,
+  serialized_end=1953,
 )
 
 
@@ -761,7 +920,7 @@ _LANGAME = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='memes', full_name='langame.protobuf.Langame.memes', index=3,
-      number=4, type=11, cpp_type=10, label=3,
+      number=4, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -781,7 +940,7 @@ _LANGAME = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='current_question', full_name='langame.protobuf.Langame.current_question', index=6,
+      name='current_meme', full_name='langame.protobuf.Langame.current_meme', index=6,
       number=8, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -809,9 +968,44 @@ _LANGAME = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='current_audio_id', full_name='langame.protobuf.Langame.current_audio_id', index=10,
-      number=12, type=5, cpp_type=1, label=1,
+      name='next_meme', full_name='langame.protobuf.Langame.next_meme', index=10,
+      number=13, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='memes_seen', full_name='langame.protobuf.Langame.memes_seen', index=11,
+      number=14, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='meme_changed', full_name='langame.protobuf.Langame.meme_changed', index=12,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='link', full_name='langame.protobuf.Langame.link', index=13,
+      number=16, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='reserved_spots', full_name='langame.protobuf.Langame.reserved_spots', index=14,
+      number=18, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='is_locked', full_name='langame.protobuf.Langame.is_locked', index=15,
+      number=19, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -827,8 +1021,8 @@ _LANGAME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1442,
-  serialized_end=1761,
+  serialized_start=1956,
+  serialized_end=2395,
 )
 
 
@@ -894,8 +1088,8 @@ _PLAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1764,
-  serialized_end=1958,
+  serialized_start=2398,
+  serialized_end=2592,
 )
 
 
@@ -926,8 +1120,8 @@ _NOTE_GENERIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2170,
-  serialized_end=2196,
+  serialized_start=2804,
+  serialized_end=2830,
 )
 
 _NOTE_GOAL = _descriptor.Descriptor(
@@ -957,8 +1151,8 @@ _NOTE_GOAL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2198,
-  serialized_end=2221,
+  serialized_start=2832,
+  serialized_end=2855,
 )
 
 _NOTE_DEFINITION = _descriptor.Descriptor(
@@ -988,8 +1182,8 @@ _NOTE_DEFINITION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2223,
-  serialized_end=2252,
+  serialized_start=2857,
+  serialized_end=2886,
 )
 
 _NOTE = _descriptor.Descriptor(
@@ -1045,691 +1239,8 @@ _NOTE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=1961,
-  serialized_end=2260,
-)
-
-
-_PAINT_SELECTIONRECTANGLE = _descriptor.Descriptor(
-  name='SelectionRectangle',
-  full_name='langame.protobuf.Paint.SelectionRectangle',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.SelectionRectangle.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='shift_x', full_name='langame.protobuf.Paint.SelectionRectangle.shift_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='shift_y', full_name='langame.protobuf.Paint.SelectionRectangle.shift_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2946,
-  serialized_end=3061,
-)
-
-_PAINT_SELECTIONCIRCLE = _descriptor.Descriptor(
-  name='SelectionCircle',
-  full_name='langame.protobuf.Paint.SelectionCircle',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.SelectionCircle.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='shift_x', full_name='langame.protobuf.Paint.SelectionCircle.shift_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='shift_y', full_name='langame.protobuf.Paint.SelectionCircle.shift_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3063,
-  serialized_end=3175,
-)
-
-_PAINT_SELECTIONLINE = _descriptor.Descriptor(
-  name='SelectionLine',
-  full_name='langame.protobuf.Paint.SelectionLine',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.SelectionLine.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='is_p1', full_name='langame.protobuf.Paint.SelectionLine.is_p1', index=1,
-      number=2, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='new_x', full_name='langame.protobuf.Paint.SelectionLine.new_x', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='new_y', full_name='langame.protobuf.Paint.SelectionLine.new_y', index=3,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3177,
-  serialized_end=3298,
-)
-
-_PAINT_SELECTIONTEXT = _descriptor.Descriptor(
-  name='SelectionText',
-  full_name='langame.protobuf.Paint.SelectionText',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.SelectionText.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='new_x', full_name='langame.protobuf.Paint.SelectionText.new_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='new_y', full_name='langame.protobuf.Paint.SelectionText.new_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3300,
-  serialized_end=3406,
-)
-
-_PAINT_DRAWSHAPE = _descriptor.Descriptor(
-  name='DrawShape',
-  full_name='langame.protobuf.Paint.DrawShape',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='langame.protobuf.Paint.DrawShape.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='r', full_name='langame.protobuf.Paint.DrawShape.r', index=1,
-      number=6, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='g', full_name='langame.protobuf.Paint.DrawShape.g', index=2,
-      number=7, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='b', full_name='langame.protobuf.Paint.DrawShape.b', index=3,
-      number=8, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='screenWidth', full_name='langame.protobuf.Paint.DrawShape.screenWidth', index=4,
-      number=9, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='screenHeight', full_name='langame.protobuf.Paint.DrawShape.screenHeight', index=5,
-      number=10, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3408,
-  serialized_end=3507,
-)
-
-_PAINT_DRAWRECTANGLE = _descriptor.Descriptor(
-  name='DrawRectangle',
-  full_name='langame.protobuf.Paint.DrawRectangle',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.DrawRectangle.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bottom_left_x', full_name='langame.protobuf.Paint.DrawRectangle.bottom_left_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bottom_left_y', full_name='langame.protobuf.Paint.DrawRectangle.bottom_left_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='top_right_x', full_name='langame.protobuf.Paint.DrawRectangle.top_right_x', index=3,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='top_right_y', full_name='langame.protobuf.Paint.DrawRectangle.top_right_y', index=4,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3510,
-  serialized_end=3674,
-)
-
-_PAINT_DRAWCIRCLE = _descriptor.Descriptor(
-  name='DrawCircle',
-  full_name='langame.protobuf.Paint.DrawCircle',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.DrawCircle.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='center_x', full_name='langame.protobuf.Paint.DrawCircle.center_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='center_y', full_name='langame.protobuf.Paint.DrawCircle.center_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='radius', full_name='langame.protobuf.Paint.DrawCircle.radius', index=3,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3676,
-  serialized_end=3801,
-)
-
-_PAINT_DRAWLINE = _descriptor.Descriptor(
-  name='DrawLine',
-  full_name='langame.protobuf.Paint.DrawLine',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.DrawLine.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='p1_x', full_name='langame.protobuf.Paint.DrawLine.p1_x', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='p1_y', full_name='langame.protobuf.Paint.DrawLine.p1_y', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='p2_x', full_name='langame.protobuf.Paint.DrawLine.p2_x', index=3,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='p2_y', full_name='langame.protobuf.Paint.DrawLine.p2_y', index=4,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3803,
-  serialized_end=3930,
-)
-
-_PAINT_DRAWPOINTS = _descriptor.Descriptor(
-  name='DrawPoints',
-  full_name='langame.protobuf.Paint.DrawPoints',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.DrawPoints.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='position_x', full_name='langame.protobuf.Paint.DrawPoints.position_x', index=1,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='position_y', full_name='langame.protobuf.Paint.DrawPoints.position_y', index=2,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3932,
-  serialized_end=4045,
-)
-
-_PAINT_DRAWTEXT = _descriptor.Descriptor(
-  name='DrawText',
-  full_name='langame.protobuf.Paint.DrawText',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='shape_properties', full_name='langame.protobuf.Paint.DrawText.shape_properties', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='position_x', full_name='langame.protobuf.Paint.DrawText.position_x', index=1,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='position_y', full_name='langame.protobuf.Paint.DrawText.position_y', index=2,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4047,
-  serialized_end=4158,
-)
-
-_PAINT_CLEAR = _descriptor.Descriptor(
-  name='Clear',
-  full_name='langame.protobuf.Paint.Clear',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4160,
-  serialized_end=4167,
-)
-
-_PAINT_EDITTEXT = _descriptor.Descriptor(
-  name='EditText',
-  full_name='langame.protobuf.Paint.EditText',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='langame.protobuf.Paint.EditText.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='text', full_name='langame.protobuf.Paint.EditText.text', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4169,
-  serialized_end=4205,
-)
-
-_PAINT = _descriptor.Descriptor(
-  name='Paint',
-  full_name='langame.protobuf.Paint',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='selection_rectangle', full_name='langame.protobuf.Paint.selection_rectangle', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='selection_circle', full_name='langame.protobuf.Paint.selection_circle', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='selection_line', full_name='langame.protobuf.Paint.selection_line', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='selection_text', full_name='langame.protobuf.Paint.selection_text', index=3,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='draw_rectangle', full_name='langame.protobuf.Paint.draw_rectangle', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='draw_circle', full_name='langame.protobuf.Paint.draw_circle', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='draw_line', full_name='langame.protobuf.Paint.draw_line', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='draw_points', full_name='langame.protobuf.Paint.draw_points', index=7,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='draw_text', full_name='langame.protobuf.Paint.draw_text', index=8,
-      number=9, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='clear_all', full_name='langame.protobuf.Paint.clear_all', index=9,
-      number=10, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='edit_text', full_name='langame.protobuf.Paint.edit_text', index=10,
-      number=11, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_PAINT_SELECTIONRECTANGLE, _PAINT_SELECTIONCIRCLE, _PAINT_SELECTIONLINE, _PAINT_SELECTIONTEXT, _PAINT_DRAWSHAPE, _PAINT_DRAWRECTANGLE, _PAINT_DRAWCIRCLE, _PAINT_DRAWLINE, _PAINT_DRAWPOINTS, _PAINT_DRAWTEXT, _PAINT_CLEAR, _PAINT_EDITTEXT, ],
-  enum_types=[
-    _PAINT_SHAPE,
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='action', full_name='langame.protobuf.Paint.action',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=2263,
-  serialized_end=4271,
+  serialized_start=2595,
+  serialized_end=2894,
 )
 
 
@@ -1795,8 +1306,8 @@ _NOTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4273,
-  serialized_end=4396,
+  serialized_start=2896,
+  serialized_end=3019,
 )
 
 
@@ -1827,36 +1338,153 @@ _SUBSCRIPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4398,
-  serialized_end=4428,
+  serialized_start=3021,
+  serialized_end=3051,
+)
+
+
+_FUNCTIONRESPONSE_VERSIONCHECK = _descriptor.Descriptor(
+  name='VersionCheck',
+  full_name='langame.protobuf.FunctionResponse.VersionCheck',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='update', full_name='langame.protobuf.FunctionResponse.VersionCheck.update', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3149,
+  serialized_end=3305,
+)
+
+_FUNCTIONRESPONSE = _descriptor.Descriptor(
+  name='FunctionResponse',
+  full_name='langame.protobuf.FunctionResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='version_check', full_name='langame.protobuf.FunctionResponse.version_check', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[_FUNCTIONRESPONSE_VERSIONCHECK, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='type', full_name='langame.protobuf.FunctionResponse.type',
+      index=0, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
+  ],
+  serialized_start=3054,
+  serialized_end=3313,
+)
+
+
+_PROMPT = _descriptor.Descriptor(
+  name='Prompt',
+  full_name='langame.protobuf.Prompt',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='type', full_name='langame.protobuf.Prompt.type', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='template', full_name='langame.protobuf.Prompt.template', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tags', full_name='langame.protobuf.Prompt.tags', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3315,
+  serialized_end=3392,
 )
 
 _MEME.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _MEME.fields_by_name['tags'].message_type = _TAG
 _TAG_TOPIC.containing_type = _TAG
 _TAG_CLASSIFICATION.containing_type = _TAG
-_TAG_ORIGIN_OPENAI.containing_type = _TAG_ORIGIN
-_TAG_ORIGIN.fields_by_name['openai'].message_type = _TAG_ORIGIN_OPENAI
-_TAG_ORIGIN.containing_type = _TAG
-_TAG_ORIGIN.oneofs_by_name['type'].fields.append(
-  _TAG_ORIGIN.fields_by_name['openai'])
-_TAG_ORIGIN.fields_by_name['openai'].containing_oneof = _TAG_ORIGIN.oneofs_by_name['type']
-_TAG_FEEDBACK_GENERALSCORE.containing_type = _TAG_FEEDBACK
+_TAG_ENGINE_PARAMETERS.containing_type = _TAG_ENGINE
+_TAG_ENGINE.fields_by_name['parameters'].message_type = _TAG_ENGINE_PARAMETERS
+_TAG_ENGINE.containing_type = _TAG
+_TAG_FEEDBACK_GENERAL.containing_type = _TAG_FEEDBACK
 _TAG_FEEDBACK_RELEVANCE.containing_type = _TAG_FEEDBACK
-_TAG_FEEDBACK.fields_by_name['score'].message_type = _TAG_FEEDBACK_GENERALSCORE
+_TAG_FEEDBACK.fields_by_name['general'].message_type = _TAG_FEEDBACK_GENERAL
+_TAG_FEEDBACK.fields_by_name['relevance'].message_type = _TAG_FEEDBACK_RELEVANCE
 _TAG_FEEDBACK.containing_type = _TAG
 _TAG_FEEDBACK.oneofs_by_name['type'].fields.append(
-  _TAG_FEEDBACK.fields_by_name['score'])
-_TAG_FEEDBACK.fields_by_name['score'].containing_oneof = _TAG_FEEDBACK.oneofs_by_name['type']
+  _TAG_FEEDBACK.fields_by_name['general'])
+_TAG_FEEDBACK.fields_by_name['general'].containing_oneof = _TAG_FEEDBACK.oneofs_by_name['type']
+_TAG_FEEDBACK.oneofs_by_name['type'].fields.append(
+  _TAG_FEEDBACK.fields_by_name['relevance'])
+_TAG_FEEDBACK.fields_by_name['relevance'].containing_oneof = _TAG_FEEDBACK.oneofs_by_name['type']
 _TAG_CONTEXT.fields_by_name['type'].enum_type = _TAG_CONTEXT_TYPE
 _TAG_CONTEXT.containing_type = _TAG
 _TAG_CONTEXT_TYPE.containing_type = _TAG_CONTEXT
 _TAG.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _TAG.fields_by_name['topic'].message_type = _TAG_TOPIC
 _TAG.fields_by_name['classification'].message_type = _TAG_CLASSIFICATION
-_TAG.fields_by_name['origin'].message_type = _TAG_ORIGIN
+_TAG.fields_by_name['engine'].message_type = _TAG_ENGINE
 _TAG.fields_by_name['feedback'].message_type = _TAG_FEEDBACK
 _TAG.fields_by_name['context'].message_type = _TAG_CONTEXT
+_TAG.fields_by_name['aggregated_feedback'].message_type = _TAG_FEEDBACK
 _TAG.oneofs_by_name['type'].fields.append(
   _TAG.fields_by_name['topic'])
 _TAG.fields_by_name['topic'].containing_oneof = _TAG.oneofs_by_name['type']
@@ -1864,18 +1492,27 @@ _TAG.oneofs_by_name['type'].fields.append(
   _TAG.fields_by_name['classification'])
 _TAG.fields_by_name['classification'].containing_oneof = _TAG.oneofs_by_name['type']
 _TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['origin'])
-_TAG.fields_by_name['origin'].containing_oneof = _TAG.oneofs_by_name['type']
+  _TAG.fields_by_name['engine'])
+_TAG.fields_by_name['engine'].containing_oneof = _TAG.oneofs_by_name['type']
 _TAG.oneofs_by_name['type'].fields.append(
   _TAG.fields_by_name['feedback'])
 _TAG.fields_by_name['feedback'].containing_oneof = _TAG.oneofs_by_name['type']
 _TAG.oneofs_by_name['type'].fields.append(
   _TAG.fields_by_name['context'])
 _TAG.fields_by_name['context'].containing_oneof = _TAG.oneofs_by_name['type']
-_LANGAME.fields_by_name['memes'].message_type = _MEME
+_TAG.oneofs_by_name['type'].fields.append(
+  _TAG.fields_by_name['aggregated_feedback'])
+_TAG.fields_by_name['aggregated_feedback'].containing_oneof = _TAG.oneofs_by_name['type']
+_USER_DEVICE.containing_type = _USER
+_USER.fields_by_name['last_login'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_USER.fields_by_name['last_logout'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_USER.fields_by_name['creation_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_USER.fields_by_name['devices'].message_type = _USER_DEVICE
 _LANGAME.fields_by_name['done'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _LANGAME.fields_by_name['date'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _LANGAME.fields_by_name['started'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_LANGAME.fields_by_name['next_meme'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_LANGAME.fields_by_name['meme_changed'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _PLAYER.fields_by_name['time_in'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _PLAYER.fields_by_name['time_out'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _PLAYER.fields_by_name['notes'].message_type = _NOTE
@@ -1895,72 +1532,14 @@ _NOTE.fields_by_name['goal'].containing_oneof = _NOTE.oneofs_by_name['type']
 _NOTE.oneofs_by_name['type'].fields.append(
   _NOTE.fields_by_name['definition'])
 _NOTE.fields_by_name['definition'].containing_oneof = _NOTE.oneofs_by_name['type']
-_PAINT_SELECTIONRECTANGLE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_SELECTIONRECTANGLE.containing_type = _PAINT
-_PAINT_SELECTIONCIRCLE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_SELECTIONCIRCLE.containing_type = _PAINT
-_PAINT_SELECTIONLINE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_SELECTIONLINE.containing_type = _PAINT
-_PAINT_SELECTIONTEXT.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_SELECTIONTEXT.containing_type = _PAINT
-_PAINT_DRAWSHAPE.containing_type = _PAINT
-_PAINT_DRAWRECTANGLE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_DRAWRECTANGLE.containing_type = _PAINT
-_PAINT_DRAWCIRCLE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_DRAWCIRCLE.containing_type = _PAINT
-_PAINT_DRAWLINE.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_DRAWLINE.containing_type = _PAINT
-_PAINT_DRAWPOINTS.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_DRAWPOINTS.containing_type = _PAINT
-_PAINT_DRAWTEXT.fields_by_name['shape_properties'].message_type = _PAINT_DRAWSHAPE
-_PAINT_DRAWTEXT.containing_type = _PAINT
-_PAINT_CLEAR.containing_type = _PAINT
-_PAINT_EDITTEXT.containing_type = _PAINT
-_PAINT.fields_by_name['selection_rectangle'].message_type = _PAINT_SELECTIONRECTANGLE
-_PAINT.fields_by_name['selection_circle'].message_type = _PAINT_SELECTIONCIRCLE
-_PAINT.fields_by_name['selection_line'].message_type = _PAINT_SELECTIONLINE
-_PAINT.fields_by_name['selection_text'].message_type = _PAINT_SELECTIONTEXT
-_PAINT.fields_by_name['draw_rectangle'].message_type = _PAINT_DRAWRECTANGLE
-_PAINT.fields_by_name['draw_circle'].message_type = _PAINT_DRAWCIRCLE
-_PAINT.fields_by_name['draw_line'].message_type = _PAINT_DRAWLINE
-_PAINT.fields_by_name['draw_points'].message_type = _PAINT_DRAWPOINTS
-_PAINT.fields_by_name['draw_text'].message_type = _PAINT_DRAWTEXT
-_PAINT.fields_by_name['clear_all'].message_type = _PAINT_CLEAR
-_PAINT.fields_by_name['edit_text'].message_type = _PAINT_EDITTEXT
-_PAINT_SHAPE.containing_type = _PAINT
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['selection_rectangle'])
-_PAINT.fields_by_name['selection_rectangle'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['selection_circle'])
-_PAINT.fields_by_name['selection_circle'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['selection_line'])
-_PAINT.fields_by_name['selection_line'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['selection_text'])
-_PAINT.fields_by_name['selection_text'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['draw_rectangle'])
-_PAINT.fields_by_name['draw_rectangle'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['draw_circle'])
-_PAINT.fields_by_name['draw_circle'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['draw_line'])
-_PAINT.fields_by_name['draw_line'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['draw_points'])
-_PAINT.fields_by_name['draw_points'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['draw_text'])
-_PAINT.fields_by_name['draw_text'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['clear_all'])
-_PAINT.fields_by_name['clear_all'].containing_oneof = _PAINT.oneofs_by_name['action']
-_PAINT.oneofs_by_name['action'].fields.append(
-  _PAINT.fields_by_name['edit_text'])
-_PAINT.fields_by_name['edit_text'].containing_oneof = _PAINT.oneofs_by_name['action']
+_FUNCTIONRESPONSE_VERSIONCHECK.fields_by_name['update'].enum_type = _FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED
+_FUNCTIONRESPONSE_VERSIONCHECK.containing_type = _FUNCTIONRESPONSE
+_FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED.containing_type = _FUNCTIONRESPONSE_VERSIONCHECK
+_FUNCTIONRESPONSE.fields_by_name['version_check'].message_type = _FUNCTIONRESPONSE_VERSIONCHECK
+_FUNCTIONRESPONSE.oneofs_by_name['type'].fields.append(
+  _FUNCTIONRESPONSE.fields_by_name['version_check'])
+_FUNCTIONRESPONSE.fields_by_name['version_check'].containing_oneof = _FUNCTIONRESPONSE.oneofs_by_name['type']
+_PROMPT.fields_by_name['tags'].message_type = _TAG
 DESCRIPTOR.message_types_by_name['Meme'] = _MEME
 DESCRIPTOR.message_types_by_name['Tag'] = _TAG
 DESCRIPTOR.message_types_by_name['User'] = _USER
@@ -1968,10 +1547,12 @@ DESCRIPTOR.message_types_by_name['UserPreference'] = _USERPREFERENCE
 DESCRIPTOR.message_types_by_name['Langame'] = _LANGAME
 DESCRIPTOR.message_types_by_name['Player'] = _PLAYER
 DESCRIPTOR.message_types_by_name['Note'] = _NOTE
-DESCRIPTOR.message_types_by_name['Paint'] = _PAINT
 DESCRIPTOR.message_types_by_name['Notification'] = _NOTIFICATION
 DESCRIPTOR.message_types_by_name['Subscription'] = _SUBSCRIPTION
+DESCRIPTOR.message_types_by_name['FunctionResponse'] = _FUNCTIONRESPONSE
+DESCRIPTOR.message_types_by_name['Prompt'] = _PROMPT
 DESCRIPTOR.enum_types_by_name['InteractionLevel'] = _INTERACTIONLEVEL
+DESCRIPTOR.enum_types_by_name['FirestoreCollection'] = _FIRESTORECOLLECTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Meme = _reflection.GeneratedProtocolMessageType('Meme', (_message.Message,), {
@@ -1997,26 +1578,26 @@ Tag = _reflection.GeneratedProtocolMessageType('Tag', (_message.Message,), {
     })
   ,
 
-  'Origin' : _reflection.GeneratedProtocolMessageType('Origin', (_message.Message,), {
+  'Engine' : _reflection.GeneratedProtocolMessageType('Engine', (_message.Message,), {
 
-    'OpenAI' : _reflection.GeneratedProtocolMessageType('OpenAI', (_message.Message,), {
-      'DESCRIPTOR' : _TAG_ORIGIN_OPENAI,
+    'Parameters' : _reflection.GeneratedProtocolMessageType('Parameters', (_message.Message,), {
+      'DESCRIPTOR' : _TAG_ENGINE_PARAMETERS,
       '__module__' : 'langame.protobuf.langame_pb2'
-      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Origin.OpenAI)
+      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Engine.Parameters)
       })
     ,
-    'DESCRIPTOR' : _TAG_ORIGIN,
+    'DESCRIPTOR' : _TAG_ENGINE,
     '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Origin)
+    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Engine)
     })
   ,
 
   'Feedback' : _reflection.GeneratedProtocolMessageType('Feedback', (_message.Message,), {
 
-    'GeneralScore' : _reflection.GeneratedProtocolMessageType('GeneralScore', (_message.Message,), {
-      'DESCRIPTOR' : _TAG_FEEDBACK_GENERALSCORE,
+    'General' : _reflection.GeneratedProtocolMessageType('General', (_message.Message,), {
+      'DESCRIPTOR' : _TAG_FEEDBACK_GENERAL,
       '__module__' : 'langame.protobuf.langame_pb2'
-      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Feedback.GeneralScore)
+      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Feedback.General)
       })
     ,
 
@@ -2045,19 +1626,27 @@ Tag = _reflection.GeneratedProtocolMessageType('Tag', (_message.Message,), {
 _sym_db.RegisterMessage(Tag)
 _sym_db.RegisterMessage(Tag.Topic)
 _sym_db.RegisterMessage(Tag.Classification)
-_sym_db.RegisterMessage(Tag.Origin)
-_sym_db.RegisterMessage(Tag.Origin.OpenAI)
+_sym_db.RegisterMessage(Tag.Engine)
+_sym_db.RegisterMessage(Tag.Engine.Parameters)
 _sym_db.RegisterMessage(Tag.Feedback)
-_sym_db.RegisterMessage(Tag.Feedback.GeneralScore)
+_sym_db.RegisterMessage(Tag.Feedback.General)
 _sym_db.RegisterMessage(Tag.Feedback.Relevance)
 _sym_db.RegisterMessage(Tag.Context)
 
 User = _reflection.GeneratedProtocolMessageType('User', (_message.Message,), {
+
+  'Device' : _reflection.GeneratedProtocolMessageType('Device', (_message.Message,), {
+    'DESCRIPTOR' : _USER_DEVICE,
+    '__module__' : 'langame.protobuf.langame_pb2'
+    # @@protoc_insertion_point(class_scope:langame.protobuf.User.Device)
+    })
+  ,
   'DESCRIPTOR' : _USER,
   '__module__' : 'langame.protobuf.langame_pb2'
   # @@protoc_insertion_point(class_scope:langame.protobuf.User)
   })
 _sym_db.RegisterMessage(User)
+_sym_db.RegisterMessage(User.Device)
 
 UserPreference = _reflection.GeneratedProtocolMessageType('UserPreference', (_message.Message,), {
   'DESCRIPTOR' : _USERPREFERENCE,
@@ -2111,109 +1700,6 @@ _sym_db.RegisterMessage(Note.Generic)
 _sym_db.RegisterMessage(Note.Goal)
 _sym_db.RegisterMessage(Note.Definition)
 
-Paint = _reflection.GeneratedProtocolMessageType('Paint', (_message.Message,), {
-
-  'SelectionRectangle' : _reflection.GeneratedProtocolMessageType('SelectionRectangle', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_SELECTIONRECTANGLE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.SelectionRectangle)
-    })
-  ,
-
-  'SelectionCircle' : _reflection.GeneratedProtocolMessageType('SelectionCircle', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_SELECTIONCIRCLE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.SelectionCircle)
-    })
-  ,
-
-  'SelectionLine' : _reflection.GeneratedProtocolMessageType('SelectionLine', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_SELECTIONLINE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.SelectionLine)
-    })
-  ,
-
-  'SelectionText' : _reflection.GeneratedProtocolMessageType('SelectionText', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_SELECTIONTEXT,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.SelectionText)
-    })
-  ,
-
-  'DrawShape' : _reflection.GeneratedProtocolMessageType('DrawShape', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWSHAPE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawShape)
-    })
-  ,
-
-  'DrawRectangle' : _reflection.GeneratedProtocolMessageType('DrawRectangle', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWRECTANGLE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawRectangle)
-    })
-  ,
-
-  'DrawCircle' : _reflection.GeneratedProtocolMessageType('DrawCircle', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWCIRCLE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawCircle)
-    })
-  ,
-
-  'DrawLine' : _reflection.GeneratedProtocolMessageType('DrawLine', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWLINE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawLine)
-    })
-  ,
-
-  'DrawPoints' : _reflection.GeneratedProtocolMessageType('DrawPoints', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWPOINTS,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawPoints)
-    })
-  ,
-
-  'DrawText' : _reflection.GeneratedProtocolMessageType('DrawText', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_DRAWTEXT,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.DrawText)
-    })
-  ,
-
-  'Clear' : _reflection.GeneratedProtocolMessageType('Clear', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_CLEAR,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.Clear)
-    })
-  ,
-
-  'EditText' : _reflection.GeneratedProtocolMessageType('EditText', (_message.Message,), {
-    'DESCRIPTOR' : _PAINT_EDITTEXT,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Paint.EditText)
-    })
-  ,
-  'DESCRIPTOR' : _PAINT,
-  '__module__' : 'langame.protobuf.langame_pb2'
-  # @@protoc_insertion_point(class_scope:langame.protobuf.Paint)
-  })
-_sym_db.RegisterMessage(Paint)
-_sym_db.RegisterMessage(Paint.SelectionRectangle)
-_sym_db.RegisterMessage(Paint.SelectionCircle)
-_sym_db.RegisterMessage(Paint.SelectionLine)
-_sym_db.RegisterMessage(Paint.SelectionText)
-_sym_db.RegisterMessage(Paint.DrawShape)
-_sym_db.RegisterMessage(Paint.DrawRectangle)
-_sym_db.RegisterMessage(Paint.DrawCircle)
-_sym_db.RegisterMessage(Paint.DrawLine)
-_sym_db.RegisterMessage(Paint.DrawPoints)
-_sym_db.RegisterMessage(Paint.DrawText)
-_sym_db.RegisterMessage(Paint.Clear)
-_sym_db.RegisterMessage(Paint.EditText)
-
 Notification = _reflection.GeneratedProtocolMessageType('Notification', (_message.Message,), {
   'DESCRIPTOR' : _NOTIFICATION,
   '__module__' : 'langame.protobuf.langame_pb2'
@@ -2227,6 +1713,28 @@ Subscription = _reflection.GeneratedProtocolMessageType('Subscription', (_messag
   # @@protoc_insertion_point(class_scope:langame.protobuf.Subscription)
   })
 _sym_db.RegisterMessage(Subscription)
+
+FunctionResponse = _reflection.GeneratedProtocolMessageType('FunctionResponse', (_message.Message,), {
+
+  'VersionCheck' : _reflection.GeneratedProtocolMessageType('VersionCheck', (_message.Message,), {
+    'DESCRIPTOR' : _FUNCTIONRESPONSE_VERSIONCHECK,
+    '__module__' : 'langame.protobuf.langame_pb2'
+    # @@protoc_insertion_point(class_scope:langame.protobuf.FunctionResponse.VersionCheck)
+    })
+  ,
+  'DESCRIPTOR' : _FUNCTIONRESPONSE,
+  '__module__' : 'langame.protobuf.langame_pb2'
+  # @@protoc_insertion_point(class_scope:langame.protobuf.FunctionResponse)
+  })
+_sym_db.RegisterMessage(FunctionResponse)
+_sym_db.RegisterMessage(FunctionResponse.VersionCheck)
+
+Prompt = _reflection.GeneratedProtocolMessageType('Prompt', (_message.Message,), {
+  'DESCRIPTOR' : _PROMPT,
+  '__module__' : 'langame.protobuf.langame_pb2'
+  # @@protoc_insertion_point(class_scope:langame.protobuf.Prompt)
+  })
+_sym_db.RegisterMessage(Prompt)
 
 
 # @@protoc_insertion_point(module_scope)

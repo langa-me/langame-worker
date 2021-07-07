@@ -7,6 +7,8 @@ from helpers import clean_text
 from urllib.request import urlopen
 from urllib.error import URLError
 from bs4 import BeautifulSoup
+from langame.protobuf.langame_pb2 import Tag
+
 
 class OpenAIClient:
     def __init__(self, api_token, google_search_api_token, google_search_cse_id, engine="davinci"):
@@ -21,51 +23,33 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
-                        engine="davinci",
-                        temperature=0.7,
-                        top_p=1,
-                        stop: Optional[List[str]] = ["\"\n", "\n\n\n", "\n\""],
-                        max_tokens: int = 100,
-                        frequency_penalty=0,
-                        presence_penalty=0,
-                        max_tries: int = 5,
+                        parameters: Tag.Engine.Parameters,
                         ):
         """
 
-        :param max_tries:
-        :param max_tokens:
-        :param stop:
+        :param parameters:
         :param prompt:
         :return:
         """
 
-        tries = 0
-        print(f"call_completion with prompt {prompt}")
-        while tries < max_tries:
-            print(f"try n°{tries}/{max_tries}")
-            response = openai.Completion.create(
-                engine=engine,
-                prompt=prompt,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                top_p=top_p,
-                frequency_penalty=frequency_penalty,
-                presence_penalty=presence_penalty,
-                stop=stop,
-                best_of=1,
-            )
-            choices = response.get("choices")
-            print(response)
-            if not choices \
-                    or not isinstance(choices, list) \
-                    or len(choices) == 0 \
-                    or not choices[0].get("text"):
-                tries += 1
-                continue
-            response = choices[0].get("text")
-            response = clean_text(response)
-            return response
-        return None
+        response = openai.Completion.create(
+            engine=parameters["model"] if parameters["model"] is not None else "davinci",
+            prompt=prompt,
+            temperature=parameters["temperature"] if parameters.get("temperature") is not None else 1,
+            max_tokens=parameters["maxTokens"] if parameters.get("maxTokens") is not None else 100,
+            top_p=parameters["topP"] if parameters.get("topP") is not None else 1,
+            frequency_penalty=parameters["frequencyPenalty"] if parameters.get("frequencyPenalty") is not None else 0,
+            presence_penalty=parameters["presencePenalty"] if parameters.get("presencePenalty") is not None else 0,
+            stop=parameters["stop"] if parameters.get("stop") is not None else [],
+            best_of=1,
+        )
+        choices = response.get("choices")
+        response = choices[0].get("text")
+        # TODO: return None if finish_reason is length
+        # https://beta.openai.com/docs/api-reference/completions/create
+        response = clean_text(response)
+        return response
+
 
     def openai_description(self, topic: str) -> Optional[str]:
         """
