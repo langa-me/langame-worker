@@ -1,4 +1,4 @@
-firebase-admin
+firebase_admin
 pytrends
 openai
 beautifulsoup4
