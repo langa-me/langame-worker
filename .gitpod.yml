@@ -1,5 +1,10 @@
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
+    - name: Generate service account
+      command: |
+        eval $(gp env -e)
+        echo "$LANGAME_SVC_PROD" > svc.prod.json
+        echo "$LANGAME_SVC_DEV" > svc.prod.json
     - name: Auth gcloud
       command: |
         gcloud auth login --no-launch-browser
