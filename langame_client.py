@@ -75,6 +75,8 @@ class LangameClient:
                 "prompt": e.to_dict()["template"].replace("[TOPIC]", topic_with_emoji[0]),
                 "parameters": t.to_dict()["engine"]["parameters"]
             })
+        if not prompts:
+            return None
         random.shuffle(prompts)
         prompt = prompts.pop()
 
@@ -106,20 +108,55 @@ class LangameClient:
             "tags").add(tag_as_dict)
         return meme_add
 
-    def list_memes(self, topics: List[str] = []) -> List[Meme]:
+    def prompt_to_meme_ice_breaker(self) -> Tuple[Timestamp, DocumentReference]:
         """
-        List memes
         :return:
         """
-        # TODO broken
-        if topics:
-            tags = self._firestore_client.collection_group(
-                u"tags").where(u"topic.content", u"in", topics).stream()
-            for t in tags:
-                yield ParseDict(t.reference.parent.parent.get().to_dict(), Meme())
-        else:
-            for q in self._memes_ref.stream():
-                yield ParseDict(q.to_dict(), Meme())
+        prompts = []
+        for e in self._firestore_client.collection("prompts")\
+                .where("type", "==", "IceBreakerGeneralist")\
+                .limit(5)\
+                .stream():
+            t = None
+            # Just a hack to find the tags of parameters
+            for tag in e.reference.collection("tags").where("engine.parameters.maxTokens", ">=", 0).stream():
+                t = tag
+                break
+            prompts.append({
+                "id": e.id,
+                "prompt": e.to_dict()["template"],
+                "parameters": t.to_dict()["engine"]["parameters"]
+            })
+        if not prompts:
+            return None
+        random.shuffle(prompts)
+        prompt = prompts.pop()
+
+        print(f"calling openai with {prompt}")
+        meme: Optional[str] = self._openai_client.call_completion(
+            prompt["prompt"],
+            prompt["parameters"],
+        )
+        if not meme:
+            return
+
+        # TODO: transaction
+        meme_add = self._memes_ref.add({
+            "content": meme,
+            "createdAt": firestore.SERVER_TIMESTAMP,
+            "promptId": prompt["id"]
+        })
+
+        # Add a topic tag
+        topic_tag: Tag = Tag()
+        topic_tag.topic.content = "ice breaker"
+        for e in ["🤔","😜","💭"]:
+            topic_tag.topic.emojis.append(e)
+        tag_as_dict = MessageToDict(topic_tag)
+        tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
+        self._memes_ref.document(meme_add[1].id).collection(
+            "tags").add(tag_as_dict)
+        return meme_add
 
     def purge(self):
         def delete_collection(coll_ref, batch_size=20):

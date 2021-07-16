@@ -4,7 +4,8 @@ tasks:
       command: |
         eval $(gp env -e)
         echo "$LANGAME_SVC_PROD" > svc.prod.json
-        echo "$LANGAME_SVC_DEV" > svc.prod.json
+        echo "$LANGAME_SVC_DEV" > svc.dev.json
+        echo "$LANGAME_CONFIG" > config.yaml
     - name: Auth gcloud
       command: |
         gcloud auth login --no-launch-browser
