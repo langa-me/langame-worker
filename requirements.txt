@@ -3,3 +3,4 @@ pytrends
 openai
 beautifulsoup4
 confuse
+openai
