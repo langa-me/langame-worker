@@ -55,6 +55,7 @@ class LangameClient:
 
     def prompt_to_meme(self,
                        topic_with_emoji: Tuple[str, Optional[str]],
+                       fine_tuned=True,
                        ) -> Tuple[Timestamp, DocumentReference]:
         """
         :param topics_with_emojis:
@@ -62,7 +63,7 @@ class LangameClient:
         """
         prompts = []
         for e in self._firestore_client.collection("prompts")\
-                .where("type", "==", "TopicGeneralist")\
+                .where("type", "==", "TopicGeneralist" + "FineTuned" if fine_tuned else "")\
                 .limit(5)\
                 .stream():
             t = None
