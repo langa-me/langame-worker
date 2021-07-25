@@ -161,4 +161,8 @@ openai:
 
 hugging_face:
   token: ...
+
+algolia:
+  application_id:
+  admin_api_key:
 ```

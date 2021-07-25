@@ -1,4 +1,9 @@
 import os
+import time
+import confuse
+import json
+import random
+import re
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -11,11 +16,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.json_format import MessageToDict, ParseDict
 from langame.protobuf.langame_pb2 import Meme, Tag
 from openai_client import OpenAIClient
-import time
-import confuse
-import json
-import random
-import re
+from algoliasearch.search_client import SearchClient
 
 
 class LangameClient:
@@ -23,6 +24,7 @@ class LangameClient:
         conf = confuse.Configuration('langame-worker', __name__)
         conf.set_file('./config.yaml')
 
+        # AI APIs
         self._hf_client: HuggingFaceClient = HuggingFaceClient(
             conf["hugging_face"]["token"].get())
         self._openai_client: OpenAIClient = OpenAIClient(
@@ -30,8 +32,12 @@ class LangameClient:
             conf["google"]["search_api"]["token"].get(),
             conf["google"]["search_api"]["id"].get(),
         )
+        self._algolia_client = SearchClient.create(
+            conf["algolia"]["application_id"].get(), 
+            conf["algolia"]["admin_api_key"].get()
+        )
 
-        # Use the application default credentials
+        # Firestore
         cred = credentials.Certificate(
             f'{os.getcwd()}/{conf["google"]["service_account"]}')
         firebase_admin.initialize_app(cred)
@@ -39,19 +45,8 @@ class LangameClient:
         self._memes_ref: BaseCollectionReference = self._firestore_client.collection(
             u"memes")
 
-    def save(self, memes: List[Meme]) -> List[Tuple[Timestamp, DocumentReference]]:
-        """
-        Save a list of memes to firestore
-        :param memes:
-        :return:
-        """
+        self._is_dev = "prod" not in conf["google"]["service_account"]
 
-        ret: List[Tuple[Timestamp, DocumentReference]] = []
-        for q in memes:
-            prot = MessageToDict(q)
-            prot.created_at = firestore.SERVER_TIMESTAMP
-            ret.append(self._memes_ref.add(prot))
-        return ret
 
     def prompt_to_meme(self,
                        topic_with_emoji: Tuple[str, Optional[str]],
