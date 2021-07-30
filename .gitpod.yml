@@ -1,4 +1,7 @@
 tasks:
+    - name: Install dependencies
+      command: |
+        pip3 install -r requirements.txt
     - name: Generate service account
       command: |
         eval $(gp env -e)

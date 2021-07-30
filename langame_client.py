@@ -45,7 +45,7 @@ class LangameClient:
         self._memes_ref: BaseCollectionReference = self._firestore_client.collection(
             u"memes")
 
-        self._is_dev = "prod" not in conf["google"]["service_account"]
+        #self._is_dev = "prod" not in (conf["google"]["service_account"])
 
 
     def prompt_to_meme(self,
