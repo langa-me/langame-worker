@@ -33,7 +33,7 @@ class OpenAIClient:
         """
 
         response = openai.Completion.create(
-            model=parameters["model"] if parameters["model"] is not None else "davinci",
+            engine=parameters["model"] if parameters["model"] is not None else "davinci",
             prompt=prompt,
             temperature=parameters["temperature"] if parameters.get("temperature") is not None else 1,
             max_tokens=parameters["maxTokens"] if parameters.get("maxTokens") is not None else 100,

@@ -49,16 +49,17 @@ class LangameClient:
 
 
     def prompt_to_meme(self,
-                       topic_with_emoji: Tuple[str, Optional[str]],
-                       fine_tuned=True,
+                       topic,
+                       model="TopicGeneralistFineTuned2",
                        ) -> Tuple[Timestamp, DocumentReference]:
         """
-        :param topics_with_emojis:
+        :param topic:
+        :param model:
         :return:
         """
         prompts = []
         for e in self._firestore_client.collection("prompts")\
-                .where("type", "==", "TopicGeneralist" + "FineTuned" if fine_tuned else "")\
+                .where("type", "==", model)\
                 .limit(5)\
                 .stream():
             t = None
@@ -68,10 +69,11 @@ class LangameClient:
                 break
             prompts.append({
                 "id": e.id,
-                "prompt": e.to_dict()["template"].replace("[TOPIC]", topic_with_emoji[0]),
+                "prompt": e.to_dict()["template"].replace("[TOPIC]", topic),
                 "parameters": t.to_dict()["engine"]["parameters"]
             })
         if not prompts:
+            print("could not get any prompt")
             return None
         random.shuffle(prompts)
         prompt = prompts.pop()
@@ -82,22 +84,20 @@ class LangameClient:
             prompt["parameters"],
         )
         if not meme:
+            print("could not find any meme")
             return
 
         # TODO: transaction
         meme_add = self._memes_ref.add({
             "content": meme,
             "createdAt": firestore.SERVER_TIMESTAMP,
-            "promptId": prompt["id"]
+            "promptId": prompt["id"],
+            "topics": [topic],
         })
 
         # Add a topic tag
         topic_tag: Tag = Tag()
-        topic_tag.topic.content = topic_with_emoji[0]
-        if topic_with_emoji[1]:
-            # Split emojis
-            for e in list(topic_with_emoji[1]):
-                topic_tag.topic.emojis.append(e)
+        topic_tag.topic.content = topic
         tag_as_dict = MessageToDict(topic_tag)
         tag_as_dict["createdAt"] = firestore.SERVER_TIMESTAMP
         self._memes_ref.document(meme_add[1].id).collection(
