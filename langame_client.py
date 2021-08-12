@@ -154,16 +154,19 @@ class LangameClient:
             "tags").add(tag_as_dict)
         return meme_add
 
-    def purge(self):
+    def purge(self, collection, sub_collections = []):
         def delete_collection(coll_ref, batch_size=20):
             docs = coll_ref.limit(batch_size).stream()
             deleted = 0
 
             for doc in docs:
+                for sub in sub_collections:
+                    for e in doc.reference.collection(sub).stream():
+                        e.reference.delete()
                 doc.reference.delete()
                 deleted = deleted + 1
 
             if deleted >= batch_size:
                 print(f'Deleted a batch of {deleted} {coll_ref.parent}')
                 return delete_collection(coll_ref, batch_size)
-        delete_collection(self._memes_ref)
+        delete_collection(self._firestore_client.collection(collection))
