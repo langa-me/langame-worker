@@ -9,6 +9,3 @@ __pycache__/
 svc*.json
 config.yaml
 .ipynb_checkpoints
-
-# Datasets
-*.jsonl

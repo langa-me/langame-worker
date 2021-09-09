@@ -13,6 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
+from google.protobuf import any_pb2 as google_dot_protobuf_dot_any__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +22,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\"s\n\x05\x45rror\x12\x18\n\x10\x64\x65veloperMessage\x18\x01 \x01(\t\x12-\n\tcreatedAt\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04\x63ode\x18\x03 \x01(\t\x12\x13\n\x0buserMessage\x18\x04 \x01(\t\"\xb9\x01\n\tSeenMemes\x12.\n\x04seen\x18\x01 \x01(\x0b\x32 .langame.protobuf.SeenMemes.Seen\x1a|\n\x04Seen\x12\x32\n\x01s\x18\x01 \x03(\x0b\x32\'.langame.protobuf.SeenMemes.Seen.Single\x1a@\n\x06Single\x12(\n\x04\x64\x61te\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04meme\x18\x02 \x01(\t\"\xe5\x01\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x11\n\tprompt_id\x18\x05 \x01(\t\x12:\n\ntranslated\x18\x06 \x03(\x0b\x32&.langame.protobuf.Meme.TranslatedEntry\x12\n\n\x02id\x18\x07 \x01(\t\x1a\x31\n\x0fTranslatedEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x93\x08\n\x03Tag\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05topic\x18\x02 \x01(\x0b\x32\x1b.langame.protobuf.Tag.TopicH\x00\x12>\n\x0e\x63lassification\x18\x03 \x01(\x0b\x32$.langame.protobuf.Tag.ClassificationH\x00\x12.\n\x06\x65ngine\x18\x04 \x01(\x0b\x32\x1c.langame.protobuf.Tag.EngineH\x00\x12\x32\n\x08\x66\x65\x65\x64\x62\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x12\x30\n\x07\x63ontext\x18\x06 \x01(\x0b\x32\x1d.langame.protobuf.Tag.ContextH\x00\x12=\n\x13\x61ggregated_feedback\x18\x07 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x1a(\n\x05Topic\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06\x65mojis\x18\x03 \x03(\t\x1a?\n\x0e\x43lassification\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\r\n\x05human\x18\x03 \x01(\x08\x1a\xde\x01\n\x06\x45ngine\x12;\n\nparameters\x18\x01 \x01(\x0b\x32\'.langame.protobuf.Tag.Engine.Parameters\x1a\x96\x01\n\nParameters\x12\x13\n\x0btemperature\x18\x01 \x01(\x01\x12\x12\n\nmax_tokens\x18\x02 \x01(\r\x12\r\n\x05top_p\x18\x03 \x01(\r\x12\x19\n\x11\x66requency_penalty\x18\x04 \x01(\x01\x12\x18\n\x10presence_penalty\x18\x05 \x01(\x01\x12\x0c\n\x04stop\x18\x06 \x03(\t\x12\r\n\x05model\x18\x07 \x01(\t\x1a\xd3\x01\n\x08\x46\x65\x65\x64\x62\x61\x63k\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x39\n\x07general\x18\x02 \x01(\x0b\x32&.langame.protobuf.Tag.Feedback.GeneralH\x00\x12=\n\trelevance\x18\x03 \x01(\x0b\x32(.langame.protobuf.Tag.Feedback.RelevanceH\x00\x1a\x18\n\x07General\x12\r\n\x05score\x18\x01 \x01(\r\x1a\x1a\n\tRelevance\x12\r\n\x05score\x18\x01 \x01(\rB\x06\n\x04type\x1ao\n\x07\x43ontext\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x30\n\x04type\x18\x02 \x01(\x0e\x32\".langame.protobuf.Tag.Context.Type\"!\n\x04Type\x12\r\n\tWIKIPEDIA\x10\x00\x12\n\n\x06OPENAI\x10\x01\x42\x06\n\x04type\"\xa0\x04\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\'\n\x06\x65rrors\x18\x0e \x03(\x0b\x32\x17.langame.protobuf.Error\x12.\n\nlast_login\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_logout\x18\x10 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rcreation_time\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64isabled\x18\x12 \x01(\x08\x12.\n\x07\x64\x65vices\x18\x13 \x03(\x0b\x32\x1d.langame.protobuf.User.Device\x12\x0f\n\x07\x63redits\x18\x14 \x01(\x05\x12\x0c\n\x04role\x18\x15 \x01(\t\x1a\x36\n\x06\x44\x65vice\x12\x17\n\x0flangame_version\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_info\x18\x02 \x01(\t\"\xb7\x02\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x1c\n\x14user_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x1b\n\x13user_search_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\x12\x17\n\x0f\x66\x61vorite_topics\x18\x08 \x03(\t\x12\x1c\n\x14topic_search_history\x18\t \x03(\t\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x1a+\n\x0cNotification\x12\r\n\x05\x65mail\x18\x01 \x01(\x08\x12\x0c\n\x04push\x18\x02 \x01(\x08\"\xe8\x03\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12%\n\x05memes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Meme\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x63urrent_meme\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\tnext_meme\x18\r \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x12\n\nmemes_seen\x18\x0e \x01(\x05\x12\x30\n\x0cmeme_changed\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04link\x18\x10 \x01(\t\x12\x16\n\x0ereserved_spots\x18\x12 \x03(\t\x12\x11\n\tis_locked\x18\x13 \x01(\x08\"\xeb\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\x12\'\n\x06\x65rrors\x18\x07 \x03(\x0b\x32\x17.langame.protobuf.Error\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"{\n\x0cNotification\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nsender_uid\x18\x02 \x01(\t\x12\x16\n\x0erecipients_uid\x18\x03 \x03(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x14\n\x0c\x63hannel_name\x18\x05 \x01(\t\x12\r\n\x05ready\x18\x06 \x01(\x08\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x83\x02\n\x10\x46unctionResponse\x12H\n\rversion_check\x18\x01 \x01(\x0b\x32/.langame.protobuf.FunctionResponse.VersionCheckH\x00\x1a\x9c\x01\n\x0cVersionCheck\x12N\n\x06update\x18\x01 \x01(\x0e\x32>.langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired\"<\n\x0eUpdateRequired\x12\x06\n\x02OK\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\x14\n\x10RETRO_COMPATIBLE\x10\x02\x42\x06\n\x04type\"M\n\x06Prompt\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x10\n\x08template\x18\x02 \x01(\t\x12#\n\x04tags\x18\x03 \x03(\x0b\x32\x15.langame.protobuf.Tag*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3'
+  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19google/protobuf/any.proto\"s\n\x05\x45rror\x12\x18\n\x10\x64\x65veloperMessage\x18\x01 \x01(\t\x12-\n\tcreatedAt\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04\x63ode\x18\x03 \x01(\t\x12\x13\n\x0buserMessage\x18\x04 \x01(\t\"\xb9\x01\n\tSeenMemes\x12.\n\x04seen\x18\x01 \x01(\x0b\x32 .langame.protobuf.SeenMemes.Seen\x1a|\n\x04Seen\x12\x32\n\x01s\x18\x01 \x03(\x0b\x32\'.langame.protobuf.SeenMemes.Seen.Single\x1a@\n\x06Single\x12(\n\x04\x64\x61te\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04meme\x18\x02 \x01(\t\"\xf7\x01\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x11\n\tprompt_id\x18\x05 \x01(\t\x12:\n\ntranslated\x18\x06 \x03(\x0b\x32&.langame.protobuf.Meme.TranslatedEntry\x12\n\n\x02id\x18\x07 \x01(\t\x12\x10\n\x08\x64isabled\x18\x08 \x01(\x08\x1a\x31\n\x0fTranslatedEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x93\x08\n\x03Tag\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05topic\x18\x02 \x01(\x0b\x32\x1b.langame.protobuf.Tag.TopicH\x00\x12>\n\x0e\x63lassification\x18\x03 \x01(\x0b\x32$.langame.protobuf.Tag.ClassificationH\x00\x12.\n\x06\x65ngine\x18\x04 \x01(\x0b\x32\x1c.langame.protobuf.Tag.EngineH\x00\x12\x32\n\x08\x66\x65\x65\x64\x62\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x12\x30\n\x07\x63ontext\x18\x06 \x01(\x0b\x32\x1d.langame.protobuf.Tag.ContextH\x00\x12=\n\x13\x61ggregated_feedback\x18\x07 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x1a(\n\x05Topic\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06\x65mojis\x18\x03 \x03(\t\x1a?\n\x0e\x43lassification\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\r\n\x05human\x18\x03 \x01(\x08\x1a\xde\x01\n\x06\x45ngine\x12;\n\nparameters\x18\x01 \x01(\x0b\x32\'.langame.protobuf.Tag.Engine.Parameters\x1a\x96\x01\n\nParameters\x12\x13\n\x0btemperature\x18\x01 \x01(\x01\x12\x12\n\nmax_tokens\x18\x02 \x01(\r\x12\r\n\x05top_p\x18\x03 \x01(\r\x12\x19\n\x11\x66requency_penalty\x18\x04 \x01(\x01\x12\x18\n\x10presence_penalty\x18\x05 \x01(\x01\x12\x0c\n\x04stop\x18\x06 \x03(\t\x12\r\n\x05model\x18\x07 \x01(\t\x1a\xd3\x01\n\x08\x46\x65\x65\x64\x62\x61\x63k\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x39\n\x07general\x18\x02 \x01(\x0b\x32&.langame.protobuf.Tag.Feedback.GeneralH\x00\x12=\n\trelevance\x18\x03 \x01(\x0b\x32(.langame.protobuf.Tag.Feedback.RelevanceH\x00\x1a\x18\n\x07General\x12\r\n\x05score\x18\x01 \x01(\r\x1a\x1a\n\tRelevance\x12\r\n\x05score\x18\x01 \x01(\rB\x06\n\x04type\x1ao\n\x07\x43ontext\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x30\n\x04type\x18\x02 \x01(\x0e\x32\".langame.protobuf.Tag.Context.Type\"!\n\x04Type\x12\r\n\tWIKIPEDIA\x10\x00\x12\n\n\x06OPENAI\x10\x01\x42\x06\n\x04type\"\xa0\x04\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\'\n\x06\x65rrors\x18\x0e \x03(\x0b\x32\x17.langame.protobuf.Error\x12.\n\nlast_login\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_logout\x18\x10 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rcreation_time\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64isabled\x18\x12 \x01(\x08\x12.\n\x07\x64\x65vices\x18\x13 \x03(\x0b\x32\x1d.langame.protobuf.User.Device\x12\x0f\n\x07\x63redits\x18\x14 \x01(\x05\x12\x0c\n\x04role\x18\x15 \x01(\t\x1a\x36\n\x06\x44\x65vice\x12\x17\n\x0flangame_version\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_info\x18\x02 \x01(\t\"\xb7\x02\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x1c\n\x14user_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x1b\n\x13user_search_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\x12\x17\n\x0f\x66\x61vorite_topics\x18\x08 \x03(\t\x12\x1c\n\x14topic_search_history\x18\t \x03(\t\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x1a+\n\x0cNotification\x12\r\n\x05\x65mail\x18\x01 \x01(\x08\x12\x0c\n\x04push\x18\x02 \x01(\x08\"\xe8\x03\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12%\n\x05memes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Meme\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x63urrent_meme\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\tnext_meme\x18\r \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x12\n\nmemes_seen\x18\x0e \x01(\x05\x12\x30\n\x0cmeme_changed\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04link\x18\x10 \x01(\t\x12\x16\n\x0ereserved_spots\x18\x12 \x03(\t\x12\x11\n\tis_locked\x18\x13 \x01(\x08\"\xeb\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\x12\'\n\x06\x65rrors\x18\x07 \x03(\x0b\x32\x17.langame.protobuf.Error\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"{\n\x0cNotification\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nsender_uid\x18\x02 \x01(\t\x12\x16\n\x0erecipients_uid\x18\x03 \x03(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x14\n\x0c\x63hannel_name\x18\x05 \x01(\t\x12\r\n\x05ready\x18\x06 \x01(\x08\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x83\x02\n\x10\x46unctionResponse\x12H\n\rversion_check\x18\x01 \x01(\x0b\x32/.langame.protobuf.FunctionResponse.VersionCheckH\x00\x1a\x9c\x01\n\x0cVersionCheck\x12N\n\x06update\x18\x01 \x01(\x0e\x32>.langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired\"<\n\x0eUpdateRequired\x12\x06\n\x02OK\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\x14\n\x10RETRO_COMPATIBLE\x10\x02\x42\x06\n\x04type\"Y\n\x06Prompt\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x10\n\x08template\x18\x02 \x01(\t\x12#\n\x04tags\x18\x03 \x03(\x0b\x32\x15.langame.protobuf.Tag\x12\n\n\x02id\x18\x04 \x01(\t\"\xd6\x01\n\tRecording\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04text\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x12;\n\x08metadata\x18\x04 \x03(\x0b\x32).langame.protobuf.Recording.MetadataEntry\x12\x0c\n\x04note\x18\x05 \x01(\t\x1a/\n\rMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3'
   ,
-  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,google_dot_protobuf_dot_any__pb2.DESCRIPTOR,])
 
 _INTERACTIONLEVEL = _descriptor.EnumDescriptor(
   name='InteractionLevel',
@@ -55,8 +56,8 @@ _INTERACTIONLEVEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4058,
-  serialized_end=4119,
+  serialized_start=4332,
+  serialized_end=4393,
 )
 _sym_db.RegisterEnumDescriptor(_INTERACTIONLEVEL)
 
@@ -87,8 +88,8 @@ _TAG_CONTEXT_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1625,
-  serialized_end=1658,
+  serialized_start=1670,
+  serialized_end=1703,
 )
 _sym_db.RegisterEnumDescriptor(_TAG_CONTEXT_TYPE)
 
@@ -117,8 +118,8 @@ _FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3909,
-  serialized_end=3969,
+  serialized_start=3954,
+  serialized_end=4014,
 )
 _sym_db.RegisterEnumDescriptor(_FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED)
 
@@ -171,8 +172,8 @@ _ERROR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=85,
-  serialized_end=200,
+  serialized_start=112,
+  serialized_end=227,
 )
 
 
@@ -210,8 +211,8 @@ _SEENMEMES_SEEN_SINGLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=324,
-  serialized_end=388,
+  serialized_start=351,
+  serialized_end=415,
 )
 
 _SEENMEMES_SEEN = _descriptor.Descriptor(
@@ -241,8 +242,8 @@ _SEENMEMES_SEEN = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=264,
-  serialized_end=388,
+  serialized_start=291,
+  serialized_end=415,
 )
 
 _SEENMEMES = _descriptor.Descriptor(
@@ -272,8 +273,8 @@ _SEENMEMES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=203,
-  serialized_end=388,
+  serialized_start=230,
+  serialized_end=415,
 )
 
 
@@ -311,8 +312,8 @@ _MEME_TRANSLATEDENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=571,
-  serialized_end=620,
+  serialized_start=616,
+  serialized_end=665,
 )
 
 _MEME = _descriptor.Descriptor(
@@ -365,6 +366,13 @@ _MEME = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='disabled', full_name='langame.protobuf.Meme.disabled', index=6,
+      number=8, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -377,8 +385,8 @@ _MEME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=391,
-  serialized_end=620,
+  serialized_start=418,
+  serialized_end=665,
 )
 
 
@@ -416,8 +424,8 @@ _TAG_TOPIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1001,
-  serialized_end=1041,
+  serialized_start=1046,
+  serialized_end=1086,
 )
 
 _TAG_CLASSIFICATION = _descriptor.Descriptor(
@@ -461,8 +469,8 @@ _TAG_CLASSIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1043,
-  serialized_end=1106,
+  serialized_start=1088,
+  serialized_end=1151,
 )
 
 _TAG_ENGINE_PARAMETERS = _descriptor.Descriptor(
@@ -534,8 +542,8 @@ _TAG_ENGINE_PARAMETERS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1181,
-  serialized_end=1331,
+  serialized_start=1226,
+  serialized_end=1376,
 )
 
 _TAG_ENGINE = _descriptor.Descriptor(
@@ -565,8 +573,8 @@ _TAG_ENGINE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1109,
-  serialized_end=1331,
+  serialized_start=1154,
+  serialized_end=1376,
 )
 
 _TAG_FEEDBACK_GENERAL = _descriptor.Descriptor(
@@ -596,8 +604,8 @@ _TAG_FEEDBACK_GENERAL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1485,
-  serialized_end=1509,
+  serialized_start=1530,
+  serialized_end=1554,
 )
 
 _TAG_FEEDBACK_RELEVANCE = _descriptor.Descriptor(
@@ -627,8 +635,8 @@ _TAG_FEEDBACK_RELEVANCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1511,
-  serialized_end=1537,
+  serialized_start=1556,
+  serialized_end=1582,
 )
 
 _TAG_FEEDBACK = _descriptor.Descriptor(
@@ -677,8 +685,8 @@ _TAG_FEEDBACK = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=1334,
-  serialized_end=1545,
+  serialized_start=1379,
+  serialized_end=1590,
 )
 
 _TAG_CONTEXT = _descriptor.Descriptor(
@@ -716,8 +724,8 @@ _TAG_CONTEXT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1547,
-  serialized_end=1658,
+  serialized_start=1592,
+  serialized_end=1703,
 )
 
 _TAG = _descriptor.Descriptor(
@@ -794,8 +802,8 @@ _TAG = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=623,
-  serialized_end=1666,
+  serialized_start=668,
+  serialized_end=1711,
 )
 
 
@@ -833,8 +841,8 @@ _USER_DEVICE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2159,
-  serialized_end=2213,
+  serialized_start=2204,
+  serialized_end=2258,
 )
 
 _USER = _descriptor.Descriptor(
@@ -990,8 +998,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1669,
-  serialized_end=2213,
+  serialized_start=1714,
+  serialized_end=2258,
 )
 
 
@@ -1029,8 +1037,8 @@ _USERPREFERENCE_NOTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2484,
-  serialized_end=2527,
+  serialized_start=2529,
+  serialized_end=2572,
 )
 
 _USERPREFERENCE = _descriptor.Descriptor(
@@ -1116,8 +1124,8 @@ _USERPREFERENCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2216,
-  serialized_end=2527,
+  serialized_start=2261,
+  serialized_end=2572,
 )
 
 
@@ -1253,8 +1261,8 @@ _LANGAME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2530,
-  serialized_end=3018,
+  serialized_start=2575,
+  serialized_end=3063,
 )
 
 
@@ -1327,8 +1335,8 @@ _PLAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3021,
-  serialized_end=3256,
+  serialized_start=3066,
+  serialized_end=3301,
 )
 
 
@@ -1359,8 +1367,8 @@ _NOTE_GENERIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3468,
-  serialized_end=3494,
+  serialized_start=3513,
+  serialized_end=3539,
 )
 
 _NOTE_GOAL = _descriptor.Descriptor(
@@ -1390,8 +1398,8 @@ _NOTE_GOAL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3496,
-  serialized_end=3519,
+  serialized_start=3541,
+  serialized_end=3564,
 )
 
 _NOTE_DEFINITION = _descriptor.Descriptor(
@@ -1421,8 +1429,8 @@ _NOTE_DEFINITION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3521,
-  serialized_end=3550,
+  serialized_start=3566,
+  serialized_end=3595,
 )
 
 _NOTE = _descriptor.Descriptor(
@@ -1478,8 +1486,8 @@ _NOTE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3259,
-  serialized_end=3558,
+  serialized_start=3304,
+  serialized_end=3603,
 )
 
 
@@ -1545,8 +1553,8 @@ _NOTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3560,
-  serialized_end=3683,
+  serialized_start=3605,
+  serialized_end=3728,
 )
 
 
@@ -1577,8 +1585,8 @@ _SUBSCRIPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3685,
-  serialized_end=3715,
+  serialized_start=3730,
+  serialized_end=3760,
 )
 
 
@@ -1610,8 +1618,8 @@ _FUNCTIONRESPONSE_VERSIONCHECK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3813,
-  serialized_end=3969,
+  serialized_start=3858,
+  serialized_end=4014,
 )
 
 _FUNCTIONRESPONSE = _descriptor.Descriptor(
@@ -1646,8 +1654,8 @@ _FUNCTIONRESPONSE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3718,
-  serialized_end=3977,
+  serialized_start=3763,
+  serialized_end=4022,
 )
 
 
@@ -1680,6 +1688,13 @@ _PROMPT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='langame.protobuf.Prompt.id', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -1692,8 +1707,106 @@ _PROMPT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3979,
-  serialized_end=4056,
+  serialized_start=4024,
+  serialized_end=4113,
+)
+
+
+_RECORDING_METADATAENTRY = _descriptor.Descriptor(
+  name='MetadataEntry',
+  full_name='langame.protobuf.Recording.MetadataEntry',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='key', full_name='langame.protobuf.Recording.MetadataEntry.key', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='langame.protobuf.Recording.MetadataEntry.value', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=b'8\001',
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4283,
+  serialized_end=4330,
+)
+
+_RECORDING = _descriptor.Descriptor(
+  name='Recording',
+  full_name='langame.protobuf.Recording',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='created_at', full_name='langame.protobuf.Recording.created_at', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='text', full_name='langame.protobuf.Recording.text', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='langame.protobuf.Recording.user_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='metadata', full_name='langame.protobuf.Recording.metadata', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='note', full_name='langame.protobuf.Recording.note', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[_RECORDING_METADATAENTRY, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4116,
+  serialized_end=4330,
 )
 
 _ERROR.fields_by_name['createdAt'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
@@ -1792,6 +1905,9 @@ _FUNCTIONRESPONSE.oneofs_by_name['type'].fields.append(
   _FUNCTIONRESPONSE.fields_by_name['version_check'])
 _FUNCTIONRESPONSE.fields_by_name['version_check'].containing_oneof = _FUNCTIONRESPONSE.oneofs_by_name['type']
 _PROMPT.fields_by_name['tags'].message_type = _TAG
+_RECORDING_METADATAENTRY.containing_type = _RECORDING
+_RECORDING.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_RECORDING.fields_by_name['metadata'].message_type = _RECORDING_METADATAENTRY
 DESCRIPTOR.message_types_by_name['Error'] = _ERROR
 DESCRIPTOR.message_types_by_name['SeenMemes'] = _SEENMEMES
 DESCRIPTOR.message_types_by_name['Meme'] = _MEME
@@ -1805,6 +1921,7 @@ DESCRIPTOR.message_types_by_name['Notification'] = _NOTIFICATION
 DESCRIPTOR.message_types_by_name['Subscription'] = _SUBSCRIPTION
 DESCRIPTOR.message_types_by_name['FunctionResponse'] = _FUNCTIONRESPONSE
 DESCRIPTOR.message_types_by_name['Prompt'] = _PROMPT
+DESCRIPTOR.message_types_by_name['Recording'] = _RECORDING
 DESCRIPTOR.enum_types_by_name['InteractionLevel'] = _INTERACTIONLEVEL
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -2035,6 +2152,22 @@ Prompt = _reflection.GeneratedProtocolMessageType('Prompt', (_message.Message,),
   })
 _sym_db.RegisterMessage(Prompt)
 
+Recording = _reflection.GeneratedProtocolMessageType('Recording', (_message.Message,), {
+
+  'MetadataEntry' : _reflection.GeneratedProtocolMessageType('MetadataEntry', (_message.Message,), {
+    'DESCRIPTOR' : _RECORDING_METADATAENTRY,
+    '__module__' : 'langame.protobuf.langame_pb2'
+    # @@protoc_insertion_point(class_scope:langame.protobuf.Recording.MetadataEntry)
+    })
+  ,
+  'DESCRIPTOR' : _RECORDING,
+  '__module__' : 'langame.protobuf.langame_pb2'
+  # @@protoc_insertion_point(class_scope:langame.protobuf.Recording)
+  })
+_sym_db.RegisterMessage(Recording)
+_sym_db.RegisterMessage(Recording.MetadataEntry)
+
 
 _MEME_TRANSLATEDENTRY._options = None
+_RECORDING_METADATAENTRY._options = None
 # @@protoc_insertion_point(module_scope)

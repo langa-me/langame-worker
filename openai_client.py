@@ -11,11 +11,13 @@ from langame.protobuf.langame_pb2 import Tag
 
 
 class OpenAIClient:
-    def __init__(self, api_token, google_search_api_token, google_search_cse_id, engine="davinci"):
+    def __init__(self, api_token, organization, google_search_api_token, google_search_cse_id, engine="davinci"):
         assert api_token, "You must give an OpenAI API token"
+        assert api_token, "You must give an OpenAI organizarion"
         assert google_search_api_token, "You must give a Google Search API token"
         assert google_search_cse_id, "You must give a Google Search CSE ID"
         openai.api_key = api_token
+        openai.organization = organization
         self._engine = engine
         self._google_search_cse_id = google_search_cse_id
         self._google_search = build(
@@ -88,3 +90,6 @@ class OpenAIClient:
         if not short_description:
             return None
         return short_description.text
+
+    def get_fine_tune(self, dataset_name):
+        return [e for e in openai.FineTune.list()["data"] if e["training_files"][0]["filename"] == dataset_name][0]

@@ -5,3 +5,4 @@ beautifulsoup4
 confuse
 openai
 algoliasearch>=2.0,<3.0
+markdown
