@@ -1,8 +1,10 @@
 firebase_admin
-pytrends
 openai
 beautifulsoup4
 confuse
-openai
 algoliasearch>=2.0,<3.0
 markdown
+plotly
+matplotlib
+ipykernel>=6.4.1
+numpy
