@@ -3,12 +3,10 @@ from typing import List, Optional
 import openai
 from googleapiclient.discovery import build
 
-from helpers import clean_text
+from langame.helpers import clean_text
 from urllib.request import urlopen
 from urllib.error import URLError
 from bs4 import BeautifulSoup
-from langame.protobuf.langame_pb2 import Tag
-
 
 class OpenAIClient:
     def __init__(self, api_token, organization, google_search_api_token, google_search_cse_id, engine="davinci"):
@@ -25,7 +23,7 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
-                        parameters: Tag.Engine.Parameters,
+                        parameters: any,
                         ):
         """
 

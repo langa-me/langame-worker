@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pytrends.request import TrendReq
 import pandas as pd
-
+import openai
 pytrend = TrendReq()
 
 
@@ -66,8 +66,11 @@ def get_suggestions(topic: str, limit: int = 5) -> List[str]:
     df = pd.DataFrame(keywords)
     return [s["title"] for _, s in df.drop(columns="mid").iterrows() if topic.lower() != s["title"].lower()][:limit]
 
-def humanity_important_topics(topic: Optional[str] = None) -> str:
-    topic_str = f" in the theme of {topic}" if topic else ""
-    return f"""The superior man arrives from the future to feed the minds of the few who wish to achieve Homo Deus.
-He has discovered the ultimate truths of the universe, and he comes here, to deliver them to the herd.
-Here he announces what is the most important subject for man to work on and the most important questions to digest{topic_str}:"""
+def print_markdown(file_name, model):
+    t = f"""# {file_name.split("/")[-1]}
+{model.get("fine_tuned_model")}
+    """
+    print(t)
+
+def get_model_by_dataset_name(dataset_name):
+        return [e for e in openai.FineTune.list()["data"] if e["training_files"][0]["filename"] == dataset_name][0]

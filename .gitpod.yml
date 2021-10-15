@@ -10,10 +10,10 @@ tasks:
     - name: Generate service account
       command: |
         eval $(gp env -e)
-        echo "$LANGAME_SVC_PROD" > svc.prod.json
-        echo "$LANGAME_SVC_DEV" > svc.dev.json
+        echo "$LANGAME_SVC_PROD" > notebooks/svc.prod.json
+        echo "$LANGAME_SVC_DEV" > notebooks/svc.dev.json
         pip3 install yq
-        echo "$LANGAME_CONFIG" | yq -y > config.yaml
+        echo "$LANGAME_CONFIG" | yq -y > notebooks/config.yaml
         mkdir -p ~/kaggle
         echo "$KAGGLE_KEY" > ~/.kaggle/kaggle.json
         chmod 600 ~/.kaggle/kaggle.json

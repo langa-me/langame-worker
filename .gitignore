@@ -4,6 +4,8 @@ env
 .idea
 __pycache__/
 *.pyc
+*.egg-info
+.DS_Store
 
 # keys
 svc*.json

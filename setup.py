@@ -25,7 +25,8 @@ if __name__ == "__main__":
             "matplotlib",
             "ipykernel",
             "numpy",
-            "kaggle"
+            "kaggle",
+            "pytrends"
         ],
         classifiers=[
             "Development Status :: 4 - Beta",
