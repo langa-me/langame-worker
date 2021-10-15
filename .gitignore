@@ -5,7 +5,7 @@ env
 __pycache__/
 *.pyc
 
-# Service Account keys
+# keys
 svc*.json
 config.yaml
 .ipynb_checkpoints

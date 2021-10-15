@@ -2,9 +2,10 @@ firebase_admin
 openai
 beautifulsoup4
 confuse
-algoliasearch>=2.0,<3.0
+algoliasearch
 markdown
 plotly
 matplotlib
-ipykernel>=6.4.1
+ipykernel
 numpy
+kaggle
