@@ -7,7 +7,7 @@ from helpers import clean_text
 from urllib.request import urlopen
 from urllib.error import URLError
 from bs4 import BeautifulSoup
-from langame.protobuf.langame_pb2 import Tag
+# from langame.protobuf.langame_pb2 import Tag
 
 
 class OpenAIClient:
@@ -25,7 +25,7 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
-                        parameters: Tag.Engine.Parameters,
+                        parameters,
                         ):
         """
 

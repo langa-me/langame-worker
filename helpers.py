@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from pytrends.request import TrendReq
-import pandas as pd
+# from pytrends.request import TrendReq
+# import pandas as pd
 
-pytrend = TrendReq()
+# pytrend = TrendReq()
 
 
 def clean_text(txt: str) -> str:

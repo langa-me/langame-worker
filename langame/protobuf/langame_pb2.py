@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19google/protobuf/any.proto\"s\n\x05\x45rror\x12\x18\n\x10\x64\x65veloperMessage\x18\x01 \x01(\t\x12-\n\tcreatedAt\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04\x63ode\x18\x03 \x01(\t\x12\x13\n\x0buserMessage\x18\x04 \x01(\t\"\xb9\x01\n\tSeenMemes\x12.\n\x04seen\x18\x01 \x01(\x0b\x32 .langame.protobuf.SeenMemes.Seen\x1a|\n\x04Seen\x12\x32\n\x01s\x18\x01 \x03(\x0b\x32\'.langame.protobuf.SeenMemes.Seen.Single\x1a@\n\x06Single\x12(\n\x04\x64\x61te\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04meme\x18\x02 \x01(\t\"\xf7\x01\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x11\n\tprompt_id\x18\x05 \x01(\t\x12:\n\ntranslated\x18\x06 \x03(\x0b\x32&.langame.protobuf.Meme.TranslatedEntry\x12\n\n\x02id\x18\x07 \x01(\t\x12\x10\n\x08\x64isabled\x18\x08 \x01(\x08\x1a\x31\n\x0fTranslatedEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x93\x08\n\x03Tag\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05topic\x18\x02 \x01(\x0b\x32\x1b.langame.protobuf.Tag.TopicH\x00\x12>\n\x0e\x63lassification\x18\x03 \x01(\x0b\x32$.langame.protobuf.Tag.ClassificationH\x00\x12.\n\x06\x65ngine\x18\x04 \x01(\x0b\x32\x1c.langame.protobuf.Tag.EngineH\x00\x12\x32\n\x08\x66\x65\x65\x64\x62\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x12\x30\n\x07\x63ontext\x18\x06 \x01(\x0b\x32\x1d.langame.protobuf.Tag.ContextH\x00\x12=\n\x13\x61ggregated_feedback\x18\x07 \x01(\x0b\x32\x1e.langame.protobuf.Tag.FeedbackH\x00\x1a(\n\x05Topic\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06\x65mojis\x18\x03 \x03(\t\x1a?\n\x0e\x43lassification\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\r\n\x05human\x18\x03 \x01(\x08\x1a\xde\x01\n\x06\x45ngine\x12;\n\nparameters\x18\x01 \x01(\x0b\x32\'.langame.protobuf.Tag.Engine.Parameters\x1a\x96\x01\n\nParameters\x12\x13\n\x0btemperature\x18\x01 \x01(\x01\x12\x12\n\nmax_tokens\x18\x02 \x01(\r\x12\r\n\x05top_p\x18\x03 \x01(\r\x12\x19\n\x11\x66requency_penalty\x18\x04 \x01(\x01\x12\x18\n\x10presence_penalty\x18\x05 \x01(\x01\x12\x0c\n\x04stop\x18\x06 \x03(\t\x12\r\n\x05model\x18\x07 \x01(\t\x1a\xd3\x01\n\x08\x46\x65\x65\x64\x62\x61\x63k\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x39\n\x07general\x18\x02 \x01(\x0b\x32&.langame.protobuf.Tag.Feedback.GeneralH\x00\x12=\n\trelevance\x18\x03 \x01(\x0b\x32(.langame.protobuf.Tag.Feedback.RelevanceH\x00\x1a\x18\n\x07General\x12\r\n\x05score\x18\x01 \x01(\r\x1a\x1a\n\tRelevance\x12\r\n\x05score\x18\x01 \x01(\rB\x06\n\x04type\x1ao\n\x07\x43ontext\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x30\n\x04type\x18\x02 \x01(\x0e\x32\".langame.protobuf.Tag.Context.Type\"!\n\x04Type\x12\r\n\tWIKIPEDIA\x10\x00\x12\n\n\x06OPENAI\x10\x01\x42\x06\n\x04type\"\xa0\x04\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\'\n\x06\x65rrors\x18\x0e \x03(\x0b\x32\x17.langame.protobuf.Error\x12.\n\nlast_login\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_logout\x18\x10 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rcreation_time\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64isabled\x18\x12 \x01(\x08\x12.\n\x07\x64\x65vices\x18\x13 \x03(\x0b\x32\x1d.langame.protobuf.User.Device\x12\x0f\n\x07\x63redits\x18\x14 \x01(\x05\x12\x0c\n\x04role\x18\x15 \x01(\t\x1a\x36\n\x06\x44\x65vice\x12\x17\n\x0flangame_version\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_info\x18\x02 \x01(\t\"\xed\x02\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x1c\n\x14user_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x1b\n\x13user_search_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\x12\x17\n\x0f\x66\x61vorite_topics\x18\x08 \x03(\t\x12\x1c\n\x14topic_search_history\x18\t \x03(\t\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12\x1d\n\x15speech_to_text_locale\x18\x0b \x01(\t\x12\x15\n\rsaw_whats_new\x18\r \x01(\x08\x1a+\n\x0cNotification\x12\r\n\x05\x65mail\x18\x01 \x01(\x08\x12\x0c\n\x04push\x18\x02 \x01(\x08\"\xe8\x03\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12%\n\x05memes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Meme\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x63urrent_meme\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\tnext_meme\x18\r \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x12\n\nmemes_seen\x18\x0e \x01(\x05\x12\x30\n\x0cmeme_changed\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04link\x18\x10 \x01(\t\x12\x16\n\x0ereserved_spots\x18\x12 \x03(\t\x12\x11\n\tis_locked\x18\x13 \x01(\x08\"\xeb\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\x12\'\n\x06\x65rrors\x18\x07 \x03(\x0b\x32\x17.langame.protobuf.Error\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"{\n\x0cNotification\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nsender_uid\x18\x02 \x01(\t\x12\x16\n\x0erecipients_uid\x18\x03 \x03(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x14\n\x0c\x63hannel_name\x18\x05 \x01(\t\x12\r\n\x05ready\x18\x06 \x01(\x08\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x83\x02\n\x10\x46unctionResponse\x12H\n\rversion_check\x18\x01 \x01(\x0b\x32/.langame.protobuf.FunctionResponse.VersionCheckH\x00\x1a\x9c\x01\n\x0cVersionCheck\x12N\n\x06update\x18\x01 \x01(\x0e\x32>.langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired\"<\n\x0eUpdateRequired\x12\x06\n\x02OK\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\x14\n\x10RETRO_COMPATIBLE\x10\x02\x42\x06\n\x04type\"Y\n\x06Prompt\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x10\n\x08template\x18\x02 \x01(\t\x12#\n\x04tags\x18\x03 \x03(\x0b\x32\x15.langame.protobuf.Tag\x12\n\n\x02id\x18\x04 \x01(\t\"\xd6\x01\n\tRecording\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04text\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x12;\n\x08metadata\x18\x04 \x03(\x0b\x32).langame.protobuf.Recording.MetadataEntry\x12\x0c\n\x04note\x18\x05 \x01(\t\x1a/\n\rMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3'
+  serialized_pb=b'\n\x1elangame/protobuf/langame.proto\x12\x10langame.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x19google/protobuf/any.proto\"s\n\x05\x45rror\x12\x18\n\x10\x64\x65veloperMessage\x18\x01 \x01(\t\x12-\n\tcreatedAt\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04\x63ode\x18\x03 \x01(\t\x12\x13\n\x0buserMessage\x18\x04 \x01(\t\"\xb9\x01\n\tSeenMemes\x12.\n\x04seen\x18\x01 \x01(\x0b\x32 .langame.protobuf.SeenMemes.Seen\x1a|\n\x04Seen\x12\x32\n\x01s\x18\x01 \x03(\x0b\x32\'.langame.protobuf.SeenMemes.Seen.Single\x1a@\n\x06Single\x12(\n\x04\x64\x61te\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04meme\x18\x02 \x01(\t\"\xf7\x01\n\x04Meme\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x0e\n\x06topics\x18\x04 \x03(\t\x12\x11\n\tprompt_id\x18\x05 \x01(\t\x12:\n\ntranslated\x18\x06 \x03(\x0b\x32&.langame.protobuf.Meme.TranslatedEntry\x12\n\n\x02id\x18\x07 \x01(\t\x12\x10\n\x08\x64isabled\x18\x08 \x01(\x08\x1a\x31\n\x0fTranslatedEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xa0\x04\n\x04User\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\t\x12\x0e\n\x06online\x18\x06 \x01(\x08\x12\x0e\n\x06google\x18\x07 \x01(\x08\x12\r\n\x05\x61pple\x18\t \x01(\x08\x12\x0b\n\x03tag\x18\x0b \x01(\t\x12\x0e\n\x06tokens\x18\x0c \x03(\t\x12\x1b\n\x13latest_interactions\x18\r \x03(\t\x12\'\n\x06\x65rrors\x18\x0e \x03(\x0b\x32\x17.langame.protobuf.Error\x12.\n\nlast_login\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x0blast_logout\x18\x10 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rcreation_time\x18\x11 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x10\n\x08\x64isabled\x18\x12 \x01(\x08\x12.\n\x07\x64\x65vices\x18\x13 \x03(\x0b\x32\x1d.langame.protobuf.User.Device\x12\x0f\n\x07\x63redits\x18\x14 \x01(\x05\x12\x0c\n\x04role\x18\x15 \x01(\t\x1a\x36\n\x06\x44\x65vice\x12\x17\n\x0flangame_version\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_info\x18\x02 \x01(\t\"\xed\x02\n\x0eUserPreference\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x1c\n\x14user_recommendations\x18\x03 \x01(\x08\x12\x13\n\x0btheme_index\x18\x04 \x01(\x05\x12\x1c\n\x14has_done_on_boarding\x18\x05 \x01(\x08\x12\x1b\n\x13user_search_history\x18\x06 \x03(\t\x12\x19\n\x11shake_to_feedback\x18\x07 \x01(\x08\x12\x17\n\x0f\x66\x61vorite_topics\x18\x08 \x03(\t\x12\x1c\n\x14topic_search_history\x18\t \x03(\t\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12\x1d\n\x15speech_to_text_locale\x18\x0b \x01(\t\x12\x15\n\rsaw_whats_new\x18\r \x01(\x08\x1a+\n\x0cNotification\x12\r\n\x05\x65mail\x18\x01 \x01(\x08\x12\x0c\n\x04push\x18\x02 \x01(\x08\"\xf9\x03\n\x07Langame\x12\x14\n\x0c\x63hannel_name\x18\x01 \x01(\t\x12\x0f\n\x07players\x18\x02 \x03(\t\x12\x0e\n\x06topics\x18\x03 \x03(\t\x12%\n\x05memes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Meme\x12\x11\n\tinitiator\x18\x05 \x01(\t\x12(\n\x04\x64one\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x14\n\x0c\x63urrent_meme\x18\x08 \x01(\x05\x12(\n\x04\x64\x61te\x18\t \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\'\n\x06\x65rrors\x18\n \x03(\x0b\x32\x17.langame.protobuf.Error\x12+\n\x07started\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\tnext_meme\x18\r \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x12\n\nmemes_seen\x18\x0e \x01(\x05\x12\x30\n\x0cmeme_changed\x18\x0f \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04link\x18\x10 \x01(\t\x12\x16\n\x0ereserved_spots\x18\x12 \x03(\t\x12\x11\n\tis_locked\x18\x13 \x01(\x08\x12\x0f\n\x07is_text\x18\x14 \x01(\x08\"\xeb\x01\n\x06Player\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12+\n\x07time_in\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x08time_out\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12%\n\x05notes\x18\x04 \x03(\x0b\x32\x16.langame.protobuf.Note\x12\x10\n\x08\x61udio_id\x18\x05 \x01(\x05\x12\x13\n\x0b\x61udio_token\x18\x06 \x01(\t\x12\'\n\x06\x65rrors\x18\x07 \x03(\x0b\x32\x17.langame.protobuf.Error\"\xab\x02\n\x04Note\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x07generic\x18\x02 \x01(\x0b\x32\x1e.langame.protobuf.Note.GenericH\x00\x12+\n\x04goal\x18\x03 \x01(\x0b\x32\x1b.langame.protobuf.Note.GoalH\x00\x12\x37\n\ndefinition\x18\x04 \x01(\x0b\x32!.langame.protobuf.Note.DefinitionH\x00\x1a\x1a\n\x07Generic\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x17\n\x04Goal\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x1a\x1d\n\nDefinition\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\tB\x06\n\x04type\"\x1e\n\x0cSubscription\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x83\x02\n\x10\x46unctionResponse\x12H\n\rversion_check\x18\x01 \x01(\x0b\x32/.langame.protobuf.FunctionResponse.VersionCheckH\x00\x1a\x9c\x01\n\x0cVersionCheck\x12N\n\x06update\x18\x01 \x01(\x0e\x32>.langame.protobuf.FunctionResponse.VersionCheck.UpdateRequired\"<\n\x0eUpdateRequired\x12\x06\n\x02OK\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\x14\n\x10RETRO_COMPATIBLE\x10\x02\x42\x06\n\x04type\"^\n\x06Prompt\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x10\n\x08template\x18\x02 \x01(\t\x12\n\n\x02id\x18\x04 \x01(\t\x12(\n\nparameters\x18\x05 \x01(\x0b\x32\x14.google.protobuf.Any\"\xd6\x01\n\tRecording\x12.\n\ncreated_at\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04text\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\x12;\n\x08metadata\x18\x04 \x03(\x0b\x32).langame.protobuf.Recording.MetadataEntry\x12\x0c\n\x04note\x18\x05 \x01(\t\x1a/\n\rMetadataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xf2\x01\n\x07Message\x12.\n\ncreated_at\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0c\n\x04\x66rom\x18\x04 \x01(\t\x12\n\n\x02to\x18\x05 \x01(\t\x1a|\n\x07\x43ontent\x12,\n\x04type\x18\x01 \x01(\x0e\x32\x1e.langame.protobuf.Message.Type\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\r\n\x05title\x18\x03 \x01(\t\x12&\n\x08metadata\x18\x04 \x01(\x0b\x32\x14.google.protobuf.Any\"\x1f\n\x04Type\x12\n\n\x06INVITE\x10\x00\x12\x0b\n\x07MESSAGE\x10\x01*=\n\x10InteractionLevel\x12\x07\n\x03\x42\x41\x44\x10\x00\x12\x0b\n\x07\x41VERAGE\x10\x01\x12\t\n\x05GREAT\x10\x02\x12\x08\n\x04LOVE\x10\x03\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,google_dot_protobuf_dot_any__pb2.DESCRIPTOR,])
 
@@ -56,8 +56,8 @@ _INTERACTIONLEVEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4386,
-  serialized_end=4447,
+  serialized_start=3482,
+  serialized_end=3543,
 )
 _sym_db.RegisterEnumDescriptor(_INTERACTIONLEVEL)
 
@@ -67,31 +67,6 @@ AVERAGE = 1
 GREAT = 2
 LOVE = 3
 
-
-_TAG_CONTEXT_TYPE = _descriptor.EnumDescriptor(
-  name='Type',
-  full_name='langame.protobuf.Tag.Context.Type',
-  filename=None,
-  file=DESCRIPTOR,
-  create_key=_descriptor._internal_create_key,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='WIKIPEDIA', index=0, number=0,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-    _descriptor.EnumValueDescriptor(
-      name='OPENAI', index=1, number=1,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-  ],
-  containing_type=None,
-  serialized_options=None,
-  serialized_start=1670,
-  serialized_end=1703,
-)
-_sym_db.RegisterEnumDescriptor(_TAG_CONTEXT_TYPE)
 
 _FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED = _descriptor.EnumDescriptor(
   name='UpdateRequired',
@@ -118,10 +93,35 @@ _FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=4008,
-  serialized_end=4068,
+  serialized_start=2854,
+  serialized_end=2914,
 )
 _sym_db.RegisterEnumDescriptor(_FUNCTIONRESPONSE_VERSIONCHECK_UPDATEREQUIRED)
+
+_MESSAGE_TYPE = _descriptor.EnumDescriptor(
+  name='Type',
+  full_name='langame.protobuf.Message.Type',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='INVITE', index=0, number=0,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='MESSAGE', index=1, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=3449,
+  serialized_end=3480,
+)
+_sym_db.RegisterEnumDescriptor(_MESSAGE_TYPE)
 
 
 _ERROR = _descriptor.Descriptor(
@@ -390,423 +390,6 @@ _MEME = _descriptor.Descriptor(
 )
 
 
-_TAG_TOPIC = _descriptor.Descriptor(
-  name='Topic',
-  full_name='langame.protobuf.Tag.Topic',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='content', full_name='langame.protobuf.Tag.Topic.content', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='emojis', full_name='langame.protobuf.Tag.Topic.emojis', index=1,
-      number=3, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1046,
-  serialized_end=1086,
-)
-
-_TAG_CLASSIFICATION = _descriptor.Descriptor(
-  name='Classification',
-  full_name='langame.protobuf.Tag.Classification',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='content', full_name='langame.protobuf.Tag.Classification.content', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='score', full_name='langame.protobuf.Tag.Classification.score', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='human', full_name='langame.protobuf.Tag.Classification.human', index=2,
-      number=3, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1088,
-  serialized_end=1151,
-)
-
-_TAG_ENGINE_PARAMETERS = _descriptor.Descriptor(
-  name='Parameters',
-  full_name='langame.protobuf.Tag.Engine.Parameters',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='temperature', full_name='langame.protobuf.Tag.Engine.Parameters.temperature', index=0,
-      number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='max_tokens', full_name='langame.protobuf.Tag.Engine.Parameters.max_tokens', index=1,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='top_p', full_name='langame.protobuf.Tag.Engine.Parameters.top_p', index=2,
-      number=3, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='frequency_penalty', full_name='langame.protobuf.Tag.Engine.Parameters.frequency_penalty', index=3,
-      number=4, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='presence_penalty', full_name='langame.protobuf.Tag.Engine.Parameters.presence_penalty', index=4,
-      number=5, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='stop', full_name='langame.protobuf.Tag.Engine.Parameters.stop', index=5,
-      number=6, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='model', full_name='langame.protobuf.Tag.Engine.Parameters.model', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1226,
-  serialized_end=1376,
-)
-
-_TAG_ENGINE = _descriptor.Descriptor(
-  name='Engine',
-  full_name='langame.protobuf.Tag.Engine',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='parameters', full_name='langame.protobuf.Tag.Engine.parameters', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_TAG_ENGINE_PARAMETERS, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1154,
-  serialized_end=1376,
-)
-
-_TAG_FEEDBACK_GENERAL = _descriptor.Descriptor(
-  name='General',
-  full_name='langame.protobuf.Tag.Feedback.General',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='score', full_name='langame.protobuf.Tag.Feedback.General.score', index=0,
-      number=1, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1530,
-  serialized_end=1554,
-)
-
-_TAG_FEEDBACK_RELEVANCE = _descriptor.Descriptor(
-  name='Relevance',
-  full_name='langame.protobuf.Tag.Feedback.Relevance',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='score', full_name='langame.protobuf.Tag.Feedback.Relevance.score', index=0,
-      number=1, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1556,
-  serialized_end=1582,
-)
-
-_TAG_FEEDBACK = _descriptor.Descriptor(
-  name='Feedback',
-  full_name='langame.protobuf.Tag.Feedback',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='user_id', full_name='langame.protobuf.Tag.Feedback.user_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='general', full_name='langame.protobuf.Tag.Feedback.general', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='relevance', full_name='langame.protobuf.Tag.Feedback.relevance', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_TAG_FEEDBACK_GENERAL, _TAG_FEEDBACK_RELEVANCE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='type', full_name='langame.protobuf.Tag.Feedback.type',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1379,
-  serialized_end=1590,
-)
-
-_TAG_CONTEXT = _descriptor.Descriptor(
-  name='Context',
-  full_name='langame.protobuf.Tag.Context',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='content', full_name='langame.protobuf.Tag.Context.content', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='type', full_name='langame.protobuf.Tag.Context.type', index=1,
-      number=2, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-    _TAG_CONTEXT_TYPE,
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1592,
-  serialized_end=1703,
-)
-
-_TAG = _descriptor.Descriptor(
-  name='Tag',
-  full_name='langame.protobuf.Tag',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='created_at', full_name='langame.protobuf.Tag.created_at', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='topic', full_name='langame.protobuf.Tag.topic', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='classification', full_name='langame.protobuf.Tag.classification', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='engine', full_name='langame.protobuf.Tag.engine', index=3,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='feedback', full_name='langame.protobuf.Tag.feedback', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='context', full_name='langame.protobuf.Tag.context', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='aggregated_feedback', full_name='langame.protobuf.Tag.aggregated_feedback', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_TAG_TOPIC, _TAG_CLASSIFICATION, _TAG_ENGINE, _TAG_FEEDBACK, _TAG_CONTEXT, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='type', full_name='langame.protobuf.Tag.type',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=668,
-  serialized_end=1711,
-)
-
-
 _USER_DEVICE = _descriptor.Descriptor(
   name='Device',
   full_name='langame.protobuf.User.Device',
@@ -841,8 +424,8 @@ _USER_DEVICE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2204,
-  serialized_end=2258,
+  serialized_start=1158,
+  serialized_end=1212,
 )
 
 _USER = _descriptor.Descriptor(
@@ -998,8 +581,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1714,
-  serialized_end=2258,
+  serialized_start=668,
+  serialized_end=1212,
 )
 
 
@@ -1037,8 +620,8 @@ _USERPREFERENCE_NOTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2583,
-  serialized_end=2626,
+  serialized_start=1537,
+  serialized_end=1580,
 )
 
 _USERPREFERENCE = _descriptor.Descriptor(
@@ -1138,8 +721,8 @@ _USERPREFERENCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2261,
-  serialized_end=2626,
+  serialized_start=1215,
+  serialized_end=1580,
 )
 
 
@@ -1263,6 +846,13 @@ _LANGAME = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='is_text', full_name='langame.protobuf.Langame.is_text', index=16,
+      number=20, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -1275,8 +865,8 @@ _LANGAME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2629,
-  serialized_end=3117,
+  serialized_start=1583,
+  serialized_end=2088,
 )
 
 
@@ -1349,8 +939,8 @@ _PLAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3120,
-  serialized_end=3355,
+  serialized_start=2091,
+  serialized_end=2326,
 )
 
 
@@ -1381,8 +971,8 @@ _NOTE_GENERIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3567,
-  serialized_end=3593,
+  serialized_start=2538,
+  serialized_end=2564,
 )
 
 _NOTE_GOAL = _descriptor.Descriptor(
@@ -1412,8 +1002,8 @@ _NOTE_GOAL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3595,
-  serialized_end=3618,
+  serialized_start=2566,
+  serialized_end=2589,
 )
 
 _NOTE_DEFINITION = _descriptor.Descriptor(
@@ -1443,8 +1033,8 @@ _NOTE_DEFINITION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3620,
-  serialized_end=3649,
+  serialized_start=2591,
+  serialized_end=2620,
 )
 
 _NOTE = _descriptor.Descriptor(
@@ -1500,75 +1090,8 @@ _NOTE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3358,
-  serialized_end=3657,
-)
-
-
-_NOTIFICATION = _descriptor.Descriptor(
-  name='Notification',
-  full_name='langame.protobuf.Notification',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='langame.protobuf.Notification.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='sender_uid', full_name='langame.protobuf.Notification.sender_uid', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='recipients_uid', full_name='langame.protobuf.Notification.recipients_uid', index=2,
-      number=3, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='topics', full_name='langame.protobuf.Notification.topics', index=3,
-      number=4, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='channel_name', full_name='langame.protobuf.Notification.channel_name', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='ready', full_name='langame.protobuf.Notification.ready', index=5,
-      number=6, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3659,
-  serialized_end=3782,
+  serialized_start=2329,
+  serialized_end=2628,
 )
 
 
@@ -1599,8 +1122,8 @@ _SUBSCRIPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3784,
-  serialized_end=3814,
+  serialized_start=2630,
+  serialized_end=2660,
 )
 
 
@@ -1632,8 +1155,8 @@ _FUNCTIONRESPONSE_VERSIONCHECK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3912,
-  serialized_end=4068,
+  serialized_start=2758,
+  serialized_end=2914,
 )
 
 _FUNCTIONRESPONSE = _descriptor.Descriptor(
@@ -1668,8 +1191,8 @@ _FUNCTIONRESPONSE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=3817,
-  serialized_end=4076,
+  serialized_start=2663,
+  serialized_end=2922,
 )
 
 
@@ -1696,16 +1219,16 @@ _PROMPT = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tags', full_name='langame.protobuf.Prompt.tags', index=2,
-      number=3, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='id', full_name='langame.protobuf.Prompt.id', index=2,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='id', full_name='langame.protobuf.Prompt.id', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='parameters', full_name='langame.protobuf.Prompt.parameters', index=3,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -1721,8 +1244,8 @@ _PROMPT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4078,
-  serialized_end=4167,
+  serialized_start=2924,
+  serialized_end=3018,
 )
 
 
@@ -1760,8 +1283,8 @@ _RECORDING_METADATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4337,
-  serialized_end=4384,
+  serialized_start=3188,
+  serialized_end=3235,
 )
 
 _RECORDING = _descriptor.Descriptor(
@@ -1819,8 +1342,107 @@ _RECORDING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4170,
-  serialized_end=4384,
+  serialized_start=3021,
+  serialized_end=3235,
+)
+
+
+_MESSAGE_CONTENT = _descriptor.Descriptor(
+  name='Content',
+  full_name='langame.protobuf.Message.Content',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='type', full_name='langame.protobuf.Message.Content.type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='body', full_name='langame.protobuf.Message.Content.body', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='title', full_name='langame.protobuf.Message.Content.title', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='metadata', full_name='langame.protobuf.Message.Content.metadata', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3323,
+  serialized_end=3447,
+)
+
+_MESSAGE = _descriptor.Descriptor(
+  name='Message',
+  full_name='langame.protobuf.Message',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='created_at', full_name='langame.protobuf.Message.created_at', index=0,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from', full_name='langame.protobuf.Message.from', index=1,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='to', full_name='langame.protobuf.Message.to', index=2,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[_MESSAGE_CONTENT, ],
+  enum_types=[
+    _MESSAGE_TYPE,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3238,
+  serialized_end=3480,
 )
 
 _ERROR.fields_by_name['createdAt'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
@@ -1832,50 +1454,6 @@ _SEENMEMES.fields_by_name['seen'].message_type = _SEENMEMES_SEEN
 _MEME_TRANSLATEDENTRY.containing_type = _MEME
 _MEME.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _MEME.fields_by_name['translated'].message_type = _MEME_TRANSLATEDENTRY
-_TAG_TOPIC.containing_type = _TAG
-_TAG_CLASSIFICATION.containing_type = _TAG
-_TAG_ENGINE_PARAMETERS.containing_type = _TAG_ENGINE
-_TAG_ENGINE.fields_by_name['parameters'].message_type = _TAG_ENGINE_PARAMETERS
-_TAG_ENGINE.containing_type = _TAG
-_TAG_FEEDBACK_GENERAL.containing_type = _TAG_FEEDBACK
-_TAG_FEEDBACK_RELEVANCE.containing_type = _TAG_FEEDBACK
-_TAG_FEEDBACK.fields_by_name['general'].message_type = _TAG_FEEDBACK_GENERAL
-_TAG_FEEDBACK.fields_by_name['relevance'].message_type = _TAG_FEEDBACK_RELEVANCE
-_TAG_FEEDBACK.containing_type = _TAG
-_TAG_FEEDBACK.oneofs_by_name['type'].fields.append(
-  _TAG_FEEDBACK.fields_by_name['general'])
-_TAG_FEEDBACK.fields_by_name['general'].containing_oneof = _TAG_FEEDBACK.oneofs_by_name['type']
-_TAG_FEEDBACK.oneofs_by_name['type'].fields.append(
-  _TAG_FEEDBACK.fields_by_name['relevance'])
-_TAG_FEEDBACK.fields_by_name['relevance'].containing_oneof = _TAG_FEEDBACK.oneofs_by_name['type']
-_TAG_CONTEXT.fields_by_name['type'].enum_type = _TAG_CONTEXT_TYPE
-_TAG_CONTEXT.containing_type = _TAG
-_TAG_CONTEXT_TYPE.containing_type = _TAG_CONTEXT
-_TAG.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
-_TAG.fields_by_name['topic'].message_type = _TAG_TOPIC
-_TAG.fields_by_name['classification'].message_type = _TAG_CLASSIFICATION
-_TAG.fields_by_name['engine'].message_type = _TAG_ENGINE
-_TAG.fields_by_name['feedback'].message_type = _TAG_FEEDBACK
-_TAG.fields_by_name['context'].message_type = _TAG_CONTEXT
-_TAG.fields_by_name['aggregated_feedback'].message_type = _TAG_FEEDBACK
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['topic'])
-_TAG.fields_by_name['topic'].containing_oneof = _TAG.oneofs_by_name['type']
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['classification'])
-_TAG.fields_by_name['classification'].containing_oneof = _TAG.oneofs_by_name['type']
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['engine'])
-_TAG.fields_by_name['engine'].containing_oneof = _TAG.oneofs_by_name['type']
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['feedback'])
-_TAG.fields_by_name['feedback'].containing_oneof = _TAG.oneofs_by_name['type']
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['context'])
-_TAG.fields_by_name['context'].containing_oneof = _TAG.oneofs_by_name['type']
-_TAG.oneofs_by_name['type'].fields.append(
-  _TAG.fields_by_name['aggregated_feedback'])
-_TAG.fields_by_name['aggregated_feedback'].containing_oneof = _TAG.oneofs_by_name['type']
 _USER_DEVICE.containing_type = _USER
 _USER.fields_by_name['errors'].message_type = _ERROR
 _USER.fields_by_name['last_login'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
@@ -1918,24 +1496,28 @@ _FUNCTIONRESPONSE.fields_by_name['version_check'].message_type = _FUNCTIONRESPON
 _FUNCTIONRESPONSE.oneofs_by_name['type'].fields.append(
   _FUNCTIONRESPONSE.fields_by_name['version_check'])
 _FUNCTIONRESPONSE.fields_by_name['version_check'].containing_oneof = _FUNCTIONRESPONSE.oneofs_by_name['type']
-_PROMPT.fields_by_name['tags'].message_type = _TAG
+_PROMPT.fields_by_name['parameters'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _RECORDING_METADATAENTRY.containing_type = _RECORDING
 _RECORDING.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 _RECORDING.fields_by_name['metadata'].message_type = _RECORDING_METADATAENTRY
+_MESSAGE_CONTENT.fields_by_name['type'].enum_type = _MESSAGE_TYPE
+_MESSAGE_CONTENT.fields_by_name['metadata'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_MESSAGE_CONTENT.containing_type = _MESSAGE
+_MESSAGE.fields_by_name['created_at'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
+_MESSAGE_TYPE.containing_type = _MESSAGE
 DESCRIPTOR.message_types_by_name['Error'] = _ERROR
 DESCRIPTOR.message_types_by_name['SeenMemes'] = _SEENMEMES
 DESCRIPTOR.message_types_by_name['Meme'] = _MEME
-DESCRIPTOR.message_types_by_name['Tag'] = _TAG
 DESCRIPTOR.message_types_by_name['User'] = _USER
 DESCRIPTOR.message_types_by_name['UserPreference'] = _USERPREFERENCE
 DESCRIPTOR.message_types_by_name['Langame'] = _LANGAME
 DESCRIPTOR.message_types_by_name['Player'] = _PLAYER
 DESCRIPTOR.message_types_by_name['Note'] = _NOTE
-DESCRIPTOR.message_types_by_name['Notification'] = _NOTIFICATION
 DESCRIPTOR.message_types_by_name['Subscription'] = _SUBSCRIPTION
 DESCRIPTOR.message_types_by_name['FunctionResponse'] = _FUNCTIONRESPONSE
 DESCRIPTOR.message_types_by_name['Prompt'] = _PROMPT
 DESCRIPTOR.message_types_by_name['Recording'] = _RECORDING
+DESCRIPTOR.message_types_by_name['Message'] = _MESSAGE
 DESCRIPTOR.enum_types_by_name['InteractionLevel'] = _INTERACTIONLEVEL
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -1983,77 +1565,6 @@ Meme = _reflection.GeneratedProtocolMessageType('Meme', (_message.Message,), {
   })
 _sym_db.RegisterMessage(Meme)
 _sym_db.RegisterMessage(Meme.TranslatedEntry)
-
-Tag = _reflection.GeneratedProtocolMessageType('Tag', (_message.Message,), {
-
-  'Topic' : _reflection.GeneratedProtocolMessageType('Topic', (_message.Message,), {
-    'DESCRIPTOR' : _TAG_TOPIC,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Topic)
-    })
-  ,
-
-  'Classification' : _reflection.GeneratedProtocolMessageType('Classification', (_message.Message,), {
-    'DESCRIPTOR' : _TAG_CLASSIFICATION,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Classification)
-    })
-  ,
-
-  'Engine' : _reflection.GeneratedProtocolMessageType('Engine', (_message.Message,), {
-
-    'Parameters' : _reflection.GeneratedProtocolMessageType('Parameters', (_message.Message,), {
-      'DESCRIPTOR' : _TAG_ENGINE_PARAMETERS,
-      '__module__' : 'langame.protobuf.langame_pb2'
-      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Engine.Parameters)
-      })
-    ,
-    'DESCRIPTOR' : _TAG_ENGINE,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Engine)
-    })
-  ,
-
-  'Feedback' : _reflection.GeneratedProtocolMessageType('Feedback', (_message.Message,), {
-
-    'General' : _reflection.GeneratedProtocolMessageType('General', (_message.Message,), {
-      'DESCRIPTOR' : _TAG_FEEDBACK_GENERAL,
-      '__module__' : 'langame.protobuf.langame_pb2'
-      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Feedback.General)
-      })
-    ,
-
-    'Relevance' : _reflection.GeneratedProtocolMessageType('Relevance', (_message.Message,), {
-      'DESCRIPTOR' : _TAG_FEEDBACK_RELEVANCE,
-      '__module__' : 'langame.protobuf.langame_pb2'
-      # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Feedback.Relevance)
-      })
-    ,
-    'DESCRIPTOR' : _TAG_FEEDBACK,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Feedback)
-    })
-  ,
-
-  'Context' : _reflection.GeneratedProtocolMessageType('Context', (_message.Message,), {
-    'DESCRIPTOR' : _TAG_CONTEXT,
-    '__module__' : 'langame.protobuf.langame_pb2'
-    # @@protoc_insertion_point(class_scope:langame.protobuf.Tag.Context)
-    })
-  ,
-  'DESCRIPTOR' : _TAG,
-  '__module__' : 'langame.protobuf.langame_pb2'
-  # @@protoc_insertion_point(class_scope:langame.protobuf.Tag)
-  })
-_sym_db.RegisterMessage(Tag)
-_sym_db.RegisterMessage(Tag.Topic)
-_sym_db.RegisterMessage(Tag.Classification)
-_sym_db.RegisterMessage(Tag.Engine)
-_sym_db.RegisterMessage(Tag.Engine.Parameters)
-_sym_db.RegisterMessage(Tag.Feedback)
-_sym_db.RegisterMessage(Tag.Feedback.General)
-_sym_db.RegisterMessage(Tag.Feedback.Relevance)
-_sym_db.RegisterMessage(Tag.Context)
 
 User = _reflection.GeneratedProtocolMessageType('User', (_message.Message,), {
 
@@ -2130,13 +1641,6 @@ _sym_db.RegisterMessage(Note.Generic)
 _sym_db.RegisterMessage(Note.Goal)
 _sym_db.RegisterMessage(Note.Definition)
 
-Notification = _reflection.GeneratedProtocolMessageType('Notification', (_message.Message,), {
-  'DESCRIPTOR' : _NOTIFICATION,
-  '__module__' : 'langame.protobuf.langame_pb2'
-  # @@protoc_insertion_point(class_scope:langame.protobuf.Notification)
-  })
-_sym_db.RegisterMessage(Notification)
-
 Subscription = _reflection.GeneratedProtocolMessageType('Subscription', (_message.Message,), {
   'DESCRIPTOR' : _SUBSCRIPTION,
   '__module__' : 'langame.protobuf.langame_pb2'
@@ -2180,6 +1684,21 @@ Recording = _reflection.GeneratedProtocolMessageType('Recording', (_message.Mess
   })
 _sym_db.RegisterMessage(Recording)
 _sym_db.RegisterMessage(Recording.MetadataEntry)
+
+Message = _reflection.GeneratedProtocolMessageType('Message', (_message.Message,), {
+
+  'Content' : _reflection.GeneratedProtocolMessageType('Content', (_message.Message,), {
+    'DESCRIPTOR' : _MESSAGE_CONTENT,
+    '__module__' : 'langame.protobuf.langame_pb2'
+    # @@protoc_insertion_point(class_scope:langame.protobuf.Message.Content)
+    })
+  ,
+  'DESCRIPTOR' : _MESSAGE,
+  '__module__' : 'langame.protobuf.langame_pb2'
+  # @@protoc_insertion_point(class_scope:langame.protobuf.Message)
+  })
+_sym_db.RegisterMessage(Message)
+_sym_db.RegisterMessage(Message.Content)
 
 
 _MEME_TRANSLATEDENTRY._options = None
