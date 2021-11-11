@@ -3,7 +3,7 @@ from typing import List, Optional
 import openai
 from googleapiclient.discovery import build
 
-from helpers import clean_text
+from langame.helpers import clean_text
 from urllib.request import urlopen
 from urllib.error import URLError
 from bs4 import BeautifulSoup
@@ -25,7 +25,11 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
+<<<<<<< HEAD:openai_client.py
                         parameters,
+=======
+                        parameters: any,
+>>>>>>> 62810a0a4c02d92c3d66a455a763e27d87f3ddd9:langame/openai_client.py
                         ):
         """
 

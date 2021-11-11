@@ -4,9 +4,9 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_client import BaseClient
-from hugging_face_client import HuggingFaceClient
+from langame.hugging_face_client import HuggingFaceClient
 from google.cloud.firestore_v1.base_collection import BaseCollectionReference
-from openai_client import OpenAIClient
+from langame.openai_client import OpenAIClient
 from algoliasearch.search_client import SearchClient
 
 

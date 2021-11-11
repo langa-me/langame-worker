@@ -4,8 +4,10 @@ env
 .idea
 __pycache__/
 *.pyc
+*.egg-info
+.DS_Store
 
-# Service Account keys
+# keys
 svc*.json
 config.yaml
 .ipynb_checkpoints

@@ -1,26 +1,31 @@
 tasks:
     - name: Install dependencies
       command: |
-        pip3 install -r requirements.txt
+        virtualenv env
+        source env/bin/activate
+        export PIP_USER=false
+        pip install -e .
+        pip install -r requirements-test.txt
+        pip freeze
     - name: Generate service account
       command: |
         eval $(gp env -e)
-        echo "$LANGAME_SVC_PROD" > svc.prod.json
-        echo "$LANGAME_SVC_DEV" > svc.dev.json
+        echo "$LANGAME_SVC_PROD" > notebooks/svc.prod.json
+        echo "$LANGAME_SVC_DEV" > notebooks/svc.dev.json
         pip3 install yq
-        echo "$LANGAME_CONFIG" | yq -y > config.yaml
-        wget 
+        echo "$LANGAME_CONFIG" | yq -y > notebooks/config.yaml
+        mkdir -p ~/kaggle
+        echo "$KAGGLE_KEY" > ~/.kaggle/kaggle.json
+        chmod 600 ~/.kaggle/kaggle.json
     - name: Auth gcloud
       command: |
         gcloud auth login --no-launch-browser
         gcloud projects list
         echo "gcloud config set project [PROJECT_ID]"
-        echo "gsutil cp gs://louis030195-general/langame/* ."
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 image:
   file: .gitpod.Dockerfile
 
 vscode:
   extensions:
-    - github.copilot
-    - ms-python
+    - ms-python.python
