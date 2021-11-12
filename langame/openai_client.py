@@ -25,11 +25,7 @@ class OpenAIClient:
 
     def call_completion(self,
                         prompt: str,
-<<<<<<< HEAD:openai_client.py
                         parameters,
-=======
-                        parameters: any,
->>>>>>> 62810a0a4c02d92c3d66a455a763e27d87f3ddd9:langame/openai_client.py
                         ):
         """
 
