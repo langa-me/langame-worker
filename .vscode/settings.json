@@ -4,7 +4,7 @@
     "python.languageServer": "Default",
     "python.formatting.provider": "black",
     "python.testing.pytestArgs": [
-        "tests",
+        "functions",
         "--verbose",
         "--log-cli-level=DEBUG"
     ],

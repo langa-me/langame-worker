@@ -1,12 +1,7 @@
 tasks:
     - name: Install dependencies
       command: |
-        virtualenv env
-        source env/bin/activate
-        export PIP_USER=false
-        pip install -e .
-        pip install -r requirements-test.txt
-        pip freeze
+        make install
     - name: Generate service account
       command: |
         eval $(gp env -e)
@@ -54,3 +49,4 @@ vscode:
     - toba.vsfire
     - wix.vscode-import-cost
     - zxh404.vscode-proto3
+    - 42crunch.vscode-openapi

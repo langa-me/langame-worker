@@ -1,8 +1,13 @@
 install: ## [Local development] Install virtualenv, activate, install requirements, install package.
-	python3 -m pip install virtualenv
-	python3 -m virtualenv env
-	env/bin/python3 -m pip install -e .
-	env/bin/python3 -m pip install -r requirements-test.txt
+	(\
+		PIP_USER=false; \
+		python3 -m virtualenv env; \
+		. env/bin/activate; \
+		python3 -m pip install -e .; \
+		python3 -m pip install -r requirements-test.txt; \
+		python3 -m pip install -r functions/requirements.txt; \
+		python3 -m pip install -r functions/requirements-test.txt; \
+	)
 
 .PHONY: help
 

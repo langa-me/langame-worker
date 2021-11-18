@@ -1,7 +1,9 @@
 from flask import Request
 import openai
 import os
+import json
 
+# TODO: something like scripts/batch.py, but firestore doesn't support randomness
 p = """conversation_starters = [('If you could have direct contact with human heart what would be your question?', ['ice breaker']),
  ('Who do you admire the most?', ['ice breaker']),
  ('What is the most amazing thing about humans that you have discovered?', ['mathematic', 'ice breaker']),
@@ -53,4 +55,4 @@ def conversation_starter(_: Request):
       presence_penalty=0,
       stop=["])"]
     )
-    return {"output": response["choices"][0]["text"] + "]),"}
+    return json.dumps({"output": response["choices"][0]["text"] + "]),"})
