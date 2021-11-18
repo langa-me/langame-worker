@@ -22,13 +22,13 @@ def get_prompt(topics):
 outputs = []
 for i in tqdm(range(10**12)):
   time.sleep(randint(1,3))
-  samples = get_prompt(['ice breaker'])
+  samples = get_prompt(['transhumanism'])
   p = list(str(samples[0:60]))
   # replace last char by a ","
   p[-1] = ","
   p = "".join(p)
-  p = """This is a list of conversation starters ice breakers about work, school, education, travel, movies, television and music.\n
-This is a list of conversation starters ice breakers about work, school, education, travel, movies, television and music.\n\n""" + p
+  #p = """This is a list of conversation starters ice breakers about work, school, education, travel, movies, television and music.\n
+    #This is a list of conversation starters ice breakers about work, school, education, travel, movies, television and music.\n\n""" + p
   try:
     response = openai.Completion.create(
       engine="davinci-codex",
