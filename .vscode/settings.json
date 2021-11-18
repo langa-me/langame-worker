@@ -1,3 +1,15 @@
 {
-    "python.pythonPath": "env/bin/python"
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.languageServer": "Default",
+    "python.formatting.provider": "black",
+    "python.testing.pytestArgs": [
+        "tests",
+        "--verbose",
+        "--log-cli-level=DEBUG"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "jupyter.jupyterServerType": "local",
 }
