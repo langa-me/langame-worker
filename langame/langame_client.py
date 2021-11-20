@@ -11,9 +11,9 @@ from algoliasearch.search_client import SearchClient
 
 
 class LangameClient:
-    def __init__(self):
+    def __init__(self, path_to_config_file: str = './config.yaml'):
         conf = confuse.Configuration('langame-worker', __name__)
-        conf.set_file('./config.yaml')
+        conf.set_file(path_to_config_file)
 
         # AI APIs
         self._hf_client: HuggingFaceClient = HuggingFaceClient(
@@ -31,7 +31,7 @@ class LangameClient:
 
         # Firestore
         cred = credentials.Certificate(
-            f'{os.getcwd()}/{conf["google"]["service_account"]}')
+            f'{os.path.dirname(path_to_config_file)}/{conf["google"]["service_account"]}')
         firebase_admin.initialize_app(cred)
         self._firestore_client: BaseClient = firestore.client()
         self._memes_ref: BaseCollectionReference = self._firestore_client.collection(
