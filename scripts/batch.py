@@ -1,19 +1,15 @@
 from tqdm import tqdm
-import time
-from random import randint
 from langame.langame_client import LangameClient
-from langame.array import intersection
-import random
+from langame.arrays import intersection, get_prompt
 import openai
 import fire
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 from langame.strings import string_similarity
 import torch
 import json
-import logging
 
 
-def generate(out_file = "generated.jsonl", topics = ["ice breaker"]):
+def generate(out_file = "generated.jsonl", topics = ["ice breaker"], use_gpu = True):
     """
     Generate a set of conversation starters for the given topics.
     :param out_file: The file to write the generated conversations to.
@@ -24,12 +20,10 @@ def generate(out_file = "generated.jsonl", topics = ["ice breaker"]):
     assert len(topics) > 0, "No topics given."
     assert out_file.endswith(".jsonl"), "out_file must be a .jsonl file"
     
-    # logger = logging.getLogger("generate")
-    # logger.setLevel("INFO")
     print(f"Generating conversations for topics: {topics}")
 
     model_name = "flexudy/t5-small-wav2vec2-grammar-fixer"
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
 
     tokenizer = T5Tokenizer.from_pretrained(model_name)
 
@@ -39,18 +33,10 @@ def generate(out_file = "generated.jsonl", topics = ["ice breaker"]):
     for e in c._firestore_client.collection("memes").stream():
         memes.append((e.id, e.to_dict()))
 
-    def get_prompt(topics):
-        rnd = random.choices(memes, k=500)
-        return [
-            {"content": e[1]["content"], "topics": e[1]["topics"]}
-            for e in rnd
-            if len(intersection(e[1]["topics"], topics)) > 0
-        ]
-
     covnersation_starters = []
     for i in tqdm(range(10 ** 12)):
         # time.sleep(randint(1,3))
-        samples = get_prompt(topics)
+        samples = get_prompt(memes, topics)
         p = "\n".join([json.dumps(e) for e in samples[0:60]])
         try:
             response = openai.Completion.create(

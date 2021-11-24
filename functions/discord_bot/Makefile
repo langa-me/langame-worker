@@ -1,14 +1,10 @@
-OPENAI_KEY ?= foo
-OPENAI_ORG ?= bar
+CLIENT_PUBLIC_KEY ?= foo
 deploy: ## [Local development] deploy to GCP.
-	gcloud functions deploy conversation_starter \
+	gcloud beta functions deploy discord_bot \
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
-		--set-env-vars OPENAI_KEY=$(OPENAI_KEY),OPENAI_ORG=$(OPENAI_ORG)
-
-test:
-	python3 -m unittest conversation_starter_test.py
+		--set-env-vars=CLIENT_PUBLIC_KEY=${CLIENT_PUBLIC_KEY}
 
 .PHONY: help
 

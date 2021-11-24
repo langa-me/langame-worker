@@ -1,6 +1,7 @@
 import numpy as np
 from jina import DocumentArray, Executor, requests, Flow, Document
 # from jina.types.document.generators import from_files
+import pandas as pd    
 
 
 from glob import glob
@@ -35,11 +36,6 @@ f = (Flow(port_expose=12345, protocol='http', cors=True)
 
 
 with f:
-    text = "\n".join([open(f, 'r').read() for f in glob("./data/augment/*.txt")]).split("\n")
-    regex = re.compile(r'[^a-zA-Z0-9]')
-    nd = []
-    for e in text:
-        parsed = [e.strip() for e in regex.sub(' ', e).split('     ')]
-        nd.append(parsed[0])
-    f.post('/index', (Document(text=e) for e in nd))  # index all lines of _this_ file
+    jsonObj = pd.read_json(path_or_buf=file_path, lines=True)
+    f.post('/index', (Document(text=v.to_dict()) for k, v in jsonObj.iterrows()))  # index all lines of _this_ file
     f.block()  # block for listening request
