@@ -5,3 +5,4 @@ grpc-gateway-protoc-gen-openapiv2
 gcloud
 google-api-python-client
 protobuf
+google-cloud-firestore

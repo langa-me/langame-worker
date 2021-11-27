@@ -1,10 +1,12 @@
-APPLICATION_ID ?= foo
+DISCORD_APPLICATION_ID ?= foo
+PROJECT_ID ?= langame-dev
 
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \
-		--trigger-topic social_bot \
-		--set-env-vars=APPLICATION_ID=${APPLICATION_ID}
+		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
+  		--trigger-resource "projects/${PROJECT_ID}/databases/(default)/documents/social_interactions/{interactionId}" \
+		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
 
 .PHONY: help
 
