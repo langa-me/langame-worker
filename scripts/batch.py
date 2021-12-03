@@ -24,7 +24,7 @@ def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], use_gpu=Fa
     assert isinstance(out_file, str), "out_file must be a string"
     assert len(topics) > 0, "No topics given."
     assert out_file.endswith(".txt"), "out_file must be a .txt file"
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("batch")
     logger.addFilter(FuckOpenAIFilter())
 
     logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,7 @@ def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], use_gpu=Fa
     grammar_model_name = "flexudy/t5-small-wav2vec2-grammar-fixer"
     device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
 
-    logger.info("Device:" + device)
+    logger.info(f"Device: {device}")
 
     tokenizer = T5Tokenizer.from_pretrained(grammar_model_name)
     grammar_model = T5ForConditionalGeneration.from_pretrained(grammar_model_name).to(

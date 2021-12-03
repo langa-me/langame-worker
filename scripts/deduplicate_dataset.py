@@ -1,12 +1,7 @@
-from tqdm import tqdm
+from faiss.swigfaiss import Index
 from langame.langame_client import LangameClient
-from langame.arrays import get_prompt
-import openai
 import fire
-from transformers import T5Tokenizer, T5ForConditionalGeneration
-from langame.strings import string_similarity
 import torch
-import json
 import datetime
 import faiss
 import glob
@@ -15,6 +10,7 @@ import numpy as np
 import logging
 from autofaiss.external.quantize import Quantizer
 import os
+from collections import defaultdict
 
 
 def connected_components(neighbors):
@@ -31,15 +27,16 @@ def connected_components(neighbors):
         return r
 
     u = []
-    for node in neighbors:
+    for node in list(neighbors):
         if node not in seen:
             u.append(component(node))
     return u
 
 
-def get_uniques(index, embeddings, max_duplicates_per_item=10, threshold=0.9):
+def get_uniques(
+    index: Index, embeddings, max_duplicates_per_item: int = 10, threshold: float = 0.9
+):
     D, I = index.search(embeddings, k=max_duplicates_per_item)
-    from collections import defaultdict
 
     same_mapping = defaultdict(list)
 
@@ -70,9 +67,11 @@ def dedup(
     assert isinstance(in_file, str), "out_file must be a string"
     assert isinstance(out_file, str), "out_file must be a string"
     assert out_file.endswith(".txt"), "out_file must be a .txt file"
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("deduplicate_dataset")
     logging.basicConfig(level=logging.INFO)
-    logger.warn("Assuming the input dataset rows are of format [topics,] ### [sentence]")
+    logger.warning(
+        "Assuming the input dataset rows are of format [topics,] ### [sentence]"
+    )
 
     # Add the date to the out file before the extension with format YYYY_MM_DD
     out_file = out_file.replace(
@@ -87,7 +86,7 @@ def dedup(
     sentence_embeddings_model_name = "sentence-transformers/LaBSE"
     device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
 
-    logger.info("Device:", device)
+    logger.info(f"Device: {device}")
 
     sentence_embeddings_model = SentenceTransformer(sentence_embeddings_model_name).to(
         device
@@ -98,46 +97,94 @@ def dedup(
     for e in c._firestore_client.collection("memes").stream():
         existing_memes.append((e.id, e.to_dict()))
 
-    existing_memes_embeddings = [sentence_embeddings_model.encode(e[1]['content']) for e in existing_memes]
+    logger.info("Building embeddings for existing memes")
+
+    existing_memes_embeddings = np.array(
+        [
+            sentence_embeddings_model.encode(e[1]["content"], show_progress_bar=False)
+            for e in existing_memes
+        ]
+    )
 
     new_memes = []
     new_memes_embeddings = []
+
     with open(in_file, "r") as f:
-        for line in f:
+        logger.info(f"Done, now building embeddings for new memes")
+        for i, line in enumerate(f):
+            if i % 1000 == 0:
+                logger.info(f"Built embeddings for {i} new memes")
             line = line.strip()
             # Check that the format is correct
             # i.e. [topics,] ### [sentence]
-            if line and len(line.split("###")) == 2:
+            splitted = line.split("###")
+            if line and len(splitted) == 2:
+                topics, sentence = splitted
                 new_memes.append(line)
                 new_memes_embeddings.append(
-                    sentence_embeddings_model.encode(line.split("###")[1].strip())
+                    sentence_embeddings_model.encode(
+                        sentence.strip(), show_progress_bar=False
+                    )
                 )
+    new_memes_embeddings = np.array(new_memes_embeddings)
 
     # Create the faiss indexes
     existing_memes_embeddings_dir = "embeddings/existing_memes_embeddings"
     new_memes_embeddings_dir = "embeddings/new_memes_embeddings"
     existing_memes_index_dir = "embeddings/existing_memes_indexes"
     new_memes_index_dir = "embeddings/new_memes_indexes"
-    os.makedirs(os.path.dirname(existing_memes_embeddings_dir), exist_ok=True)
-    os.makedirs(os.path.dirname(new_memes_embeddings_dir), exist_ok=True)
+    os.makedirs(existing_memes_embeddings_dir, exist_ok=True)
+    os.makedirs(new_memes_embeddings_dir, exist_ok=True)
     np.save(f"{existing_memes_embeddings_dir}/p1.npy", existing_memes_embeddings)
     np.save(f"{new_memes_embeddings_dir}/p1.npy", new_memes_embeddings)
     quantizer = Quantizer()
-    quantizer.quantize(embeddings_path=existing_memes_embeddings_dir, output_path=existing_memes_index_dir, max_index_memory_usage="6G", current_memory_available="8G")
-    quantizer.quantize(embeddings_path=new_memes_embeddings_dir, output_path=new_memes_index_dir, max_index_memory_usage="6G", current_memory_available="8G")
-    existing_memes_index = faiss.read_index(glob.glob(f"{existing_memes_index_dir}/*.index")[0])
+    logger.info("Done, now building indexes")
+
+    quantizer.quantize(
+        embeddings_path=existing_memes_embeddings_dir,
+        output_path=existing_memes_index_dir,
+        max_index_memory_usage="6G",
+        current_memory_available="8G",
+    )
+    quantizer.quantize(
+        embeddings_path=new_memes_embeddings_dir,
+        output_path=new_memes_index_dir,
+        max_index_memory_usage="6G",
+        current_memory_available="8G",
+    )
+    existing_memes_index = faiss.read_index(
+        glob.glob(f"{existing_memes_index_dir}/*.index")[0]
+    )
     new_memes_index = faiss.read_index(glob.glob(f"{new_memes_index_dir}/*.index")[0])
 
+    logger.info("Done, now filtering duplicates")
+
     # Get the new uniques
-    new_uniques = get_uniques(new_memes_index, new_memes_embeddings, max_duplicates_per_item=10, threshold=SIMILARITY_THRESHOLD)
+    new_uniques = get_uniques(
+        new_memes_index,
+        new_memes_embeddings,
+        max_duplicates_per_item=10,
+        threshold=SIMILARITY_THRESHOLD,
+    )
+    new_uniques_embeddings = new_memes_embeddings[new_uniques]
+
     # Get the new NEW uniques
-    new_new_uniques = get_uniques(existing_memes_index, new_uniques, max_duplicates_per_item=10, threshold=SIMILARITY_THRESHOLD)
+    new_new_uniques = get_uniques(
+        existing_memes_index,
+        new_uniques_embeddings,
+        max_duplicates_per_item=10,
+        threshold=SIMILARITY_THRESHOLD,
+    )
 
     # Write to out file
     with open(out_file, "w") as f:
+        logger.info(f"Done, now writing to {out_file}")
         for new_unique in new_new_uniques:
             f.write(new_memes[new_unique] + "\n")
-    logger.info(f"Wrote {len(new_new_uniques)} new memes to {out_file}")
+    logger.info(
+        f"Deduplicated {len(new_memes)} into {len(new_new_uniques)} new memes, wrote to {out_file}"
+    )
+
 
 if __name__ == "__main__":
     fire.Fire(dedup)
