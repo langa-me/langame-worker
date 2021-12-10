@@ -1,0 +1,43 @@
+swagger: '2.0'
+info:
+  title: conversation-starter
+  description: Sample API on API Gateway with a Google Cloud Functions backend
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /v1/conversation/starter:
+    post:
+      summary: Get a conversation starter
+      operationId: public_starter
+      x-google-backend:
+        address: https://us-central1-langame-dev.cloudfunctions.net/public_starter
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+        '401':
+          $ref: '#/responses/UnauthorizedError'
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    in: header
+    name: x-api-key
+  # appId:
+  #   type: apiKey
+  #   in: header
+  #   name: X-APP-ID
+security:
+  # Logical AND (both must be satisfied)
+  - apiKey: []
+    # appId: []
+
+responses:
+  UnauthorizedError:
+    description: API key is missing or invalid
+    headers:
+      WWW_Authenticate:
+        type: string

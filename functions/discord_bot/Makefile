@@ -1,4 +1,5 @@
 CLIENT_PUBLIC_KEY ?= foo
+
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy discord_bot \
 		--runtime python39 \

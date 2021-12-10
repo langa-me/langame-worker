@@ -1,22 +1,33 @@
 tasks:
-    - name: Install dependencies
-      command: |
-        make install
     - name: Generate service account
       command: |
+        make install
         eval $(gp env -e)
-        echo "$LANGAME_SVC_PROD" > notebooks/svc.prod.json
-        echo "$LANGAME_SVC_DEV" > notebooks/svc.dev.json
+        echo "$LANGAME_SVC_PROD" > ./svc.prod.json
+        echo "$LANGAME_SVC_DEV" > ./svc.dev.json
         pip3 install yq
-        echo "$LANGAME_CONFIG" | yq -y > notebooks/config.yaml
+        echo "$LANGAME_CONFIG" | yq -y > ./config.yaml
         mkdir -p ~/kaggle
         echo "$KAGGLE_KEY" > ~/.kaggle/kaggle.json
         chmod 600 ~/.kaggle/kaggle.json
-    - name: Auth gcloud
-      command: |
-        gcloud auth login --no-launch-browser
-        gcloud projects list
-        echo "gcloud config set project [PROJECT_ID]"
+        export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/svc.dev.json
+        gcloud beta auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} --project=$(cat ${GOOGLE_APPLICATION_CREDENTIALS} | jq -r '.project_id')
+        mkdir -p ~/.docker
+        cat >~/.docker/config.json <<EOL
+        {
+          "credHelpers": {
+            "gcr.io": "gcloud",
+            "us.gcr.io": "gcloud",
+            "eu.gcr.io": "gcloud",
+            "asia.gcr.io": "gcloud",
+            "staging-k8s.gcr.io": "gcloud",
+            "marketplace.gcr.io": "gcloud"
+          }
+        }
+        EOL
+        firebase login --no-localhost
+        echo "Current Google Cloud project is $(gcloud config list --format 'value(core.project)' 2>/dev/null)"
+
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 image:
   file: .gitpod.Dockerfile

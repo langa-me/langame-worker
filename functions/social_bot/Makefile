@@ -1,12 +1,14 @@
 DISCORD_APPLICATION_ID ?= foo
-PROJECT_ID ?= langame-dev
+AVA_URL ?= foo
+GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \
 		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
-  		--trigger-resource "projects/${PROJECT_ID}/databases/(default)/documents/social_interactions/{interactionId}" \
-		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
+  		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/social_interactions/{interactionId}" \
+		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID} \
+		--set-env-vars=AVA_URL=${AVA_URL}
 
 .PHONY: help
 

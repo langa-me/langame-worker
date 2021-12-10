@@ -16,6 +16,7 @@ CHANNEL_OPTIONS = [
 ]
 
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
+AVA_URL = os.getenv("AVA_URL")
 
 client = firestore.Client()
 
@@ -43,7 +44,7 @@ def social_bot(data, context):
         logger.error(f"No topics in message: {data}")
         return
     with grpc.secure_channel(
-        "conversation-starter-garupdicsa-uc.a.run.app:443",
+        f"{AVA_URL}:443",
         grpc.ssl_channel_credentials(),
     ) as channel:
         stub = ConversationStarterServiceStub(channel)

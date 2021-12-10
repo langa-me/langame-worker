@@ -1,3 +1,10 @@
+gcloud_set_prod: ## Set the GCP project to prod
+	gcloud config set project langame-86ac4
+
+gcloud_set_dev: ## Set the GCP project to dev
+	gcloud config set project langame-dev
+
+
 install: ## [Local development] Install virtualenv, activate, install requirements, install package.
 	(\
 		PIP_USER=false; \

@@ -8,10 +8,11 @@ __pycache__/
 .DS_Store
 
 # keys
-svc*.json
+*svc*.json
 config.yaml
 .ipynb_checkpoints
 
 embeddings
 indexes
 .pytest_cache
+wandb

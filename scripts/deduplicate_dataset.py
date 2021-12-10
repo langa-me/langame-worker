@@ -12,7 +12,6 @@ from autofaiss.external.quantize import Quantizer
 import os
 from collections import defaultdict
 
-
 def connected_components(neighbors):
     seen = set()
 
@@ -184,7 +183,6 @@ def dedup(
     logger.info(
         f"Deduplicated {len(new_memes)} into {len(new_new_uniques)} new memes, wrote to {out_file}"
     )
-
 
 if __name__ == "__main__":
     fire.Fire(dedup)
