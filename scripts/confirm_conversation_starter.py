@@ -20,6 +20,9 @@ def confirm(in_file: str = None):
     )
 
     logger.info(f"Confirming conversation starters from {in_file}")
+    logger.info(f"""If you are unsure whether these conversation starters 
+are already present in database, make sure to deduplicate your file first 
+using scripts/deduplicate_dataset.py""")
 
     c = LangameClient()
     memes_collection_ref = c._firestore_client.collection("memes")
@@ -42,12 +45,13 @@ def confirm(in_file: str = None):
     logger.info(f"There is {len(dataset)} conversation starters to confirm")
 
     # Ask the user to confirm each conversation starter
-    for i, topics, sentence in enumerate(dataset):
+    for i, v in enumerate(dataset):
+        topics, sentence = v
         logger.info(f"Confirming conversation starter n°{i}/{len(dataset)}:")
         print(f"Sentence: {sentence}")
-        print(f"Topics: {topics}")
+        print(f"Topics: {','.join(topics)}")
         # Now offer to either, confirm, edit or delete the conversation starter
-        print("Is this conversation starter good enough? (y/e/d) (confirm/edit/delete)")
+        print("Is this conversation starter good enough? (y/e/d/s) (confirm/edit/delete/stop)")
         answer = input()
         if answer == "y":
             logger.info(f"Confirming conversation starter: {sentence}")
@@ -59,6 +63,8 @@ def confirm(in_file: str = None):
             print("Please enter the new topics (foo,bar,baz):")
             new_topics = input()
             confirmed_dataset.append((new_topics.split(","), new_sentence))
+        elif answer == "s":
+            break
         else:
             logger.info(f"Deleting conversation starter: {sentence}")
             continue

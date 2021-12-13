@@ -4,5 +4,5 @@ pylint
 pytest-cov
 pytest-xdist
 pytest
-jupyterlab
-user_agent
+ipykernel
+Flask

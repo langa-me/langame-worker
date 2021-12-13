@@ -1,0 +1,8 @@
+google-cloud-firestore
+asyncio
+
+grpcio==1.40.0
+grpcio-tools==1.40.0
+grpc-gateway-protoc-gen-openapiv2
+google-api-python-client
+protobuf

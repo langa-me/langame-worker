@@ -7,10 +7,12 @@
     "python.testing.pytestArgs": [
         "functions",
         "--verbose",
-        "--log-cli-level=DEBUG"
+        "--log-cli-level=DEBUG",
+        "--ignore=${workspaceFolder}/functions/public/public_starter/third_party",
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "jupyter.jupyterServerType": "local",
+    "python.envFile": "${workspaceFolder}/.env",
 }

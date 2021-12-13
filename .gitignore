@@ -16,3 +16,4 @@ embeddings
 indexes
 .pytest_cache
 wandb
+*third_party*

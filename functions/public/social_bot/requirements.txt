@@ -1,0 +1,8 @@
+firebase_admin
+grpcio==1.40.0
+grpcio-tools==1.40.0
+grpc-gateway-protoc-gen-openapiv2
+gcloud
+google-api-python-client
+protobuf
+google-cloud-firestore

@@ -1,0 +1,14 @@
+{
+  "hosting": [
+    {
+      "target": "api",
+      "ignore": [
+        "**/.*"
+      ],
+      "rewrites": [ {
+        "source": "/starter",
+        "function": "public_starter"
+      } 
+    ]
+  }]
+}
