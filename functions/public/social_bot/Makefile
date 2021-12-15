@@ -1,5 +1,4 @@
 DISCORD_APPLICATION_ID ?= foo
-AVA_URL ?= foo
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 
 third_party: ## [Local development] third party dependencies

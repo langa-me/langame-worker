@@ -30,6 +30,9 @@ def social_bot(data, context):
 
     if "state" in data["value"]["fields"]:
         state = data["value"]["fields"]["state"]["stringValue"]
+    if state == "delivered":
+        logger.info(f"Message already delivered. Skipping.")
+        return
     if "topics" in data["value"]["fields"]:
         topics = [
             e["stringValue"]
@@ -42,40 +45,33 @@ def social_bot(data, context):
         conversation_starter = data["value"]["fields"]["conversation_starter"][
             "stringValue"
         ]
+    if "username" in data["value"]["fields"]:
+        username = data["value"]["fields"]["username"]["stringValue"]
     if not state or not topics:
         logger.error(f"No state or topics found in {data}")
         return
     if state in ["to-process", "processing"]:
         logger.info(f"Request being processed: {state}, aborting.")
         return
-    user_facing_message = ""
+    user_message = ""
     if state == "error":
-        error = data["value"]["fields"]["error"]["stringValue"]
-        if "profane" in error:
-            user_facing_message = choice(PROFANITY_MESSAGES)
-            user_facing_message = user_facing_message.replace(
-                "[TOPICS]", f"\"{topics_as_string}\""
-            )
-        elif "not-found" in error:
-            user_facing_message = choice(UNIMPLEMENTED_TOPICS_MESSAGES)
-        else:
-            user_facing_message = choice(FAILING_MESSAGES)
+        user_message = data["value"]["fields"]["user_message"]["stringValue"]
     elif state == "processed":
-        user_facing_message = conversation_starter
+        user_message = conversation_starter
     if social_software == "slack":
-        logger.info(f"Sending message to slack {user_facing_message}")
+        logger.info(f"Sending message to slack {user_message}")
         requests.post(
             data["value"]["fields"]["response_url"]["stringValue"],
             data=json.dumps(
                 {
-                    "text": f"Topics: {topics_as_string}\n{user_facing_message}",
+                    "text": f"Topics: {topics_as_string}\n{user_message}",
                     "username": "Langame",
                     "response_type": "in_channel",
                 }
             ),
         )
     elif social_software == "discord":
-        logger.info(f"Sending message to discord {user_facing_message}")
+        logger.info(f"Sending message to discord {user_message}")
         interaction_token = data["value"]["fields"]["interaction_token"]["stringValue"]
         # https://discord.com/developers/docs/resources/webhook#execute-webhook
         requests.patch(
@@ -83,7 +79,7 @@ def social_bot(data, context):
             headers={"Content-Type": "application/json"},
             data=json.dumps(
                 {
-                    "content": f"Topics: {topics_as_string}\n{user_facing_message}",
+                    "content": f"Topics: {topics_as_string}.\n{user_message}",
                 }
             ),
         )
