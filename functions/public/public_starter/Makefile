@@ -1,11 +1,11 @@
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 FUNCTION_NAME ?= "public_starter"
-API_GATEWAY_CONFIG="starter-basic"
 REGION="us-central1"
 
-# sed to remove https://
-AVA_URL=$(shell gcloud run services list --filter="conversation-starter" --format 'value(URL)' | sed 's/https:\/\///g' 2>/dev/null)
-
+third_party: ## [Local development] third party dependencies
+	rm -rf third_party
+	pip install -t third_party ../../common
+	echo "from .common.starter import get_starter" > third_party/__init__.py
 
 deploy: ## [Local development] deploy to GCP.
 	# firebase deploy --only hosting
@@ -13,18 +13,12 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
-		--set-env-vars=AVA_URL=${AVA_URL} \
 		--project ${GCLOUD_PROJECT} \
 		--timeout 540s
 	# curl -X POST https://dapi.langa.me/starter
 
 apply: ## [Local development] https://firebase.google.com/docs/hosting/multisites
 	firebase target:apply hosting api langame-dev-api
-
-third_party: ## [Local development] third party dependencies
-	mkdir -p third_party
-	pip install -t third_party ${HOME}/Documents/langame-worker/functions/common
-	echo "from .common.ava_client import get_starter" > third_party/__init__.py
 
 .PHONY: help
 

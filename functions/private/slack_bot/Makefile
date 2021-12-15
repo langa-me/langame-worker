@@ -1,3 +1,7 @@
+third_party: ## [Local development] third party dependencies
+	rm -rf third_party
+	pip install -t third_party ../../common
+	echo "from .common.starter import get_starter" > third_party/__init__.py
 
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy slack_bot \

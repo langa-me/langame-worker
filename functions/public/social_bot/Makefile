@@ -2,13 +2,17 @@ DISCORD_APPLICATION_ID ?= foo
 AVA_URL ?= foo
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 
+third_party: ## [Local development] third party dependencies
+	rm -rf third_party
+	pip install -t third_party ../../common
+	echo "from .common.starter import get_starter" > third_party/__init__.py
+
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \
-		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
+		--trigger-event "providers/cloud.firestore/eventTypes/document.write" \
   		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/social_interactions/{interactionId}" \
-		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID} \
-		--set-env-vars=AVA_URL=${AVA_URL}
+		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
 
 .PHONY: help
 

@@ -4,30 +4,22 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_client import BaseClient
-from langame.hugging_face_client import HuggingFaceClient
 from google.cloud.firestore_v1.base_collection import BaseCollectionReference
-from langame.openai_client import OpenAIClient
-from algoliasearch.search_client import SearchClient
-
+import openai
 
 class LangameClient:
     def __init__(self, path_to_config_file: str = './config.yaml'):
-        conf = confuse.Configuration('langame-worker', __name__)
+        conf = confuse.Configuration('langame', __name__)
         conf.set_file(path_to_config_file)
 
-        # AI APIs
-        self._hf_client: HuggingFaceClient = HuggingFaceClient(
-            conf["hugging_face"]["token"].get())
-        self._openai_client: OpenAIClient = OpenAIClient(
-            conf["openai"]["token"].get(),
-            conf["openai"]["organization"].get(),
-            conf["google"]["search_api"]["token"].get(),
-            conf["google"]["search_api"]["id"].get(),
-        )
-        self._algolia_client = SearchClient.create(
-            conf["algolia"]["application_id"].get(), 
-            conf["algolia"]["admin_api_key"].get()
-        )
+        os.environ["HUGGINGFACE_KEY"] = conf["hugging_face"]["token"].get()
+        os.environ["HUGGINGFACE_TOKEN"] = conf["hugging_face"]["token"].get()
+        openai.api_key = conf["openai"]["token"].get()
+        openai.organization = conf["openai"]["organization"].get()
+        assert openai.api_key, "OPENAI_KEY not set"
+        assert openai.organization, "OPENAI_ORG not set"
+        assert os.environ.get("HUGGINGFACE_TOKEN"), "HUGGINGFACE_TOKEN not set"
+        assert os.environ.get("HUGGINGFACE_KEY"), "HUGGINGFACE_KEY not set"
 
         # Firestore
         cred = credentials.Certificate(

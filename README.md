@@ -31,6 +31,7 @@ algolia:
 
 ### Scripts
 
+`python3 scripts/batch_generate.py --out_file=data/common --randomize=True --topics="['education','romance','family','music','film','work','party','food','travel','psychology']"`
 `python3 scripts/prepare_openai.py to_openai --in_files="['data/ice_breaker_2021_12_03.txt','data/science_2021_11_28.txt']" --out_file=data/general_$(date +"%m_%d_%Y")`
 `python3 scripts/prepare_openai.py from_openai --in_file=openai.jsonl --out_file=openai.txt`
 `python3 scripts/prepare_openai.py create_fine_tune --train_dataset_path=data/general_12_05_2021_train.jsonl --validation_dataset_path=data/general_12_05_2021_validation.jsonl --model=curie`

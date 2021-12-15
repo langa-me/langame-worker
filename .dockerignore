@@ -18,3 +18,11 @@ indexes
 wandb
 *third_party*
 build
+functions
+notebooks
+scripts
+.vscode
+data
+*gitpod*
+Makefile
+README.md

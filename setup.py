@@ -17,16 +17,8 @@ if __name__ == "__main__":
         install_requires=[
             "firebase_admin",
             "openai",
-            "beautifulsoup4",
             "confuse",
-            "algoliasearch",
-            "markdown",
-            "plotly",
-            "matplotlib",
-            "ipykernel",
-            "numpy",
-            "kaggle",
-            "pytrends"
+            "transformers",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

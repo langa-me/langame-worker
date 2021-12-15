@@ -70,7 +70,7 @@ def group_by_similarity(sentences: List[str], threshold: float = 0.75) -> List[L
 
 
 def group_by_similarity_distinct(
-    sentences: "list[str]", threshold: float = 0.75
+    sentences: List[str], threshold: float = 0.75
 ) -> map:
     """
     Given a list of sentences, group them by similarity,
