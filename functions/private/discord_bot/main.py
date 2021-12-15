@@ -56,7 +56,7 @@ def discord_bot(_):
             {
                 "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 "data": {
-                    "content": f"{choice(WAITING_MESSAGES)}",
+                    "content": f"Topics: {','.join(topics)}\n{choice(WAITING_MESSAGES)}",
                 },
             }
         )

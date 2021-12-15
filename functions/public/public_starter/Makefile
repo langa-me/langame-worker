@@ -5,7 +5,6 @@ REGION="us-central1"
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
 	pip install -t third_party ../../common
-	echo "from .common.starter import get_starter" > third_party/__init__.py
 
 deploy: ## [Local development] deploy to GCP.
 	# firebase deploy --only hosting

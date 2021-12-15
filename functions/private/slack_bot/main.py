@@ -23,4 +23,4 @@ def slack_bot(_):
             "state": "to-process",
         }
     )
-    return {"response_type": "in_channel", "text": f"{choice(WAITING_MESSAGES)}"}
+    return {"response_type": "in_channel", "text": f"Topics: {','.join(topics)}\n{choice(WAITING_MESSAGES)}"}

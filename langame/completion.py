@@ -80,7 +80,7 @@ def local_completion(prompt: str, deterministic: bool = False) -> str:
     set_seed(42 if deterministic else randint(0, 100))
     gen = generator(
         prompt,
-        max_length=(len(prompt) / 5) + 50,
+        max_length=(len(prompt) / 5) + 100,
         num_return_sequences=1,
         return_text=False,
         return_full_text=False,
@@ -100,7 +100,7 @@ def huggingface_api_completion(prompt: str) -> str:
         {
             "inputs": prompt,
             "parameters": {
-                "max_length": round(len(prompt) / 5) + 50,
+                "max_length": round(len(prompt) / 5) + 100,
                 "num_return_sequences": 1,
                 "return_text": False,
                 "return_full_text": False,
