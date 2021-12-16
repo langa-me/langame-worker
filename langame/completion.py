@@ -51,7 +51,7 @@ def build_prompt(
     return prompt + "\n" + ",".join(topics) + " ###"
 
 
-def openai_completion(prompt: str):
+def openai_completion(prompt: str, stop=["\n"]):
     response = openai.Completion.create(
         engine="davinci-codex",
         prompt=prompt,
@@ -60,7 +60,7 @@ def openai_completion(prompt: str):
         top_p=1,
         frequency_penalty=0.7,
         presence_penalty=0,
-        stop=["\n"],
+        stop=stop,
     )
     if (
         response["choices"][0]["finish_reason"] == "length"

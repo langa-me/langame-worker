@@ -1,6 +1,5 @@
 import os
 import logging
-import requests
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from random import choice
@@ -45,17 +44,6 @@ def discord_bot(_):
             )
         logger.info(f"Requesting conversation starter with topics: {topics}")
         firestore_client = firestore.Client()
-        rate_limit_doc = firestore_client.collection("rate_limits").document(username).get()
-        # check if last query happenned less than a minute ago
-        if rate_limit_doc.exists and "last_query" in rate_limit_doc.to_dict() and \
-            datetime.now() > datetime.fromtimestamp(rate_limit_doc.get("last_query").timestamp()) + timedelta(seconds=30):
-            # TODO: funny messages
-            return jsonify(
-                {
-                    "response_type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    "text": "You have been rate limited. Please wait a few minutes before using this command again.",
-                }
-            )
 
         firestore_client.collection("social_interactions").add(
             {
