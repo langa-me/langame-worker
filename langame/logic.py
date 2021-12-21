@@ -13,7 +13,7 @@ def generate_conversation_starter(
     conversation_starter_examples: List[Any],
     topics: List[str],
     prompt_rows: int = 60,
-    profanity_thresold: ProfanityThreshold = ProfanityThreshold.tolerant,
+    profanity_threshold: ProfanityThreshold = ProfanityThreshold.tolerant,
     completion_type: CompletionType = CompletionType.huggingface_api,
 ) -> str:
     """
@@ -21,11 +21,15 @@ def generate_conversation_starter(
     :param conversation_starter_examples: The list of conversation starters.
     :param topics: The list of topics.
     :param prompt_rows: The number of rows in the prompt.
-    :param profanity_thresold: Strictly above that threshold is considered profane and None is returned.
+    :param profanity_threshold: Strictly above that threshold is considered profane and None is returned.
     :param completion_type: The completion type to use.
     :return: conversation_starter
     """
-    prompt = build_prompt(conversation_starter_examples, topics, prompt_rows,)
+    prompt = build_prompt(
+        conversation_starter_examples,
+        topics,
+        prompt_rows,
+    )
     text = None
     if completion_type is CompletionType.openai_api:
         text = openai_completion(prompt)
@@ -36,11 +40,10 @@ def generate_conversation_starter(
     else:
         raise Exception(f"Unknown completion type {completion_type}")
     conversation_starter = text.strip()
-    if profanity_thresold.value > 1:
+    if profanity_threshold.value > 1:
         # We check the whole output text,
         # in the future should probably check
         # topics and text in parallel and aggregate
-        if is_profane(text) > (3 - profanity_thresold.value):
+        if is_profane(text) > (3 - profanity_threshold.value):
             raise ProfaneException()
     return conversation_starter
-

@@ -11,6 +11,7 @@ import unittest
 import openai
 import os
 
+
 class TestLogic(unittest.TestCase):
     def setUp(self) -> None:
         openai.api_key = os.environ["OPENAI_KEY"]
@@ -42,9 +43,7 @@ class TestLogic(unittest.TestCase):
         memes = [
             (e.id, e.to_dict()) for e in firestore_client.collection("memes").stream()
         ]
-        conversation_starter = generate_conversation_starter(
-            memes, ["philosophy"]
-        )
+        conversation_starter = generate_conversation_starter(memes, ["philosophy"])
         print(conversation_starter)
 
     def test_generate_conversation_starter_no_openai(self):
@@ -53,7 +52,10 @@ class TestLogic(unittest.TestCase):
             (e.id, e.to_dict()) for e in firestore_client.collection("memes").stream()
         ]
         conversation_starter = generate_conversation_starter(
-            memes, ["philosophy"], no_openai=True, prompt_rows=20,
+            memes,
+            ["philosophy"],
+            no_openai=True,
+            prompt_rows=20,
         )
         print(conversation_starter)
 
@@ -65,18 +67,18 @@ class TestLogic(unittest.TestCase):
             (e.id, e.to_dict()) for e in firestore_client.collection("memes").stream()
         ]
         new_topics, conversation_starter = generate_conversation_starter(
-            memes, ["god"], profanity_thresold=ProfanityThreshold.strict
+            memes, ["god"], profanity_threshold=ProfanityThreshold.strict
         )
         # Non deterministic tests, don't run in CI?
         self.assertEqual(new_topics, None)
         self.assertEqual(conversation_starter, None)
         new_topics, conversation_starter = generate_conversation_starter(
-            memes, ["god"], profanity_thresold=ProfanityThreshold.tolerant
+            memes, ["god"], profanity_threshold=ProfanityThreshold.tolerant
         )
         assert new_topics is not None
         assert conversation_starter is not None
         new_topics, conversation_starter = generate_conversation_starter(
-            memes, ["god"], profanity_thresold=ProfanityThreshold.open
+            memes, ["god"], profanity_threshold=ProfanityThreshold.open
         )
         assert new_topics is not None
         assert conversation_starter is not None

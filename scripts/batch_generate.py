@@ -1,7 +1,7 @@
 from langame import LangameClient
 from langame.logic import generate_conversation_starter
 from langame.profanity import ProfanityThreshold
-from langame.completion import (CompletionType, openai_completion)
+from langame.completion import CompletionType, openai_completion
 from langame.messages import (
     FAILING_MESSAGES,
     PROFANITY_MESSAGES,
@@ -15,6 +15,7 @@ import logging
 from random import sample, randint, seed, shuffle
 from time import sleep
 from enum import Enum
+
 
 class FuckOpenAIFilter(logging.Filter):
     def filter(self, record):
@@ -58,14 +59,14 @@ def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], randomize=
         sleep(randint(0, 10) / 100)
         conversation_starter = ""
         selected_topics = (
-            sample(topics, randint(1, len(topics)-1)) if randomize else topics
+            sample(topics, randint(1, len(topics) - 1)) if randomize else topics
         )
         logger.info(f"Generating conversation starter for topics: {selected_topics}")
         try:
             conversation_starter = generate_conversation_starter(
                 existing_memes,
                 topics,
-                profanity_thresold=ProfanityThreshold.open,
+                profanity_threshold=ProfanityThreshold.open,
                 completion_type=CompletionType.openai_api,
                 prompt_rows=60,
             )
@@ -97,7 +98,8 @@ class MessageType(Enum):
     RATE_LIMIT = 3
     WAITING = 4
 
-def generate_messages(out_file="data/failing_messages.txt", type: str="failing"):
+
+def generate_messages(out_file="data/failing_messages.txt", type: str = "failing"):
     """
     :param out_file: The file to write the messages to.
     """
@@ -114,9 +116,7 @@ def generate_messages(out_file="data/failing_messages.txt", type: str="failing")
         ".txt", f"_{datetime.datetime.now().strftime('%Y_%m_%d')}.txt"
     )
 
-    logger.info(
-        f"Generating messages for type: {message_type}, writing to {out_file}"
-    )
+    logger.info(f"Generating messages for type: {message_type}, writing to {out_file}")
     LangameClient()
     messages = []
     messages_prompt = []
@@ -138,7 +138,10 @@ def generate_messages(out_file="data/failing_messages.txt", type: str="failing")
         sleep(randint(0, 10) / 10)
         message = ""
         logger.info(f"Generating message for type: {message_type}")
-        prompt_list = sample(messages_prompt, randint(round(len(messages_prompt)/10), len(messages_prompt)))
+        prompt_list = sample(
+            messages_prompt,
+            randint(round(len(messages_prompt) / 10), len(messages_prompt)),
+        )
         shuffle(prompt_list)
         prompt = "\n".join(prompt_list) + "\n"
         try:
@@ -158,9 +161,10 @@ def generate_messages(out_file="data/failing_messages.txt", type: str="failing")
                 logger.info(f"total {total_rows} rows written to {out_file}")
 
 
-
 if __name__ == "__main__":
-    fire.Fire({
-        "generate": generate,
-        "generate_messages": generate_messages,
-    })
+    fire.Fire(
+        {
+            "generate": generate,
+            "generate_messages": generate_messages,
+        }
+    )
