@@ -1,17 +1,18 @@
 import os
+from time import sleep
 import json
 import requests
 import logging
 from firebase_admin import firestore
+from google.cloud.firestore import Client
 from random import choice
+from datetime import datetime, timedelta
 from third_party.common.messages import (
-    UNIMPLEMENTED_TOPICS_MESSAGES,
-    FAILING_MESSAGES,
-    PROFANITY_MESSAGES,
+    RATE_LIMIT_MESSAGES,
 )
-
+from third_party.common.services import request_starter
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
-client = firestore.Client()
+client: Client = firestore.Client()
 
 def social_bot(data, context):
     """Triggered by a change to a Firestore document.
@@ -31,7 +32,7 @@ def social_bot(data, context):
     if "state" in data["value"]["fields"]:
         state = data["value"]["fields"]["state"]["stringValue"]
     if state == "delivered":
-        logger.info(f"Message already delivered. Skipping.")
+        logger.info("Message already delivered. Skipping.")
         return
     if "topics" in data["value"]["fields"]:
         topics = [
@@ -41,23 +42,35 @@ def social_bot(data, context):
         topics_as_string = ",".join(topics)
     if "social_software" in data["value"]["fields"]:
         social_software = data["value"]["fields"]["social_software"]["stringValue"]
-    if "conversation_starter" in data["value"]["fields"]:
-        conversation_starter = data["value"]["fields"]["conversation_starter"][
-            "stringValue"
-        ]
     if "username" in data["value"]["fields"]:
         username = data["value"]["fields"]["username"]["stringValue"]
-    if not state or not topics:
-        logger.error(f"No state or topics found in {data}")
+
+    if not username:
+        logger.error("No username in document. Skipping.")
         return
-    if state in ["to-process", "processing"]:
-        logger.info(f"Request being processed: {state}, aborting.")
-        return
+    rate_limit_doc = (
+        client.collection("rate_limits").document(username).get()
+    )
     user_message = ""
-    if state == "error":
-        user_message = data["value"]["fields"]["user_message"]["stringValue"]
-    elif state == "processed":
-        user_message = conversation_starter
+
+    # check if last query happenned less than a minute ago
+    if (
+        rate_limit_doc.exists
+        and "last_query" in rate_limit_doc.to_dict()
+        and datetime.now()
+        < datetime.fromtimestamp(rate_limit_doc.get("last_query").timestamp())
+        + timedelta(seconds=10)
+    ):
+        logger.warning(f"Rate limit for {username} expired")
+        user_message = choice(RATE_LIMIT_MESSAGES)
+    else:
+        rate_limit_doc.reference.set({"last_query": firestore.SERVER_TIMESTAMP})
+
+    if not user_message:
+        conversation_starter, user_message = request_starter(logger, client, topics)
+        if conversation_starter:
+            user_message = conversation_starter
+
     if social_software == "slack":
         logger.info(f"Sending message to slack {user_message}")
         requests.post(
@@ -83,5 +96,5 @@ def social_bot(data, context):
                 }
             ),
         )
-    logger.info(f"Done sending message to {social_software}")
-    affected_doc.update({"state": "delivered"})
+    logger.info(f"Done sending message to {social_software}:{user_message}")
+    affected_doc.update({"state": "delivered", "user_message": user_message})

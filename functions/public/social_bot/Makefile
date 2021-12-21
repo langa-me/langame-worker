@@ -8,7 +8,7 @@ third_party: ## [Local development] third party dependencies
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \
-		--trigger-event "providers/cloud.firestore/eventTypes/document.write" \
+		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
   		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/social_interactions/{interactionId}" \
 		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
 

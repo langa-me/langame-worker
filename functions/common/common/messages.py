@@ -69,6 +69,9 @@ FAILING_MESSAGES = [
     "There was a technical difficulty contacting this web-page.",
     "Unable to obtain exclusive access to the requested data.",
     "Computer says no.",
+    "You are infected by a spyware, please send $100 to remove it",
+    "Your ADSL line is not working today",
+    "Your download is never ending, you should pay a bit more in your internet bill...",
 ]
 
 # List of messages to return to the user when his input seems to contains
@@ -147,5 +150,25 @@ WAITING_MESSAGES = [
     "I'll get back to you in a second.",
     "Please hold on for just a second!",
     "One minute please, I'm calculating...",
+]
+
+# This is a list of VERY FUNNY messages for users that has been rate limited to the API
+RATE_LIMIT_MESSAGES = [
+    "You have been rate limited. Please wait a few minutes before using this command again.",
+    "Your high request frequency has made another hole in the ozone layer, please wait a bit!",
+    "Retries limit exceeded. The server is melting",
+    "Due to the electromagnetic radiation, the RAM has just crashed",
+    "Our server has been hit by a Zat'nik'tel Wave!",
+    "Please wait, our system has just seen a huge spike in entropy caused by billion requests",
+    "Please hang on... our backup has just made a time paradox!",
+    "You are lactose intolerant... please make a macchiato instead!",
+    "The world trade center has just collapsed. For more info, please check your settings!",
+    "Your request caused 42 flavour servers to drop offline and all the users of Digg have gone mad.",
+    "Google collapsed today. Please stand by.",
+    "The server can't cope with this amount of requests. Hang on a minute!",
+    "Sir, the server needs more time to compute",
+    "Sir, the sun has gone down so the server has to wait for it to come up again",
+    "Please allow me to load my A.I brain. It is powered by a supercomputer running 2 parallel processors!",
+    "Delay due to lunar conditions. Please try it again.",
 ]
 # TODO: generate online messages
