@@ -54,7 +54,6 @@ def get_uniques(
 
 def dedup(
     in_file=None,
-    out_file=None,
     use_gpu=False,
 ):
     """
@@ -64,8 +63,6 @@ def dedup(
     :param use_gpu: Whether to use the GPU.
     """
     assert isinstance(in_file, str), "out_file must be a string"
-    assert isinstance(out_file, str), "out_file must be a string"
-    assert out_file.endswith(".txt"), "out_file must be a .txt file"
     logger = logging.getLogger("deduplicate_dataset")
     logging.basicConfig(level=logging.INFO)
     logger.warning(
@@ -73,8 +70,8 @@ def dedup(
     )
 
     # Add the date to the out file before the extension with format YYYY_MM_DD
-    out_file = out_file.replace(
-        ".txt", f"_{datetime.datetime.now().strftime('%Y_%m_%d')}.txt"
+    out_file = in_file.replace(
+        ".txt", "_dedup.txt"
     )
 
     logger.info(f"Deduplicating dataset from {in_file}, writing to {out_file}")
@@ -87,9 +84,7 @@ def dedup(
 
     logger.info(f"Device: {device}")
 
-    sentence_embeddings_model = SentenceTransformer(sentence_embeddings_model_name).to(
-        device
-    )
+    sentence_embeddings_model = SentenceTransformer(sentence_embeddings_model_name, device=device)
 
     c = LangameClient()
     existing_memes = []
@@ -109,7 +104,7 @@ def dedup(
     new_memes_embeddings = []
 
     with open(in_file, "r") as f:
-        logger.info(f"Done, now building embeddings for new memes")
+        logger.info(f"Done, now building embeddings for {len(f.readlines())} new memes")
         for i, line in enumerate(f):
             if i % 1000 == 0:
                 logger.info(f"Built embeddings for {i} new memes")

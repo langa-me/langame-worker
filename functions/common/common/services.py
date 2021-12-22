@@ -30,8 +30,9 @@ def request_starter(logger: Logger, firestore_client: Client, topics: List[str]
         })[1]
     # Poll until a conversation starter is generated
     new_meme_doc: DocumentSnapshot = None
-    for i in range(3):
-        logger.info(f"Polling for conversation starter n°{i}/5")
+    max_tries = 5
+    for i in range(max_tries):
+        logger.info(f"Polling for conversation starter n°{i}/{max_tries}")
         sleep((i/2)**3)
         new_meme_doc = new_meme_ref.get()
         conversation_starter = new_meme_doc.to_dict().get("content")
