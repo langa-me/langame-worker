@@ -20,7 +20,7 @@ def confirm(in_file: str = None):
     )
 
     logger.info(f"Confirming conversation starters from {in_file}")
-    logger.info(f"""If you are unsure whether these conversation starters 
+    logger.info("""If you are unsure whether these conversation starters 
 are already present in database, make sure to deduplicate your file first 
 using scripts/deduplicate_dataset.py""")
 
@@ -66,6 +66,11 @@ using scripts/deduplicate_dataset.py""")
         elif answer == "s":
             break
         else:
+            # remove from file this conversation starter
+            with open(in_file, "w") as f:
+                for line in lines:
+                    if line.strip() != f"{topics} ### {sentence}":
+                        f.write(line)
             logger.info(f"Deleting conversation starter: {sentence}")
             continue
     
@@ -93,7 +98,6 @@ using scripts/deduplicate_dataset.py""")
             # Random delay if tweeting
             if answer == "y":
                 sleep(randint(1,3))
-
     else:
         logger.info("Denied dataset, aborting")
 

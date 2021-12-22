@@ -8,9 +8,10 @@ import glob
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import logging
-from autofaiss.external.quantize import Quantizer
+from autofaiss import build_index
 import os
 from collections import defaultdict
+
 
 def connected_components(neighbors):
     seen = set()
@@ -70,9 +71,7 @@ def dedup(
     )
 
     # Add the date to the out file before the extension with format YYYY_MM_DD
-    out_file = in_file.replace(
-        ".txt", "_dedup.txt"
-    )
+    out_file = in_file.replace(".txt", "_dedup.txt")
 
     logger.info(f"Deduplicating dataset from {in_file}, writing to {out_file}")
 
@@ -84,30 +83,37 @@ def dedup(
 
     logger.info(f"Device: {device}")
 
-    sentence_embeddings_model = SentenceTransformer(sentence_embeddings_model_name, device=device)
+    sentence_embeddings_model = SentenceTransformer(
+        sentence_embeddings_model_name, device=device
+    )
 
     c = LangameClient()
     existing_memes = []
     for e in c._firestore_client.collection("memes").stream():
-        existing_memes.append((e.id, e.to_dict()))
+        if "content" in e.to_dict():
+            existing_memes.append((e.id, e.to_dict()))
+        else:
+            logger.warning(f"Skipping meme {e.id}, no content")
 
     logger.info("Building embeddings for existing memes")
 
-    existing_memes_embeddings = np.array(
-        [
-            sentence_embeddings_model.encode(e[1]["content"], show_progress_bar=False)
-            for e in existing_memes
-        ]
-    )
+    existing_memes_embeddings = []
+    for i, v in enumerate(existing_memes):
+        existing_memes_embeddings.append(
+            sentence_embeddings_model.encode(v[1]["content"], show_progress_bar=False)
+        )
+        if i % 1000 == 0:
+            logger.info(f"Built embeddings for {i+1000} existing memes")
 
     new_memes = []
     new_memes_embeddings = []
 
     with open(in_file, "r") as f:
-        logger.info(f"Done, now building embeddings for {len(f.readlines())} new memes")
-        for i, line in enumerate(f):
+        lines = f.readlines()
+        logger.info(f"Now building embeddings for {len(lines)} new memes")
+        for i, line in enumerate(lines):
             if i % 1000 == 0:
-                logger.info(f"Built embeddings for {i} new memes")
+                logger.info(f"Built embeddings for {i+1000} new memes")
             line = line.strip()
             # Check that the format is correct
             # i.e. [topics,] ### [sentence]
@@ -120,7 +126,12 @@ def dedup(
                         sentence.strip(), show_progress_bar=False
                     )
                 )
+
     new_memes_embeddings = np.array(new_memes_embeddings)
+    logger.info(f"Done, new memes embeddings of shape {new_memes_embeddings.shape}")
+    if len(new_memes_embeddings) == 0:
+        logger.error("Failed to build new memes embeddings, exiting")
+        return
 
     # Create the faiss indexes
     existing_memes_embeddings_dir = "embeddings/existing_memes_embeddings"
@@ -131,20 +142,19 @@ def dedup(
     os.makedirs(new_memes_embeddings_dir, exist_ok=True)
     np.save(f"{existing_memes_embeddings_dir}/p1.npy", existing_memes_embeddings)
     np.save(f"{new_memes_embeddings_dir}/p1.npy", new_memes_embeddings)
-    quantizer = Quantizer()
     logger.info("Done, now building indexes")
 
-    quantizer.quantize(
-        embeddings_path=existing_memes_embeddings_dir,
-        output_path=existing_memes_index_dir,
+    build_index(
+        embeddings=existing_memes_embeddings_dir,
+        index_path=f"{existing_memes_index_dir}/knn.index",
         max_index_memory_usage="6G",
-        current_memory_available="8G",
+        current_memory_available="7G",
     )
-    quantizer.quantize(
-        embeddings_path=new_memes_embeddings_dir,
-        output_path=new_memes_index_dir,
+    build_index(
+        embeddings=new_memes_embeddings_dir,
+        index_path=f"{new_memes_index_dir}/knn.index",
         max_index_memory_usage="6G",
-        current_memory_available="8G",
+        current_memory_available="7G",
     )
     existing_memes_index = faiss.read_index(
         glob.glob(f"{existing_memes_index_dir}/*.index")[0]
@@ -178,6 +188,7 @@ def dedup(
     logger.info(
         f"Deduplicated {len(new_memes)} into {len(new_new_uniques)} new memes, wrote to {out_file}"
     )
+
 
 if __name__ == "__main__":
     fire.Fire(dedup)

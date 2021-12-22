@@ -6,3 +6,8 @@ pytest-xdist
 pytest
 ipykernel
 Flask
+faiss-cpu
+fire
+torch
+sentence_transformers
+autofaiss==2.4.0
