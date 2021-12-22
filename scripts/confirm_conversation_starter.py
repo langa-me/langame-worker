@@ -69,7 +69,7 @@ using scripts/deduplicate_dataset.py""")
             # remove from file this conversation starter
             with open(in_file, "w") as f:
                 for line in lines:
-                    if line.strip() != f"{topics} ### {sentence}":
+                    if sentence not in line:
                         f.write(line)
             logger.info(f"Deleting conversation starter: {sentence}")
             continue
@@ -82,7 +82,7 @@ using scripts/deduplicate_dataset.py""")
     print("Is this dataset good enough? (y/n)")
     answer = input()
     if answer == "y":
-        logger.info("Confirmed dataset, inserting in Firestore now")
+        logger.info("Confirmed dataset")
         # Ask whether to tweet the dataset
         print("Do you want to tweet the dataset? (y/n)")
         answer = input()

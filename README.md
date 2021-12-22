@@ -31,6 +31,7 @@ algolia:
 
 ### Scripts
 
+`python3 scripts/confirm_conversation_starter.py --in_file=data/dataset.txt`
 `python3 scripts/deduplicate_dataset.py --in_file=data/dataset.txt`
 `python3 scripts/batch_generate.py --out_file=data/common --randomize=True --topics="['education','romance','family','music','film','work','party','food','travel','psychology']"`
 `python3 scripts/prepare_openai.py to_openai --in_files="['data/ice_breaker_2021_12_03.txt','data/science_2021_11_28.txt']" --out_file=data/general_$(date +"%m_%d_%Y")`
