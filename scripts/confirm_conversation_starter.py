@@ -20,7 +20,7 @@ def confirm(in_file: str = None):
     )
 
     logger.info(f"Confirming conversation starters from {in_file}")
-    logger.info(f"""If you are unsure whether these conversation starters 
+    logger.info("""If you are unsure whether these conversation starters 
 are already present in database, make sure to deduplicate your file first 
 using scripts/deduplicate_dataset.py""")
 
@@ -66,6 +66,11 @@ using scripts/deduplicate_dataset.py""")
         elif answer == "s":
             break
         else:
+            # remove from file this conversation starter
+            with open(in_file, "w") as f:
+                for line in lines:
+                    if sentence not in line:
+                        f.write(line)
             logger.info(f"Deleting conversation starter: {sentence}")
             continue
     
@@ -77,7 +82,7 @@ using scripts/deduplicate_dataset.py""")
     print("Is this dataset good enough? (y/n)")
     answer = input()
     if answer == "y":
-        logger.info("Confirmed dataset, inserting in Firestore now")
+        logger.info("Confirmed dataset")
         # Ask whether to tweet the dataset
         print("Do you want to tweet the dataset? (y/n)")
         answer = input()
@@ -93,7 +98,6 @@ using scripts/deduplicate_dataset.py""")
             # Random delay if tweeting
             if answer == "y":
                 sleep(randint(1,3))
-
     else:
         logger.info("Denied dataset, aborting")
 
