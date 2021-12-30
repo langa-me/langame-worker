@@ -29,6 +29,14 @@ def build_prompt(
     :return: prompt
     """
     random_conversation_starters = choices(conversation_starter_examples, k=500)
+    # Filter broken conversation starters
+    random_conversation_starters = [
+        e
+        for e in random_conversation_starters
+        if len(e) == 2 and
+        "topics" in e[1] and
+        "content" in e[1]
+    ]
     found_conversation_starters = [
         f"{','.join(e[1]['topics'])} ### {e[1]['content']}"
         for e in random_conversation_starters
