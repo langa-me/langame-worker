@@ -11,8 +11,10 @@ from third_party.common.messages import (
     RATE_LIMIT_MESSAGES,
 )
 from third_party.common.services import request_starter
+
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
 client: Client = firestore.Client()
+
 
 def social_bot(data, context):
     """Triggered by a change to a Firestore document.
@@ -40,6 +42,12 @@ def social_bot(data, context):
             for e in data["value"]["fields"]["topics"]["arrayValue"]["values"]
         ]
         topics_as_string = ",".join(topics)
+    if "players" in data["value"]["fields"]:
+        players = [
+            e["stringValue"]
+            for e in data["value"]["fields"]["players"]["arrayValue"]["values"]
+        ]
+        players_as_string = "\nPlayers: " + ",".join(players) + "."
     if "social_software" in data["value"]["fields"]:
         social_software = data["value"]["fields"]["social_software"]["stringValue"]
     if "username" in data["value"]["fields"]:
@@ -48,9 +56,7 @@ def social_bot(data, context):
     if not username:
         logger.error("No username in document. Skipping.")
         return
-    rate_limit_doc = (
-        client.collection("rate_limits").document(username).get()
-    )
+    rate_limit_doc = client.collection("rate_limits").document(username).get()
     user_message = ""
 
     # check if last query happenned less than a minute ago
@@ -92,7 +98,7 @@ def social_bot(data, context):
             headers={"Content-Type": "application/json"},
             data=json.dumps(
                 {
-                    "content": f"Topics: {topics_as_string}.\n{user_message}",
+                    "content": f"Topics: {topics_as_string}.{players_as_string}\n{user_message}",
                 }
             ),
         )
