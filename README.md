@@ -31,6 +31,8 @@ algolia:
 
 ### Scripts
 
+`python3 scripts/insert_dataset_in_firestore.py --in_file=data/dataset.txt`
+
 `python3 scripts/confirm_conversation_starter.py --in_file=data/dataset.txt`
 `python3 scripts/deduplicate_dataset.py --in_file=data/dataset.txt`
 `python3 scripts/batch_generate.py --out_file=data/common --randomize=True --topics="['education','romance','family','music','film','work','party','food','travel','psychology']"`

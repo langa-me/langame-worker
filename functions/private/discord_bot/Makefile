@@ -9,6 +9,7 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
+		--min-instances 1 \
 		--set-env-vars=CLIENT_PUBLIC_KEY=${CLIENT_PUBLIC_KEY}
 
 .PHONY: help

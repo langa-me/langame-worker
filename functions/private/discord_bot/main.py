@@ -44,7 +44,7 @@ def get_discord_interaction_option_value(
             for option in json_request["data"]["options"]
             if option["name"] == option_name
         )
-    return None
+    return default_value
 
 
 @verify_key_decorator(CLIENT_PUBLIC_KEY)
@@ -74,7 +74,7 @@ def discord_bot(_):
                     "text": "You need to send this command to a channel",
                 }
             )
-        logger.info(f"Requesting conversation starter with topics: {topics}")
+        logger.info(f"Requesting conversation starter with topics: {topics} and players: {players}")
         firestore_client = firestore.Client()
 
         firestore_client.collection("social_interactions").add(

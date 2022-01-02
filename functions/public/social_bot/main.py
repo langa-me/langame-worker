@@ -30,7 +30,8 @@ def social_bot(data, context):
     document_path = "/".join(path_parts[1:])
 
     affected_doc = client.collection(collection_path).document(document_path)
-
+    topics_as_string = ""
+    players_as_string = ""
     if "state" in data["value"]["fields"]:
         state = data["value"]["fields"]["state"]["stringValue"]
     if state == "delivered":
@@ -42,7 +43,11 @@ def social_bot(data, context):
             for e in data["value"]["fields"]["topics"]["arrayValue"]["values"]
         ]
         topics_as_string = ",".join(topics)
-    if "players" in data["value"]["fields"]:
+    if (
+        "players" in data["value"]["fields"]
+        and "arrayValue" in data["value"]["fields"]["players"]
+        and "values" in data["value"]["fields"]["players"]["arrayValue"]
+    ):
         players = [
             e["stringValue"]
             for e in data["value"]["fields"]["players"]["arrayValue"]["values"]
