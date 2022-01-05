@@ -15,6 +15,8 @@ import logging
 from random import sample, randint, seed, shuffle
 from time import sleep
 from enum import Enum
+from typing import List, Any
+import pandas as pd
 
 
 class FuckOpenAIFilter(logging.Filter):
@@ -22,11 +24,20 @@ class FuckOpenAIFilter(logging.Filter):
         return "OpenAI" not in str(record)
 
 
-def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], randomize=False):
+def generate(
+    out_file: str,
+    topics: List[str] = ["ice breaker"],
+    randomize: bool = False,
+    use_least_used_topics: bool = False,
+    top_n_unused_topics: int = 20,
+):
     """
     Generate a set of conversation starters for the given topics.
     :param out_file: The file to write the generated conversations to.
     :param topics: The topics to generate conversations for.
+    :param randomize: Whether to randomize the order of the topics at each generation.
+    :param use_least_used_topics: Whether to use the least used topics.
+    :param top_n_unused_topics: The number of topics to use if use_least_used_topics is True.
     """
     assert isinstance(topics, list), "topics must be a list"
     assert isinstance(out_file, str), "out_file must be a string"
@@ -41,17 +52,44 @@ def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], randomize=
         ".txt", f"_{datetime.datetime.now().strftime('%Y_%m_%d')}.txt"
     )
 
-    logger.info(
-        f"Generating conversations for topics: {topics}, randomize: {randomize}, writing to {out_file}"
-    )
-
     c = LangameClient()
     existing_memes = []
+
+    def is_garbage(meme: dict):
+        return (
+            "topics" not in meme
+            or
+            # Is not a list
+            not isinstance(meme["topics"], list)
+            or
+            # Some topics are abnormally long
+            any(isinstance(topic, str) and len(topic.split(" ")) > 2 for topic in meme["topics"])
+        )
+
     for e in c._firestore_client.collection("memes").stream():
+        if is_garbage(e.to_dict()):
+            topics = e.to_dict().get("topics", None)
+            logger.warning(f"Garbage meme found: {e.id} topics: {topics}")
+            continue
         existing_memes.append((e.id, e.to_dict()))
 
     logger.info(f"Fetched {len(existing_memes)} memes.")
 
+    if use_least_used_topics:
+        logger.info("Using least used topics")
+        # Find the least used topics in the dataset
+        df = pd.DataFrame([e[1] for e in existing_memes])
+        new_df = (
+            pd.Series([item for sublist in df.topics for item in sublist])
+            .value_counts()
+            .rename_axis("topics")
+            .reset_index(name="counts")
+        )
+        topics = [e[0] for e in new_df.values][-top_n_unused_topics:]
+        randomize = True
+    logger.info(
+        f"Generating conversations for topics: {topics}, randomize: {randomize}, writing to {out_file}"
+    )
     conversation_starters = []
     seed(randint(0, 2 ** 31))
     for i in range(10 ** 12):
@@ -59,7 +97,10 @@ def generate(out_file="data/ice_breaker.txt", topics=["ice breaker"], randomize=
         sleep(randint(0, 10) / 100)
         conversation_starter = ""
         selected_topics = (
-            sample(topics, randint(1, len(topics) - 1)) if randomize else topics
+            # Generate using all topics or a random subset if randomize is True
+            sample(topics, randint(1, len(topics) - 1 if len(topics) < 5 else 4))
+            if randomize
+            else topics
         )
         logger.info(f"Generating conversation starter for topics: {selected_topics}")
         try:
