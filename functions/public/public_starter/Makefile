@@ -7,17 +7,23 @@ third_party: ## [Local development] third party dependencies
 	pip install -t third_party ../../common
 
 deploy: ## [Local development] deploy to GCP.
-	# firebase deploy --only hosting
+	firebase use ${GCLOUD_PROJECT}
+	firebase deploy --only hosting
 	gcloud beta functions deploy ${FUNCTION_NAME} \
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
 		--project ${GCLOUD_PROJECT} \
 		--timeout 540s
-	# curl -X POST https://dapi.langa.me/starter
+	# https://console.cloud.google.com/firestore/data/api_keys?project=${GCLOUD_PROJECT}
+	# curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: fooBarBaz" -d '{"topics": ["ice breaker"]}' https://dapi.langa.me/v1/conversation/starter
 
-apply: ## [Local development] https://firebase.google.com/docs/hosting/multisites
+apply_dev: ## [Local development] https://firebase.google.com/docs/hosting/multisites
+	firebase use ${GCLOUD_PROJECT}
 	firebase target:apply hosting api langame-dev-api
+apply_prod: ## [Local development] https://firebase.google.com/docs/hosting/multisites
+	firebase use ${GCLOUD_PROJECT}
+	firebase target:apply hosting api langame-prod-api
 
 .PHONY: help
 

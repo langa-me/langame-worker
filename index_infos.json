@@ -1,1 +1,0 @@
-{"index_key": "HNSW32", "index_param": "efSearch=777", "size in bytes": 146336650, "avg_search_speed_ms": 10.020884622111431, "99p_search_speed_ms": 17.639021548675355, "reconstruction error %": 0.0, "nb vectors": 43758, "vectors dimension": 768, "compression ratio": 0.9185981502241578}

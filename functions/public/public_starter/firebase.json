@@ -1,14 +1,15 @@
 {
   "hosting": [
     {
+      "public": "public",
       "target": "api",
       "ignore": [
         "**/.*"
       ],
       "rewrites": [ {
-        "source": "/starter",
+        "source": "v1/conversation/starter",
         "function": "public_starter"
-      } 
+      }
     ]
   }]
 }

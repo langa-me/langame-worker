@@ -12,9 +12,11 @@ __pycache__/
 config.yaml
 .ipynb_checkpoints
 
+# ML
 embeddings
 indexes
 .pytest_cache
 wandb
 *third_party*
 build
+index_infos.json
