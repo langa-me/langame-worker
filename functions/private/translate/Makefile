@@ -5,6 +5,7 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-event "providers/cloud.firestore/eventTypes/document.write" \
   		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/memes/{memeId}" \
+		--project ${GCLOUD_PROJECT} \
 		--timeout 240
 
 .PHONY: help

@@ -1,4 +1,4 @@
-# import asyncio
+import asyncio
 import logging
 from firebase_admin import firestore
 from google.cloud.firestore import Client
@@ -7,10 +7,17 @@ from deep_translator import GoogleTranslator
 client: Client = firestore.Client()
 
 LANGUAGES = ["de", "es", "fr", "it", "ja", "ko", "pt", "ru", "zh-CN"]
-# loop = asyncio.new_event_loop()
-# asyncio.set_event_loop(loop)
 
+async def add_translation(translated, content, lang):
+    translated[lang] = GoogleTranslator(source='en', target=lang).translate(content)
 
+async def execute(translated, content):
+    await asyncio.gather(
+            *[
+                add_translation(translated, content, lang)
+                for lang in LANGUAGES
+            ]
+        )
 def translate(data, context):
     """Triggered by a change to a Firestore document.
     Args:
@@ -32,19 +39,14 @@ def translate(data, context):
         "fields" in data["value"]
         and "content" in data["value"]["fields"]
         and "translated" not in data["value"]["fields"]
+        # or content changed
+        or (
+            "updateMask" in data
+            and "fieldPaths" in data["updateMask"]
+            and "content" in data["updateMask"]["fieldPaths"]
+        )
     ):
         content = data["value"]["fields"]["content"]["stringValue"]
-        # async def add_translation(lang):
-        #     translated[lang] = GoogleTranslator(source='en', target=lang).translate(content)
-        # loop.run_until_complete(asyncio.gather(
-        #     *[
-        #         add_translation(lang)
-        #         for lang in LANGUAGES
-        #     ]
-        # ))
-        for lang in LANGUAGES:
-            translated[lang] = GoogleTranslator(source="en", target=lang).translate(
-                content
-            )
+        asyncio.run(execute(translated, content))
         logger.info(f"Done translation {translated}")
         affected_doc.update({"translated": translated})

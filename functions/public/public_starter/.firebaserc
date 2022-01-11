@@ -6,8 +6,7 @@
     "langame-dev": {
       "hosting": {
         "api": [
-          "langame-dev-api",
-          "langame-prod-api"
+          "langame-dev-api"
         ]
       }
     },

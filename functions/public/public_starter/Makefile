@@ -1,7 +1,7 @@
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 FUNCTION_NAME ?= "public_starter"
 REGION="us-central1"
-
+GET_MEMES_URL ?= "https://us-central1-${GCLOUD_PROJECT}.cloudfunctions.net/getMemes"
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
 	pip install -t third_party ../../common
@@ -14,7 +14,8 @@ deploy: ## [Local development] deploy to GCP.
 		--trigger-http \
 		--allow-unauthenticated \
 		--project ${GCLOUD_PROJECT} \
-		--timeout 540s
+		--timeout 540s \
+		--set-env-vars GET_MEMES_URL=${GET_MEMES_URL}
 	# https://console.cloud.google.com/firestore/data/api_keys?project=${GCLOUD_PROJECT}
 	# curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: fooBarBaz" -d '{"topics": ["ice breaker"]}' https://dapi.langa.me/v1/conversation/starter
 

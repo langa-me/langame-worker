@@ -18,5 +18,5 @@ node_modules
 
 .firebaserc
 firebase.json
-openapi2.yaml
 Makefile
+test*
