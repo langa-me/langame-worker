@@ -16,6 +16,7 @@ install: ## [Local development] Install virtualenv, activate, install requiremen
 		python3 -m pip install -r functions/requirements-test.txt; \
 	)
 
+
 .PHONY: help
 
 help: # Run `make help` to get help on the make commands

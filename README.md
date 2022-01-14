@@ -46,3 +46,5 @@ algolia:
 `python3 scripts/prepare_openai.py from_openai --in_file=openai.jsonl --out_file=openai.txt`
 
 `python3 scripts/prepare_openai.py create_fine_tune --train_dataset_path=data/general_12_05_2021_train.jsonl --validation_dataset_path=data/general_12_05_2021_validation.jsonl --model=curie`
+
+`python3 scripts/load_test_api.py load_test_api --api_keys_file=.keys`
