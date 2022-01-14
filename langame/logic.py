@@ -40,7 +40,7 @@ def generate_conversation_starter(
         prompt_rows,
     )
     if logger:
-        logger.info(f"generate_conversation_starter prompt: {prompt}")
+        logger.info(f"prompt: {prompt}")
     text = None
     if completion_type is CompletionType.openai_api:
         text = openai_completion(prompt)
@@ -56,6 +56,8 @@ def generate_conversation_starter(
     else:
         raise Exception(f"Unknown completion type {completion_type}")
     conversation_starter = text.strip()
+    if logger:
+        logger.info(f"conversation_starter: {conversation_starter}")
     if profanity_threshold.value > 1:
         # We check the whole output text,
         # in the future should probably check

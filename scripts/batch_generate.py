@@ -9,6 +9,7 @@ from langame.messages import (
     RATE_LIMIT_MESSAGES,
     WAITING_MESSAGES,
 )
+from langame.conversation_starters import is_garbage
 import fire
 import datetime
 import logging
@@ -54,17 +55,6 @@ def generate(
 
     c = LangameClient()
     existing_memes = []
-
-    def is_garbage(meme: dict):
-        return (
-            "topics" not in meme
-            or
-            # Is not a list
-            not isinstance(meme["topics"], list)
-            or
-            # Some topics are abnormally long
-            any(isinstance(topic, str) and len(topic.split(" ")) > 2 for topic in meme["topics"])
-        )
 
     for e in c._firestore_client.collection("memes").stream():
         if is_garbage(e.to_dict()):

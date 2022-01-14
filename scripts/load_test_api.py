@@ -6,6 +6,7 @@ import json
 from random import randint, choices
 import time
 from time import sleep
+
 # most common conversation topics
 _topics = [
     "business",
@@ -31,6 +32,12 @@ async def _load_test_api(
     max_requests: int = 10,
     seconds_between_requests: int = 5,
 ):
+    """
+    :param api_key:
+    :param is_prod: If True, use production API.
+    :param max_requests:
+    :param seconds_between_requests:
+    """
     url = f"https://{'' if is_prod else 'd'}api.langa.me/v1/conversation/starter"
     headers = {
         "Content-Type": "application/json",
@@ -52,7 +59,7 @@ async def _load_test_api(
             "topics": choices(_topics, k=2),
             "limit": randint(1, 3),
             # 10% chance of being True
-            "translated": bool(randint(0, 10) % 2),
+            "translated": bool(randint(0, 10) > 8),
         }
         print(f"requesting with data: {data}")
         # count time elapsed for request
@@ -66,8 +73,9 @@ async def _load_test_api(
         total = end - start
         average_response_time += total
         print(f"request took {total} seconds")
-        responses_per_code[response.status_code] = responses_per_code.get(
-            response.status_code, 0) + 1
+        responses_per_code[response.status_code] = (
+            responses_per_code.get(response.status_code, 0) + 1
+        )
         response_data = response.json()
         print(f"{e + 1}/{max_requests}: {response_data}")
         sleep(seconds_between_requests)
@@ -77,23 +85,31 @@ async def _load_test_api(
     print(f"average response time: {average_response_time}")
 
 
-
 async def load_test_api(
     api_keys_file: str = ".keys",
     is_prod: bool = False,
+    max_requests: int = 10,
+    seconds_between_requests: int = 5,
 ):
     """
     :param api_keys_file:
     :param is_prod: If True, use production API.
+    :param max_requests:
+    :param seconds_between_requests:
     """
     assert isinstance(api_keys_file, str), "api_keys_file must be a string"
     with open(api_keys_file, "r") as f:
         api_keys = f.read().splitlines()
 
-        print(f"found {len(api_keys)} API keys in {api_keys_file}") 
+        print(f"found {len(api_keys)} API keys in {api_keys_file}")
 
-        asyncio.gather(
-            *[asyncio.create_task(_load_test_api(api_key, is_prod)) for api_key in api_keys]
+        # for each api key, run _load_test_api in parallel
+
+        await asyncio.gather(
+            *[
+                _load_test_api(api_key, is_prod, max_requests, seconds_between_requests)
+                for api_key in api_keys
+            ]
         )
 
 
