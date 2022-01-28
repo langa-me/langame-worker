@@ -10,7 +10,7 @@ from discord_interactions import (
     InteractionResponseType,
 )
 from firebase_admin import firestore
-from third_party.common.messages import WAITING_MESSAGES
+from third_party.common.messages import (WAITING_MESSAGES, FAILING_MESSAGES)
 
 CLIENT_PUBLIC_KEY = os.getenv("CLIENT_PUBLIC_KEY")
 
@@ -55,54 +55,76 @@ def discord_bot(_):
     if json_request["type"] == InteractionType.APPLICATION_COMMAND:
         logger.info("Application command received")
         logger.info(json_request)
-        topics = get_discord_interaction_option_value(
-            json_request, "topics", "ice breaker"
-        )
-        # If the user has not selected any topic, the default value is "ice breaker"
-        topics = topics.split(",")
-        players = get_discord_interaction_option_value(json_request, "players")
-        players = [] if not players else players.split(",")
-        channel_id = None
-        interaction_token = json_request["token"]
-        username = json_request["member"]["user"]["username"]
-        if "channel_id" in json_request:
-            channel_id = json_request["channel_id"]
-        if not channel_id:
+
+        if "data" not in json_request or "name" not in json_request["data"]:
+            return jsonify(
+                    {
+                        "response_type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "text": choice(FAILING_MESSAGES)
+                    }
+                )
+        if json_request["data"]["name"] == "starter":
+            topics = get_discord_interaction_option_value(
+                json_request, "topics", "ice breaker"
+            )
+            # If the user has not selected any topic, the default value is "ice breaker"
+            topics = topics.split(",")
+            players = get_discord_interaction_option_value(json_request, "players")
+            players = [] if not players else players.split(",")
+            channel_id = None
+            guild_id = None
+            interaction_token = json_request["token"]
+            username = json_request["member"]["user"]["username"]
+            if "channel_id" in json_request:
+                channel_id = json_request["channel_id"]
+            if "guild_id" in json_request:
+                guild_id = json_request["guild_id"]
+            if not channel_id:
+                return jsonify(
+                    {
+                        "response_type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "text": "You need to send this command to a channel",
+                    }
+                )
+            logger.info(
+                f"Requesting conversation starter with topics: {topics} and players: {players}"
+            )
+            firestore_client = firestore.Client()
+
+            firestore_client.collection("social_interactions").add(
+                {
+                    "topics": topics,
+                    "channel_id": channel_id,
+                    "guild_id": guild_id,
+                    "interaction_token": interaction_token,
+                    "username": username,
+                    "players": players,
+                    "social_software": "discord",
+                    "created_at": firestore.SERVER_TIMESTAMP,
+                    "state": "to-process",
+                }
+            )
+            # merge players into a comma separated string and ensure that each
+            # players starts with @ to notify the user
+            players_string = ""
+            if players:
+                players_string = "\nPlayers: " + ",".join(players) + "."
+            return jsonify(
+                {
+                    "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                    "data": {
+                        "content": f"Topics: {','.join(topics)}{players_string}\n{choice(WAITING_MESSAGES)}",
+                    },
+                }
+            )
+        elif json_request["data"]["name"] == "about":
             return jsonify(
                 {
                     "response_type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    "text": "You need to send this command to a channel",
+                    "text": "This is a Discord bot that can be used to start a conversation with your friends.\n\n"
+                    "To start a conversation, send this command to a channel:\n"
+                    "```\n/starter topics:ice breaker,travel,whatever topic your like\n```\n"
+                    "You can also add players to the conversation by adding the following option:\n"
+                    "```\n/starter players:@user1,@user2,@user3\n```\n"
                 }
             )
-        logger.info(f"Requesting conversation starter with topics: {topics} and players: {players}")
-        firestore_client = firestore.Client()
-
-        firestore_client.collection("social_interactions").add(
-            {
-                "topics": topics,
-                "channel_id": channel_id,
-                "interaction_token": interaction_token,
-                "username": username,
-                "players": players,
-                "social_software": "discord",
-                "created_at": firestore.SERVER_TIMESTAMP,
-                "state": "to-process",
-            }
-        )
-        # https://discord.com/developers/docs/resources/webhook#execute-webhook
-        # requests.post(
-        #     f"https://discord.com/api/v8/channels/{channel_id}/typing",
-        # )
-        # merge players into a comma separated string and ensure that each
-        # players starts with @ to notify the user
-        players_string = ""
-        if players:
-            players_string = "\nPlayers: " + ",".join(players) + "."
-        return jsonify(
-            {
-                "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                "data": {
-                    "content": f"Topics: {','.join(topics)}{players_string}\n{choice(WAITING_MESSAGES)}",
-                },
-            }
-        )

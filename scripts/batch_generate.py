@@ -1,5 +1,5 @@
 from langame import LangameClient
-from langame.logic import generate_conversation_starter
+from langame.conversation_starters import generate_conversation_starter
 from langame.profanity import ProfanityThreshold
 from langame.completion import CompletionType, openai_completion
 from langame.messages import (
@@ -9,7 +9,7 @@ from langame.messages import (
     RATE_LIMIT_MESSAGES,
     WAITING_MESSAGES,
 )
-from langame.conversation_starters import is_garbage
+from langame.quality import is_garbage
 import fire
 import datetime
 import logging

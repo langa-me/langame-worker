@@ -55,7 +55,7 @@ def public_starter(_):
                 # merge "content" (original english version) with "translated" (multi-language version)
                 "conversation_starter": {
                     "en": meme["content"],
-                    **meme.get("translated", {}),
+                    **(meme.get("translated", {}) if translated else {}),
                 },
             }
 

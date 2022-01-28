@@ -16,8 +16,6 @@ deploy: ## [Local development] deploy to GCP.
 		--project ${GCLOUD_PROJECT} \
 		--timeout 540s \
 		--set-env-vars GET_MEMES_URL=${GET_MEMES_URL}
-	# https://console.cloud.google.com/firestore/data/api_keys?project=${GCLOUD_PROJECT}
-	# curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: fooBarBaz" -d '{"topics": ["ice breaker"]}' https://dapi.langa.me/v1/conversation/starter
 
 apply_dev: ## [Local development] https://firebase.google.com/docs/hosting/multisites
 	firebase use ${GCLOUD_PROJECT}

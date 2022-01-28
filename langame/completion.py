@@ -1,13 +1,10 @@
-from random import choices, randint
-from typing import Any, List
-from langame.arrays import intersection
+from random import randint
 import openai
 from enum import Enum
 import os
 import json
 import requests
-from transformers import GPT2LMHeadModel, AutoTokenizer, AutoConfig, set_seed
-
+from transformers import GPT2LMHeadModel, AutoTokenizer, set_seed
 
 class CompletionType(Enum):
     openai_api = 1
@@ -17,47 +14,6 @@ class CompletionType(Enum):
 
 class FinishReasonLengthException(Exception):
     pass
-
-
-def build_prompt(
-    conversation_starter_examples: List[Any],
-    topics: List[str],
-    prompt_rows: int = 60,
-) -> str:
-    """
-    Build a prompt for a GPT-like model based on a list of conversation starters.
-    :param conversation_starter_examples: The list of conversation starters.
-    :param topics: The list of topics.
-    :param prompt_rows: The number of rows in the prompt.
-    :return: prompt
-    """
-    random_conversation_starters = choices(conversation_starter_examples, k=500)
-    # Filter broken conversation starters
-    random_conversation_starters = [
-        e
-        for e in random_conversation_starters
-        if len(e) == 2 and "topics" in e[1] and "content" in e[1]
-    ]
-    found_conversation_starters = [
-        f"{','.join(e[1]['topics'])} ### {e[1]['content']}"
-        for e in random_conversation_starters
-        if len(intersection(e[1]["topics"], topics)) > 0
-    ]
-
-    prompt = (
-        (
-            "\n".join(
-                [
-                    f"{','.join(e[1]['topics'])} ### {e[1]['content']}"
-                    for e in random_conversation_starters
-                ][0:prompt_rows]
-            )
-        )
-        if not found_conversation_starters
-        else "\n".join(found_conversation_starters[0:prompt_rows])
-    )
-
-    return prompt + "\n" + ",".join(topics) + " ###"
 
 
 def openai_completion(prompt: str, stop=["\n"]):
@@ -93,7 +49,7 @@ def local_completion(
     outputs = model.generate(
         **encoded_input,
         return_dict_in_generate=True,
-        eos_token_id=198, # line break
+        eos_token_id=198,  # line break
         max_length=(len(prompt) / 5) + 300,
         num_return_sequences=1,
         return_text=False,
@@ -104,7 +60,9 @@ def local_completion(
         device=device,
     )
     outputs_as_string = tokenizer.decode(outputs["sequences"].tolist()[0])
-    return outputs_as_string.replace(processed_prompt, "").strip() # TODO: return_text doesn't work for some reason
+    return outputs_as_string.replace(
+        processed_prompt, ""
+    ).strip()  # TODO: return_text doesn't work for some reason
 
 
 def huggingface_api_completion(prompt: str) -> str:
@@ -122,11 +80,11 @@ def huggingface_api_completion(prompt: str) -> str:
                 "do_sample": True,
                 "top_k": 50,
                 "top_p": 0.95,
-                "end_sequence": "\n"
+                "end_sequence": "\n",
             },
             "options": {
                 "wait_for_model": True,
-                "use_cache": False, # TODO: should be in public api args
+                "use_cache": False,  # TODO: should be in public api args
             },
         }
     )

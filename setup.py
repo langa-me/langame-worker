@@ -5,13 +5,14 @@ if __name__ == "__main__":
         name="langame",
         packages=find_packages(),
         include_package_data=True,
-        version="1.0.1",
+        version="1.0.2",
         description="",
         install_requires=[
             "firebase_admin",
             "openai",
             "confuse",
             "transformers",
+            "autofaiss",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",
