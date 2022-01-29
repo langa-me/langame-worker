@@ -13,6 +13,8 @@ if __name__ == "__main__":
             "confuse",
             "transformers",
             "autofaiss",
+            "sentence_transformers",
+            "torch"
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

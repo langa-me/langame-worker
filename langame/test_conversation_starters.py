@@ -1,3 +1,4 @@
+from typing import Any, List
 from langame.conversation_starters import (
     get_existing_conversation_starters,
     generate_conversation_starter,
@@ -13,6 +14,7 @@ import os
 import numpy as np
 from transformers import GPT2LMHeadModel, AutoTokenizer
 import time
+from faiss.swigfaiss import IndexFlat
 
 
 class TestConversationStarters(unittest.TestCase):
@@ -23,7 +25,9 @@ class TestConversationStarters(unittest.TestCase):
         firebase_admin.initialize_app(cred)
         return super().setUp()
 
-    def basic_assertions(self, conversation_starters, index, limit):
+    def basic_assertions(
+        self, conversation_starters: List[Any], index: IndexFlat, limit: int
+    ):
         # index should not be None then
         self.assertIsNotNone(index)
         # conversation_starters should be a list
@@ -32,37 +36,14 @@ class TestConversationStarters(unittest.TestCase):
         self.assertTrue(len(conversation_starters) > 0)
         # should be close to length "limit" (potentially less because of garbage)
         self.assertLess(len(conversation_starters), limit)
-        # elements should be a tuple of (id, dict)
-        self.assertIsInstance(conversation_starters[0], tuple)
-        # all dicts should contains the key "content" and "topics"
+        # all dicts should contains the key "content" and "topics" and "id"
         for e in conversation_starters:
-            self.assertIn("content", e[1])
-            self.assertIn("topics", e[1])
+            self.assertIn("content", e)
+            self.assertIn("topics", e)
+            self.assertIn("id", e)
         # should not contain garbage
         for e in conversation_starters:
-            self.assertFalse(is_garbage(e[1]))
-
-    def test_get_existing_conversation_starters_no_embeddings(self):
-        firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
-            firestore_client,
-            embeddings=False,
-            limit=20,
-        )
-        self.basic_assertions(conversation_starters, index, 21)
-
-    def test_get_existing_conversation_starters_embeddings(self):
-        firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
-            firestore_client,
-            embeddings=True,
-            limit=3,
-        )
-        self.basic_assertions(conversation_starters, index, 4)
-
-        # directories "embeddings" and "indexes" should have been created
-        self.assertTrue(os.path.isdir("./embeddings"))
-        self.assertTrue(os.path.isdir("./indexes"))
+            self.assertFalse(is_garbage(e))
 
     def test_get_existing_conversation_starters_rebuild_embeddings(self):
         firestore_client = firestore.client()
@@ -71,30 +52,37 @@ class TestConversationStarters(unittest.TestCase):
             index,
             sentence_embeddings_model,
         ) = get_existing_conversation_starters(
-            firestore_client,
-            embeddings=True,
+            client=firestore_client,
             limit=3,
-            rebuild_embeddings=True,
         )
         self.basic_assertions(conversation_starters, index, 4)
-        query = sentence_embeddings_model.encode("immortality", show_progress_bar=False)
+        query = sentence_embeddings_model.encode(
+            "immortality", show_progress_bar=False, device="cpu"
+        )
         _, I = index.search(np.array([query]), 20)
-        memes = [conversation_starters[i][1] for i in I[0]]
+        memes = [conversation_starters[i] for i in I[0]]
         self.assertTrue(len(memes) > 0)
+
+        # directories "embeddings" and "indexes" should have been created
+        self.assertTrue(os.path.isdir("./embeddings"))
+        self.assertTrue(os.path.isdir("./indexes"))
 
     def test_generate_conversation_starter_openai(self):
         firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=200,
-            rebuild_embeddings=False,
         )
         start = time.time()
         conversation_starter = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
+            sentence_embeddings_model=sentence_embeddings_model,
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
@@ -102,17 +90,16 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_openai_new_topic(self):
         firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=4000,
-            rebuild_embeddings=False,
         )
         start = time.time()
         conversation_starter = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
+            sentence_embeddings_model=sentence_embeddings_model,
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
@@ -126,9 +113,7 @@ class TestConversationStarters(unittest.TestCase):
             sentence_embeddings_model,
         ) = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=200,
-            rebuild_embeddings=True,
         )
         start = time.time()
         conversation_starter = generate_conversation_starter(
@@ -153,11 +138,9 @@ class TestConversationStarters(unittest.TestCase):
             model_name_or_path, use_auth_token=token
         )
         firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=4000,
-            rebuild_embeddings=False,
         )
         start = time.time()
 
@@ -165,6 +148,7 @@ class TestConversationStarters(unittest.TestCase):
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
+            sentence_embeddings_model=sentence_embeddings_model,
             completion_type=CompletionType.local,
             prompt_rows=5,
             model=model,
@@ -177,11 +161,9 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_huggingface_api(self):
         firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=4000,
-            rebuild_embeddings=False,
         )
         start = time.time()
 
@@ -189,6 +171,7 @@ class TestConversationStarters(unittest.TestCase):
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
+            sentence_embeddings_model=sentence_embeddings_model,
             completion_type=CompletionType.huggingface_api,
             prompt_rows=20,
         )
@@ -198,11 +181,9 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_profane(self):
         firestore_client = firestore.client()
-        conversation_starters, index, _ = get_existing_conversation_starters(
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=4000,
-            rebuild_embeddings=False,
         )
         with self.assertRaises(ProfaneException):
             conversation_starter = generate_conversation_starter(
@@ -210,6 +191,7 @@ class TestConversationStarters(unittest.TestCase):
                 conversation_starter_examples=conversation_starters,
                 topics=["god"],
                 profanity_threshold=ProfanityThreshold.strict,
+                sentence_embeddings_model=sentence_embeddings_model,
             )
             # Non deterministic tests, don't run in CI?
             self.assertEqual(conversation_starter, None)
@@ -218,6 +200,7 @@ class TestConversationStarters(unittest.TestCase):
             conversation_starter_examples=conversation_starters,
             topics=["god"],
             profanity_threshold=ProfanityThreshold.tolerant,
+            sentence_embeddings_model=sentence_embeddings_model,
         )
         assert conversation_starter is not None
         conversation_starter = generate_conversation_starter(
@@ -225,5 +208,6 @@ class TestConversationStarters(unittest.TestCase):
             conversation_starter_examples=conversation_starters,
             topics=["god"],
             profanity_threshold=ProfanityThreshold.open,
+            sentence_embeddings_model=sentence_embeddings_model,
         )
         assert conversation_starter is not None

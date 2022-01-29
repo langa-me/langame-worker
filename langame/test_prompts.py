@@ -23,16 +23,15 @@ class TestPrompts(unittest.TestCase):
             sentence_embeddings_model,
         ) = get_existing_conversation_starters(
             firestore_client,
-            embeddings=True,
             limit=1000,
-            rebuild_embeddings=True,
         )
         topics = ["philosophy"]
         prompt = build_prompt(
             index,
             conversation_starters,
-            topics,
+            topics=topics,
             sentence_embeddings_model=sentence_embeddings_model,
+            prompt_rows=5,
         )
         assert prompt is not None
         # Check that prompt end with "\nphilosophy ###"

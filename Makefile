@@ -7,17 +7,14 @@ set_dev: ## Set the GCP project to dev
 
 install: ## [Local development] Install virtualenv, activate, install requirements, install package.
 	(\
-		PIP_USER=false; \
 		python3 -m virtualenv env; \
 		. env/bin/activate; \
 		python3 -m pip install -e .; \
 		python3 -m pip install -r requirements-test.txt; \
-		python3 -m pip install -r functions/requirements.txt; \
-		python3 -m pip install -r functions/requirements-test.txt; \
 	)
 
 clean:
-	rm -rf build embeddings indexes *.egg-info index_infos.json **/__pycache__
+	rm -rf env build **/wandb **/embeddings **/indexes *.egg-info **/index_infos.json **/__pycache__
 
 .PHONY: help
 

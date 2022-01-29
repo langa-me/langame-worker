@@ -33,6 +33,7 @@ def request_starter(
             "disabled": True,
             "tweet": False,
             "state": "to-process",
+            "shard": 0,
         }
     )[1]
     # Poll until a conversation starter is generated
