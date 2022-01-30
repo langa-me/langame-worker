@@ -38,7 +38,7 @@ def request_starter(
     )[1]
     # Poll until a conversation starter is generated
     new_meme_doc: DocumentSnapshot = None
-    max_tries = 10
+    max_tries = 12
     for i in range(max_tries):
         logger.info(f"Polling for conversation starter n°{i}/{max_tries}")
         sleep((i / 2) ** 3)

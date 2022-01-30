@@ -4,7 +4,7 @@ REGION="us-central1"
 GET_MEMES_URL ?= "https://us-central1-${GCLOUD_PROJECT}.cloudfunctions.net/getMemes"
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
-	pip install -t third_party ../../common
+	pip install -t third_party ../common
 
 deploy: ## [Local development] deploy to GCP.
 	firebase use ${GCLOUD_PROJECT}

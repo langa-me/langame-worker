@@ -3,7 +3,7 @@ GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev
 
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
-	pip install -t third_party ../../common
+	pip install -t third_party ../common
 
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \

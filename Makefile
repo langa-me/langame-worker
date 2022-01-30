@@ -11,6 +11,7 @@ install: ## [Local development] Install virtualenv, activate, install requiremen
 		. env/bin/activate; \
 		python3 -m pip install -e .; \
 		python3 -m pip install -r requirements-test.txt; \
+		ls functions/**/*requirements*.txt | xargs -L1 pip install -r; \
 	)
 
 clean:

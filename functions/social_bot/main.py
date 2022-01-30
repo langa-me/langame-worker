@@ -1,5 +1,4 @@
 import os
-from time import sleep
 import json
 import requests
 import logging
@@ -88,7 +87,7 @@ def social_bot(data, context):
             data["value"]["fields"]["response_url"]["stringValue"],
             data=json.dumps(
                 {
-                    "text": f"Topics: {topics_as_string}\n{user_message}",
+                    "text": f"Topics: {topics_as_string}\n\n**{user_message}**",
                     "username": "Langame",
                     "response_type": "in_channel",
                 }
@@ -103,7 +102,7 @@ def social_bot(data, context):
             headers={"Content-Type": "application/json"},
             data=json.dumps(
                 {
-                    "content": f"Topics: {topics_as_string}.{players_as_string}\n{user_message}",
+                    "content": f"Topics: {topics_as_string}.{players_as_string}\n\n**{user_message}**",
                 }
             ),
         )
