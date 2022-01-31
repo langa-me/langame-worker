@@ -1,4 +1,5 @@
-CLIENT_PUBLIC_KEY ?= foo
+DISCORD_CLIENT_PUBLIC_KEY ?= foo
+DISCORD_BOT_TOKEN ?= bar
 
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
@@ -10,7 +11,8 @@ deploy: ## [Local development] deploy to GCP.
 		--trigger-http \
 		--allow-unauthenticated \
 		--min-instances 1 \
-		--set-env-vars=CLIENT_PUBLIC_KEY=${CLIENT_PUBLIC_KEY}
+		--set-env-vars=DISCORD_CLIENT_PUBLIC_KEY=${DISCORD_CLIENT_PUBLIC_KEY} \
+		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
 
 .PHONY: help
 

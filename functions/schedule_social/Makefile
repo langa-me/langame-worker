@@ -1,6 +1,5 @@
 TOPIC_NAME ?= schedule_social_topic
-DISCORD_APPLICATION_ID ?= foo
-DISCORD_BOT_TOKEN ?= bar
+DISCORD_BOT_TOKEN ?= foo
 
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party
@@ -11,7 +10,6 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-resource ${TOPIC_NAME} \
 		--trigger-event google.pubsub.topic.publish \
-		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID} \
 		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN} \
 		--timeout 540s
 

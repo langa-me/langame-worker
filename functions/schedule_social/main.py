@@ -3,12 +3,11 @@ import json
 import requests
 import logging
 from datetime import datetime
-from random import choices, randint
+from random import sample, randint
 from firebase_admin import firestore
 from google.cloud.firestore import Client
 from third_party.common.services import request_starter
 
-DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 # TODO: on failure, DM the admin
@@ -75,16 +74,37 @@ def schedule_social(_, ctx):
                     f"https://discord.com/api/v8/guilds/{guild_id}/members?limit=1000",  # TODO: paginate
                     headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
                 )
-                if r.status_code != 200:
+                # gettings roles, to filter bots
+                r_2 = requests.get(
+                    f"https://discord.com/api/v8/guilds/{guild_id}/roles",  # TODO: paginate
+                    headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
+                )
+                if r.status_code != 200 or r_2.status_code != 200:
                     logger.error(
                         f"Failed to get the list of players for guild {guild_id}. Skipping. {r.text}",
                     )
                     continue
                 r = r.json()
+                r_2 = r_2.json()
                 logger.info(f"Got the list of players for guild {guild_id}: {r}")
-                players = choices(
-                    list(set([player.get("user", {}).get("id") for player in r])),
-                    k=randint(2, 3),
+                # find any role named "Bot"
+                bot_role = next(
+                    (role for role in r_2 if role.get("name") == "Bot"),
+                    None,
+                )
+                players = []
+                for member in r:
+                    # filter out bots (role "Bot") or ["user"]["bot"]=True
+                    if member.get("user", {}).get("bot", False) or (
+                        bot_role and bot_role.get("id") in member.get("roles")
+                    ):
+                        continue
+                    member_id = member.get("user", {}).get("id", None)
+                    if member_id:
+                        players.append(member_id)
+                players = sample(
+                    players,
+                    k=randint(2, 3) if len(players) > 2 else len(players),
                 )
                 logger.info(f"Players selected: {players}")
                 # turn into <@id>
@@ -131,7 +151,8 @@ def schedule_social(_, ctx):
                 {
                     "lastLangame": firestore.SERVER_TIMESTAMP,
                     "lastSampledPlayers": players,
-                }, merge=True,
+                },
+                merge=True,
             )
         else:
             logger.info(

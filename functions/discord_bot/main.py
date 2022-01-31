@@ -1,5 +1,6 @@
 import re
 import os
+import requests
 import logging
 from typing import Optional
 from flask import request, jsonify
@@ -12,7 +13,8 @@ from discord_interactions import (
 from firebase_admin import firestore
 from third_party.common.messages import WAITING_MESSAGES, FAILING_MESSAGES
 
-CLIENT_PUBLIC_KEY = os.getenv("CLIENT_PUBLIC_KEY")
+DISCORD_CLIENT_PUBLIC_KEY = os.getenv("DISCORD_CLIENT_PUBLIC_KEY")
+DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 
 def get_discord_interaction_option_value(
@@ -47,7 +49,7 @@ def get_discord_interaction_option_value(
     return default_value
 
 
-@verify_key_decorator(CLIENT_PUBLIC_KEY)
+@verify_key_decorator(DISCORD_CLIENT_PUBLIC_KEY)
 def discord_bot(_):
     logger = logging.getLogger("discord_bot")
     logging.basicConfig(level=logging.INFO)
@@ -145,6 +147,64 @@ def discord_bot(_):
                 }
             )
         elif json_request["data"]["name"] == "sub":
+            guild_id = None
+            if "guild_id" in json_request:
+                guild_id = json_request["guild_id"]
+            if not guild_id:
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": "You need to send this command to a channel",
+                        },
+                    }
+                )
+            # find role with "name" equal to "Langamer" in Discord API
+            url = f"https://discord.com/api/v8/guilds/{guild_id}/roles"
+            r = requests.get(
+                url,
+                headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
+            )
+            if r.status_code != 200:
+                logger.error(f"Error while getting roles: {r.status_code} {r.text}")
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": choice(FAILING_MESSAGES),
+                        },
+                    }
+                )
+            r = r.json()
+            # if the "Langamer" role does not exist, ask the user to create it
+            langamer_role = None
+            for role in r:
+                if role["name"] == "Langamer":
+                    langamer_role = role
+                    break
+            if not langamer_role:
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": 'Only users with the role "Langamer" can subscribe'
+                            + ' to Langames. Ask your server admin to add the role "Langamer" now 😛.',
+                        },
+                    }
+                )
+            roles = json_request["member"]["roles"]
+            # check if the user has the Langamer role
+            if langamer_role["id"] not in roles:
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": 'Only users with the role "Langamer" can subscribe'
+                            + ' to Langames. Ask your server admin to give you the role "Langamer" now 😛.',
+                        },
+                    }
+                )
+
             topics = get_discord_interaction_option_value(
                 json_request, "topics", "ice breaker"
             )
@@ -170,14 +230,12 @@ def discord_bot(_):
                 )
 
             channel_id = None
-            guild_id = None
             interaction_token = json_request["token"]
             username = json_request["member"]["user"]["username"]
             if "channel_id" in json_request:
                 channel_id = json_request["channel_id"]
-            if "guild_id" in json_request:
-                guild_id = json_request["guild_id"]
-            if not channel_id or not guild_id:
+
+            if not channel_id:
                 return jsonify(
                     {
                         "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -237,6 +295,51 @@ def discord_bot(_):
                         "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         "data": {
                             "content": "You need to send this command to a channel",
+                        },
+                    }
+                )
+            # find role with "name" equal to "Langamer" in Discord API
+            url = f"https://discord.com/api/v8/guilds/{guild_id}/roles"
+            r = requests.get(
+                url,
+                headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
+            )
+            if r.status_code != 200:
+                logger.error(f"Error while getting roles: {r.status_code} {r.text}")
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": choice(FAILING_MESSAGES),
+                        },
+                    }
+                )
+            r = r.json()
+            # if the "Langamer" role does not exist, ask the user to create it
+            langamer_role = None
+            for role in r:
+                if role["name"] == "Langamer":
+                    langamer_role = role
+                    break
+            if not langamer_role:
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": 'Only users with the role "Langamer" can unsubscribe'
+                            + ' to Langames. Ask your server admin to add the role "Langamer" now 😛.',
+                        },
+                    }
+                )
+            roles = json_request["member"]["roles"]
+            # check if the user has the Langamer role
+            if langamer_role["id"] not in roles:
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": 'Only users with the role "Langamer" can unsubscribe'
+                            + ' to Langames. Ask your server admin to give you the role "Langamer" now 😛.',
                         },
                     }
                 )
