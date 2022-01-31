@@ -26,6 +26,7 @@ def get_existing_conversation_starters(
     logger: Optional[Logger] = None,
     use_gpu: bool = False,
     limit: int = None,
+    batch_embeddings_size: int = 256,
 ) -> Tuple[List[Any], IndexFlat, SentenceTransformer]:
     """
     Get the existing conversation starters from the database.
@@ -33,6 +34,7 @@ def get_existing_conversation_starters(
     :param logger: The logger to use.
     :param use_gpu: Whether to use the GPU for rebuilding embeddings or not.
     :param limit: The limit of the number of conversation starters to get.
+    :param batch_embeddings_size: The size of the batch to use for computing embeddings.
     """
     existing_conversation_starters = []
     collection = client.collection("memes")
@@ -41,7 +43,7 @@ def get_existing_conversation_starters(
     for e in collection.stream():
         if is_garbage(e.to_dict()):
             if logger:
-                logger.warning(f"Skipping id: {e.id}, garbage, data: {e.to_dict()},")
+                logger.warning(f"Skipping id: {e.id}, garbage")
             continue
         existing_conversation_starters.append({"id": e.id, **e.to_dict()})
     if logger:
@@ -64,16 +66,24 @@ def get_existing_conversation_starters(
 
 
     embeddings = []
-    for i, item in enumerate(existing_conversation_starters):
-        emb = np.array(sentence_embeddings_model.encode(
-            item["content"], show_progress_bar=False, device=device
-        ))
+    existing_conversation_starters_as_batch = [
+        [e["content"] for e in existing_conversation_starters[i : i + batch_embeddings_size]]
+        for i in range(0, len(existing_conversation_starters), batch_embeddings_size)
+    ]
+    for i, batch in enumerate(existing_conversation_starters_as_batch):
+        emb = sentence_embeddings_model.encode(
+            batch, show_progress_bar=False, device=device
+        )
 
-        item["embedding"] = emb
-        embeddings.append(emb)
+        # extends embeddings with batch
+        embeddings.extend(emb)
         if logger:
-            if i % 100 == 0:
-                logger.info(f"Embedding for {i}/{len(existing_conversation_starters)}")
+            logger.info(f"Computed embeddings - {len(batch)*i}/{len(existing_conversation_starters)}")
+
+    # flatten embeddings
+    embeddings = np.array(embeddings)
+    if logger:
+        logger.info(f"Done, embeddings shape: {embeddings.shape}")
 
     # delete "embeddings" and "indexes" folders
     for folder in ["embeddings", "indexes"]:

@@ -26,26 +26,34 @@ def build_prompt(
         [sentence_embeddings_model.encode(",".join(topics), show_progress_bar=False)]
     )
 
-    most_similars = []
-    _, I = index.search(
+    most_similars = {}
+    D, I = index.search(
         query,
         prompt_rows
         if prompt_rows < len(conversation_starter_examples)
         else len(conversation_starter_examples),
     )
-    for e in I[0]:
+    for i, e in enumerate(I[0]):
         if is_garbage(conversation_starter_examples[e]):
             continue
-        most_similars.append(conversation_starter_examples[e])
+        # remove duplicates by indexing on the property "content"
+        most_similars[conversation_starter_examples[e]["content"]] = {
+            "distance": D[0][i],
+            **conversation_starter_examples[e],
+        }
 
-    # remove duplicates by the property "content"
-    # TODO: clean implementation
-    # most_similars = [e for e in most_similars if e["content"] not in str(most_similars[:-1])]
-
+    # join into a prompt string with highest similarity at the end
     prompt = "\n".join(
-        [f"{','.join(e['topics'])} ### {e['content']}" for e in most_similars]
+        [
+            f"{','.join(most_similars[k]['topics'])} ### {most_similars[k]['content']}"
+            for k in sorted(
+                most_similars,
+                key=lambda k: most_similars[k]["distance"],
+                reverse=False,
+            )
+        ]
     )
 
     return (
-        prompt + "\nThis is a conversation starter about " + ",".join(topics) + " ###"
+        prompt + "\nThis is a conversation starter about \"" + ",".join(topics) + "\" ###"
     )
