@@ -7,10 +7,12 @@ from random import sample, randint
 from firebase_admin import firestore
 from google.cloud.firestore import Client
 from third_party.common.services import request_starter
+from third_party.common.discord import get_most_talkative_players_from_channel
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 # TODO: on failure, DM the admin
+# TODO: wrap into try except, send error to GCP etc.?
 
 
 def schedule_social(_, ctx):
@@ -26,8 +28,15 @@ def schedule_social(_, ctx):
         .where("social_software", "==", "discord")
         .stream()
     ):
-        guild_id = schedule.id
         data = schedule.to_dict()
+        guild_id = data.get("guild_id")
+        if not guild_id:
+            logger.warning("No guild_id for schedule: %s", schedule.id)
+            continue
+        channel_id = data.get("channel_id")
+        if not channel_id:
+            logger.warning("No channel_id for schedule: %s", schedule.id)
+            continue
         # frequency is either in minutes (30m, 120m...),
         # in hours (3h, 12h...),
         # or in days (2d, 5d...)
@@ -44,16 +53,15 @@ def schedule_social(_, ctx):
             logger.warning("Frequency not recognized: %s", frequency)
             continue
         last_langame = data.get("lastLangame")
-        channel_id = data.get("channel_id")
-        if not channel_id:
-            logger.warning("No channel_id for schedule: %s", schedule.id)
-            continue
         now = datetime.now()
         if frequency is None:
             logger.warning(f"No frequency set for schedule {schedule.id}. Skipping.")
             continue
         # if there are no last langame or the difference between now and last langame
         # is superior to the frequency, send a new Langame
+        if last_langame is None:
+            # i.e. first schedule properly start after frequency
+            last_langame = data.get("created_at")
         if (
             last_langame is None
             or (now - datetime.fromtimestamp(last_langame.timestamp())).total_seconds()
@@ -66,9 +74,30 @@ def schedule_social(_, ctx):
             if topics is None:
                 logger.warning(f"No topics set for schedule {schedule.id}. Skipping.")
                 continue
-            # get the list of players
+            # players is either "random_server" (random players on the server)
+            # "random_channel" (random players on the channel)
+            # "talkative_channel" (most talkative on the channel)
             players = data.get("players")
-            if not players:
+            if players == "random_channel":
+                raise NotImplementedError("random_channel not implemented yet")
+            elif players == "talkative_channel":
+                most_talkative_players = get_most_talkative_players_from_channel(
+                    channel_id
+                )
+                if len(most_talkative_players) == 0:
+                    break
+                # 10% of the most talkative players
+                k = int(len(most_talkative_players) / 10) if len(most_talkative_players) > 3 else 3
+                most_talkative_players = most_talkative_players[:k]
+                # sample from most talkative players
+                players = sample(
+                    most_talkative_players,
+                    k=randint(2, 3) if len(most_talkative_players) > 2 else len(most_talkative_players),
+                )
+                # turn players into a list of ids
+                players = [player.get("id") for player in players]
+            else:
+                # (default to random_server)
                 r = requests.get(
                     # https://discord.com/developers/docs/resources/guild#list-guild-members
                     f"https://discord.com/api/v8/guilds/{guild_id}/members?limit=1000",  # TODO: paginate
@@ -106,12 +135,13 @@ def schedule_social(_, ctx):
                     players,
                     k=randint(2, 3) if len(players) > 2 else len(players),
                 )
-                logger.info(f"Players selected: {players}")
-                # turn into <@id>
-                players = [f"<@{player}>" for player in players]
             if not players:
                 logger.warning(f"No players set for schedule {schedule.id}. Skipping.")
                 continue
+            # turn into <@id>
+            players = [f"<@{player}>" for player in players]
+            logger.info(f"Players selected: {players}")
+
             # send the message
             starter, user_message = request_starter(
                 logger,
@@ -154,6 +184,18 @@ def schedule_social(_, ctx):
                 },
                 merge=True,
             )
+            # add a social_interactions entry
+            firestore_client.collection("social_interactions").add({
+                "guild_id": guild_id,
+                "channel_id": channel_id,
+                "created_at": firestore.SERVER_TIMESTAMP,
+                "schedule_id": schedule.id,
+                "state": "delivered",
+                "social_software": "discord",
+                "topics": topics,
+                "players": players,
+                "user_message": starter,
+            })
         else:
             logger.info(
                 f"No Langame to send for schedule {schedule.id} because"

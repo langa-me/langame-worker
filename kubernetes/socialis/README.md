@@ -1,0 +1,1 @@
+socialis is a k8s deployed piece of code that handle real-time and persistent features for bots (Discord, Slack, etc.)

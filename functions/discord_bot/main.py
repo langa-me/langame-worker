@@ -54,9 +54,11 @@ def discord_bot(_):
     logger = logging.getLogger("discord_bot")
     logging.basicConfig(level=logging.INFO)
     json_request = request.get_json()
+
     if json_request["type"] == InteractionType.APPLICATION_COMMAND:
         logger.info("Application command received")
         logger.info(json_request)
+        firestore_client = firestore.Client()
 
         if "data" not in json_request or "name" not in json_request["data"]:
             return jsonify(
@@ -95,7 +97,6 @@ def discord_bot(_):
             logger.info(
                 f"Requesting conversation starter with topics: {topics} and players: {players}"
             )
-            firestore_client = firestore.Client()
 
             firestore_client.collection("social_interactions").add(
                 {
@@ -124,6 +125,8 @@ def discord_bot(_):
                 }
             )
         elif json_request["data"]["name"] == "about":
+            starter_description = "Send this command to a channel:\n```\n/starter topics:ice breaker,travel,whatever topic you like\n```\nYou can also add players to the **Langame** by adding the following option:\n```\n/starter players:@user1,@user2,@user3\n``` it will send you a conversation starter here 😛!"
+            sub_description = "Send this command to a channel:\n```\n/sub topics:ice breaker,travel,whatever topic you like\n```\n, you will receive conversation starters frequently 😛! You can also customise players to the **Langame** and the frequency",
             return jsonify(
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -136,8 +139,18 @@ def discord_bot(_):
                                 "color": 0x00FF00,
                                 "fields": [
                                     {
-                                        "name": "How to play",
-                                        "value": "Send this command to a channel:\n```\n/starter topics:ice breaker,travel,whatever topic you like\n```\nYou can also add players to the **Langame** by adding the following option:\n```\n/starter players:@user1,@user2,@user3\n```\nWith love, by **https://langa.me**. **Augmented conversations**.",
+                                        "name": "Get some conversation starters now!",
+                                        "value": f"{starter_description}\n",
+                                        "inline": False,
+                                    },
+                                    # {
+                                    #     "name": "Get some conversation starters regularly!",
+                                    #     "value": f"{sub_description}\n",
+                                    #     "inline": False,
+                                    # },
+                                    {
+                                        "name": "What is Langame?",
+                                        "value": "**https://langa.me**. **Augmented conversations**.",
                                         "inline": False,
                                     }
                                 ],
@@ -204,13 +217,15 @@ def discord_bot(_):
                         },
                     }
                 )
-
+            
             topics = get_discord_interaction_option_value(
                 json_request, "topics", "ice breaker"
             )
             topics = topics.split(",")
             players = get_discord_interaction_option_value(json_request, "players")
-            players = [] if not players else players.split(",")
+            # players is either "random_server" (random players on the server)
+            # "random_channel" (random players on the channel)
+            # "talkative_channel" (most talkative on the channel)
             frequency = get_discord_interaction_option_value(
                 json_request, "frequency", "3h"
             )
@@ -246,16 +261,15 @@ def discord_bot(_):
                 )
             logger.info(
                 f"Requesting frequent conversation subscription with topics: {topics}"
-                + f" and players: {players} at frequency: {frequency}"
+                + f" and players mode: {players} at frequency: {frequency}"
             )
-            firestore_client = firestore.Client()
             existing_doc = (
-                firestore_client.collection("schedules").document(guild_id).get()
+                firestore_client.collection("schedules").document(channel_id).get()
             )
             message = "Understood." + (
                 " Updating the current schedule." if existing_doc.exists else ""
             )
-            firestore_client.collection("schedules").document(guild_id).set(
+            firestore_client.collection("schedules").document(channel_id).set(
                 {
                     "topics": topics,
                     "channel_id": channel_id,
@@ -269,11 +283,15 @@ def discord_bot(_):
                 }
             )
 
-            players_as_string = (
-                ",".join(players)
-                if len(players) > 0
-                else "will pick random players on this server 😛"
-            )
+            players_message = ""
+            
+            if players == "random_channel":
+                players_message = "Will pick random players on the channel 😛"
+            elif players == "talkative_channel":
+                players_message = "😱 This is an experimental feature but will try my best to pick the most talkative players on the channel 😛"
+            else:
+                # default random_server
+                players_message = "Will pick random players on the server 😛"
             return jsonify(
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -281,7 +299,7 @@ def discord_bot(_):
                         "content": message
                         + f"\n\nFrequency: {frequency}."
                         + f"\nTopics: {','.join(topics)}."
-                        + f"\nPlayers: {players_as_string}.",
+                        + f"\nPlayers: {players_message}.",
                     },
                 }
             )
@@ -289,7 +307,10 @@ def discord_bot(_):
             guild_id = None
             if "guild_id" in json_request:
                 guild_id = json_request["guild_id"]
-            if not guild_id:
+            channel_id = None
+            if "channel_id" in json_request:
+                channel_id = json_request["channel_id"]
+            if not guild_id or not channel_id:
                 return jsonify(
                     {
                         "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -343,14 +364,40 @@ def discord_bot(_):
                         },
                     }
                 )
-            logger.info(f"Unsubscribing guild: {guild_id}")
-            firestore_client = firestore.Client()
-            firestore_client.collection("schedules").document(guild_id).delete()
+            # unsubscribing from the whole guild?
+            all = get_discord_interaction_option_value(json_request, "all", "False")
+            # parse string "all" to boolean
+            if all.lower() == "true":
+                all = True
+            else:
+                all = False
+            cta_starter_message = "\nYou can still use `/starter` to get some conversation starters manually 😛!."
+            if all:
+                for s in (
+                    firestore_client.collection("schedules")
+                    .where("guild_id", "==", guild_id)
+                    .stream()
+                ):
+                    s.reference.delete()
+                    logger.info(
+                        f"Unsubscribing guild: {guild_id}, channel: {channel_id}"
+                    )
+                return jsonify(
+                    {
+                        "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        "data": {
+                            "content": f"Unsubscribed from all Langames in this server 😭.{cta_starter_message}",
+                        },
+                    }
+                )
+
+            logger.info(f"Unsubscribing guild: {guild_id}, channel: {channel_id}")
+            firestore_client.collection("schedules").document(channel_id).delete()
             return jsonify(
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                     "data": {
-                        "content": "Understood. I will no longer send Langame messages to this channel 😭.",
+                        "content": f"Understood. I will no longer send Langame messages to this channel 😭.{cta_starter_message}",
                     },
                 }
             )
@@ -359,7 +406,7 @@ def discord_bot(_):
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                     "data": {
-                        "content": f"{choice(FAILING_MESSAGES)}. Try /starter instead.",
+                        "content": f"{choice(FAILING_MESSAGES)}. Try `/starter` instead.",
                     },
                 }
             )
