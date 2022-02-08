@@ -2,19 +2,22 @@ from setuptools import setup, find_packages
 
 if __name__ == "__main__":
     setup(
-        name="langame",
+        name="socialis",
         packages=find_packages(),
         include_package_data=True,
-        version="1.0.3",
-        description="",
+        version="1.0.0",
+        entry_points={"console_scripts": ["ava = ava:main"]},
+        author="Louis Beaumont",
+        author_email="louis.beaumont@langa.me",
+        url="https://github.com/langa-me/langame-worker",
         install_requires=[
-            "firebase_admin",
-            "openai",
-            "confuse",
+            "fire",
+            "Flask",
+            "torch",
             "transformers",
-            "autofaiss==2.5.0",
-            "sentence_transformers",
-            "torch"
+            "sentencepiece",
+            "discord.py",
+            "langame @ git+ssh://git@github.com/langa-me/langame-worker.git",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

@@ -1,5 +1,13 @@
 TOPIC_NAME ?= schedule_social_topic
-DISCORD_BOT_TOKEN ?= foo
+GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
+
+ifeq ($(GCLOUD_PROJECT),langame-dev)
+$(info "Using develoment configuration")
+DISCORD_BOT_TOKEN := $(shell cat ../../.env.development | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+else
+$(info "Using production configuration")
+DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+endif
 
 third_party: ## [Local development] third party dependencies
 	rm -rf third_party

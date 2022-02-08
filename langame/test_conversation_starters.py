@@ -12,7 +12,12 @@ import unittest
 import openai
 import os
 import numpy as np
-from transformers import GPT2LMHeadModel, AutoTokenizer
+from transformers import (
+    T5ForConditionalGeneration,
+    T5Tokenizer,
+    AutoTokenizer,
+    GPT2LMHeadModel,
+)
 import time
 from faiss.swigfaiss import IndexFlat
 
@@ -68,6 +73,11 @@ class TestConversationStarters(unittest.TestCase):
         self.assertTrue(os.path.isdir("./indexes"))
 
     def test_generate_conversation_starter_openai(self):
+        model_name = "flexudy/t5-small-wav2vec2-grammar-fixer"
+        grammar_tokenizer = T5Tokenizer.from_pretrained(model_name)
+        grammar_model = T5ForConditionalGeneration.from_pretrained(model_name).to(
+            "cpu"
+        )
         firestore_client = firestore.client()
         (
             conversation_starters,
@@ -78,15 +88,19 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        conversation_starter = generate_conversation_starter(
+        new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
             sentence_embeddings_model=sentence_embeddings_model,
+            fix_grammar=True,
+            parallel_completions=3,
+            grammar_tokenizer=grammar_tokenizer,
+            grammar_model=grammar_model,
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(new_conversation_starters)
 
     def test_generate_conversation_starter_openai_new_topic(self):
         firestore_client = firestore.client()
@@ -95,7 +109,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=4000,
         )
         start = time.time()
-        conversation_starter = generate_conversation_starter(
+        new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -103,7 +117,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(new_conversation_starters)
 
     def test_generate_conversation_starter_openai_with_new_embeddings(self):
         firestore_client = firestore.client()
@@ -116,7 +130,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        conversation_starter = generate_conversation_starter(
+        new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -124,7 +138,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(new_conversation_starters)
 
     def test_generate_conversation_starter_local(self):
         model_name_or_path = "Langame/distilgpt2-starter"
@@ -144,7 +158,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         start = time.time()
 
-        conversation_starter = generate_conversation_starter(
+        new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -157,7 +171,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(new_conversation_starters)
 
     def test_generate_conversation_starter_huggingface_api(self):
         firestore_client = firestore.client()
@@ -167,7 +181,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         start = time.time()
 
-        conversation_starter = generate_conversation_starter(
+        new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -177,7 +191,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(new_conversation_starters)
 
     def test_generate_conversation_starter_profane(self):
         firestore_client = firestore.client()
@@ -211,3 +225,26 @@ class TestConversationStarters(unittest.TestCase):
             sentence_embeddings_model=sentence_embeddings_model,
         )
         assert conversation_starter is not None
+
+    def test_generate_conversation_starter_gooseai(self):
+        firestore_client = firestore.client()
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
+            firestore_client,
+            limit=200,
+        )
+        start = time.time()
+        conversation_starter = generate_conversation_starter(
+            index=index,
+            conversation_starter_examples=conversation_starters,
+            topics=["philosophy"],
+            sentence_embeddings_model=sentence_embeddings_model,
+            completion_type=CompletionType.gooseai,
+            prompt_rows=5,
+        )
+        elapsed_seconds = str(time.time() - start)
+        print(f"Elapsed seconds: {elapsed_seconds}")
+        print(conversation_starter)

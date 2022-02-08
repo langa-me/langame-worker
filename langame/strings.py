@@ -20,19 +20,19 @@ def string_similarity(
     if len(str1) < substring_length or len(str2) < substring_length:
         return 0
 
-    map = {}
+    m = {}
     for i in range(len(str1) - (substring_length - 1)):
         substr1 = str1[i : substring_length + i]
-        map[substr1] = map.get(substr1, 0) + 1
+        m[substr1] = m.get(substr1, 0) + 1
 
     match = 0
     for j in range(len(str2) - (substring_length - 1)):
         substr2 = str2[j : substring_length + j]
-        count = map.get(substr2, 0)
+        count = m.get(substr2, 0)
 
         if count > 0:
             match += 1
-            map[substr2] = count - 1
+            m[substr2] = count - 1
 
     return (match * 2) / (len(str1) + len(str2) - ((substring_length - 1) * 2))
 

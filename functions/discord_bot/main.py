@@ -51,6 +51,9 @@ def get_discord_interaction_option_value(
 
 @verify_key_decorator(DISCORD_CLIENT_PUBLIC_KEY)
 def discord_bot(_):
+    """
+    Answer to Discord interactions.
+    """
     logger = logging.getLogger("discord_bot")
     logging.basicConfig(level=logging.INFO)
     json_request = request.get_json()
@@ -126,7 +129,9 @@ def discord_bot(_):
             )
         elif json_request["data"]["name"] == "about":
             starter_description = "Send this command to a channel:\n```\n/starter topics:ice breaker,travel,whatever topic you like\n```\nYou can also add players to the **Langame** by adding the following option:\n```\n/starter players:@user1,@user2,@user3\n``` it will send you a conversation starter here 😛!"
-            sub_description = "Send this command to a channel:\n```\n/sub topics:ice breaker,travel,whatever topic you like\n```\n, you will receive conversation starters frequently 😛! You can also customise players to the **Langame** and the frequency",
+            sub_description = (
+                "Send this command to a channel:\n```\n/sub topics:ice breaker,travel,whatever topic you like\n```\n, you will receive conversation starters frequently 😛! You can also customise players to the **Langame** and the frequency",
+            )
             return jsonify(
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -152,7 +157,7 @@ def discord_bot(_):
                                         "name": "What is Langame?",
                                         "value": "**https://langa.me**. **Augmented conversations**.",
                                         "inline": False,
-                                    }
+                                    },
                                 ],
                             }
                         ],
@@ -217,7 +222,7 @@ def discord_bot(_):
                         },
                     }
                 )
-            
+
             topics = get_discord_interaction_option_value(
                 json_request, "topics", "ice breaker"
             )
@@ -284,11 +289,11 @@ def discord_bot(_):
             )
 
             players_message = ""
-            
+
             if players == "random_channel":
                 players_message = "Will pick random players on the channel 😛"
             elif players == "talkative_channel":
-                players_message = "😱 This is an experimental feature but will try my best to pick the most talkative players on the channel 😛"
+                players_message = "Will try my best to pick the most talkative players on the channel 😛"
             else:
                 # default random_server
                 players_message = "Will pick random players on the server 😛"

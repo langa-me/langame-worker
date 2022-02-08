@@ -1,0 +1,37 @@
+REGISTRY ?= 5306t2h8.gra7.container-registry.ovh.net/$(shell cat .env | grep OVH_PROJECT_ID | cut -d '=' -f 2)/ava
+# take version in setup.py, only what's between the quotes """
+VERSION ?= $(shell cat setup.py | grep version | cut -d '"' -f 2)
+OPENAI_KEY ?= $(shell cat .env | grep OPENAI_KEY | cut -d '=' -f 2)
+OPENAI_ORG ?= $(shell cat .env | grep OPENAI_ORG | cut -d '=' -f 2)
+HUGGINGFACE_TOKEN ?= $(shell cat .env | grep HUGGINGFACE_TOKEN | cut -d '=' -f 2)
+HUGGINGFACE_KEY ?= $(shell cat .env | grep HUGGINGFACE_KEY | cut -d '=' -f 2)
+SVC_DEV_PATH ?= "./svc.dev.json"
+SVC_PROD_PATH ?= "./svc.prod.json"
+GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
+K8S_NAMESPACE=$(shell cat .env | grep K8S_NAMESPACE | cut -d '=' -f 2)
+HELM_VALUES=$(shell cat .env | grep HELM_VALUES | cut -d '=' -f 2)
+
+# eval $(cat .env | sed 's/^/export /')
+
+# baremetal
+
+install: ## [Local development] Upgrade pip, install requirements, install package.
+	(\
+		python3 -m virtualenv env; \
+		. env/bin/activate; \
+		python3 -m pip install -U pip; \
+		python3 -m pip install -e .; \
+		python3 -m pip install -r requirements-test.txt; \
+	)
+
+lint: ## [Local development] Run pylint to check code style.
+	@echo "Linting"
+	env/bin/python3 -m pylint socialis
+
+run: ## [Local development] run the main entrypoint
+	python3 $(shell pwd)/socialis/main.py --service_account_key_path=../../svc.dev.json
+
+.PHONY: help
+
+help: # Run `make help` to get help on the make commands
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

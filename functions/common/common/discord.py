@@ -22,6 +22,9 @@ def get_most_talkative_players_from_channel(channel_id) -> List[dict]:
     # find most talkative people on this channel
     messages_per_user = {}
     for e in all_messages:
+        # filter out bots (role "Bot") or ["user"]["bot"]=True
+        if e.get("author", {}).get("bot", False):
+            continue
         author_id = e.get("author").get("id")
         if author_id not in messages_per_user:
             messages_per_user[author_id] = []

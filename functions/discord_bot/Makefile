@@ -2,21 +2,14 @@ DISCORD_CLIENT_PUBLIC_KEY ?= foo
 DISCORD_BOT_TOKEN ?= bar
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 
-# if GCLOUD_PROJECT contains "dev", set DISCORD_BOT_TOKEN and DISCORD_CLIENT_PUBLIC_KEY
-# with DEV_DISCORD_BOT_TOKEN and DEV_DISCORD_CLIENT_PUBLIC_KEY
-# found in the file ../../.env
-# otherwise use DISCORD_BOT_TOKEN and DISCORD_CLIENT_PUBLIC_KEY
-# found in the file ../../.env-
 ifeq ($(GCLOUD_PROJECT),langame-dev)
-$(info "GCLOUD_PROJECT seems to be dev, setting DISCORD_BOT_TOKEN and DISCORD_CLIENT_PUBLIC_KEY")
-$(info "with DEV_DISCORD_BOT_TOKEN and DEV_DISCORD_CLIENT_PUBLIC_KEY from ../../.env")
-DISCORD_BOT_TOKEN := $(shell cat ../../.env | grep DEV_DISCORD_BOT_TOKEN | cut -d "=" -f 2)
-DISCORD_CLIENT_PUBLIC_KEY := $(shell cat ../../.env | grep DEV_DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
+$(info "Using develoment configuration")
+DISCORD_BOT_TOKEN := $(shell cat ../../.env.development | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+DISCORD_CLIENT_PUBLIC_KEY := $(shell cat ../../.env.development | grep -w DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
 else
-$(info "GCLOUD_PROJECT seems to be prod, setting DISCORD_BOT_TOKEN and DISCORD_CLIENT_PUBLIC_KEY")
-$(info "with DISCORD_BOT_TOKEN and DISCORD_CLIENT_PUBLIC_KEY from ../../.env")
-DISCORD_BOT_TOKEN:=$(shell cat ../../.env | grep DISCORD_BOT_TOKEN | cut -d "=" -f 2)
-DISCORD_CLIENT_PUBLIC_KEY:=$(shell cat ../../.env | grep DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
+$(info "Using production configuration")
+DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+DISCORD_CLIENT_PUBLIC_KEY:=$(shell cat ../../.env.production | grep -w DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
 endif
 
 third_party: ## [Local development] third party dependencies

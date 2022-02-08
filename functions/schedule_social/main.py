@@ -16,6 +16,9 @@ DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 
 def schedule_social(_, ctx):
+    """
+    Send regular Langames
+    """
     logger = logging.getLogger("schedule_social")
     logging.basicConfig(level=logging.INFO)
     # for each document in "schedules" collection, check the last Langame sent,
@@ -86,9 +89,6 @@ def schedule_social(_, ctx):
                 )
                 if len(most_talkative_players) == 0:
                     break
-                # 10% of the most talkative players
-                k = int(len(most_talkative_players) / 10) if len(most_talkative_players) > 3 else 3
-                most_talkative_players = most_talkative_players[:k]
                 # sample from most talkative players
                 players = sample(
                     most_talkative_players,
@@ -147,6 +147,8 @@ def schedule_social(_, ctx):
                 logger,
                 firestore_client,
                 topics,
+                parallel_completions=3,
+                fix_grammar=True,
             )
             if starter is None:
                 logger.warning(

@@ -24,10 +24,9 @@ class FuckOpenAIFilter(logging.Filter):
     def filter(self, record):
         return "OpenAI" not in str(record)
 
-
 def generate(
     out_file: str,
-    topics: List[str] = ["ice breaker"],
+    topics: List[str] = None,
     randomize: bool = False,
     use_least_used_topics: bool = False,
     top_n_unused_topics: int = 20,

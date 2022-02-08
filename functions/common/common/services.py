@@ -1,4 +1,5 @@
 import json
+from tkinter import FALSE
 import requests
 from time import sleep
 from logging import Logger
@@ -14,7 +15,11 @@ from random import choice
 
 
 def request_starter(
-    logger: Logger, firestore_client: Client, topics: List[str]
+    logger: Logger,
+    firestore_client: Client,
+    topics: List[str],
+    fix_grammar: bool = False,
+    parallel_completions: int = 2,
 ) -> Tuple[Optional[str], Optional[str]]:
     """
     Request a conversation starter from the API.
@@ -22,6 +27,8 @@ def request_starter(
         logger: Logger object.
         firestore_client: Firestore client.
         topics: List of topics to request a starter for.
+        fix_grammar: Whether to fix grammar.
+        parallel_completions: The number of parallel completion to use.
     Returns:
         Tuple of (starter, user message).
     """
@@ -34,11 +41,14 @@ def request_starter(
             "tweet": False,
             "state": "to-process",
             "shard": 0,
+            "confirmed": False,
+            "fixGrammar": fix_grammar,
+            "parallelCompletions": parallel_completions,
         }
     )[1]
     # Poll until a conversation starter is generated
     new_meme_doc: DocumentSnapshot = None
-    max_tries = 12
+    max_tries = 20
     for i in range(max_tries):
         logger.info(f"Polling for conversation starter n°{i}/{max_tries}")
         sleep((i / 2) ** 3)
@@ -58,7 +68,7 @@ def request_starter(
         logger.warning("Failed to generate conversation starter")
     return conversation_starter, user_message
 
-
+# TODO: fix grammar, parallel completion
 def request_starter_for_service(
     url: str,
     api_key_id: str,

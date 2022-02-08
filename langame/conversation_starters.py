@@ -1,3 +1,4 @@
+import asyncio
 from logging import Logger
 import os
 import shutil
@@ -13,12 +14,18 @@ from langame.completion import (
     local_completion,
     openai_completion,
     huggingface_api_completion,
+    gooseai_completion,
 )
 from langame.prompts import build_prompt
 from langame.profanity import ProfanityThreshold, is_profane, ProfaneException
 from langame.quality import is_garbage
-from transformers import GPT2LMHeadModel, AutoTokenizer
-
+from langame.strings import string_similarity
+from transformers import (
+    GPT2LMHeadModel,
+    AutoTokenizer,
+    T5ForConditionalGeneration,
+    T5Tokenizer,
+)
 
 
 def get_existing_conversation_starters(
@@ -27,6 +34,7 @@ def get_existing_conversation_starters(
     use_gpu: bool = False,
     limit: int = None,
     batch_embeddings_size: int = 256,
+    confirmed: bool = True,
 ) -> Tuple[List[Any], IndexFlat, SentenceTransformer]:
     """
     Get the existing conversation starters from the database.
@@ -35,11 +43,14 @@ def get_existing_conversation_starters(
     :param use_gpu: Whether to use the GPU for rebuilding embeddings or not.
     :param limit: The limit of the number of conversation starters to get.
     :param batch_embeddings_size: The size of the batch to use for computing embeddings.
+    :param confirmed: Whether to only get confirmed conversation starters.
     """
     existing_conversation_starters = []
     collection = client.collection("memes")
     if limit:
         collection = collection.limit(limit)
+    if confirmed:
+        collection = collection.where("confirmed", "==", True)
     for e in collection.stream():
         if is_garbage(e.to_dict()):
             if logger:
@@ -64,10 +75,12 @@ def get_existing_conversation_starters(
         sentence_embeddings_model_name, device=device
     )
 
-
     embeddings = []
     existing_conversation_starters_as_batch = [
-        [e["content"] for e in existing_conversation_starters[i : i + batch_embeddings_size]]
+        [
+            e["content"]
+            for e in existing_conversation_starters[i : i + batch_embeddings_size]
+        ]
         for i in range(0, len(existing_conversation_starters), batch_embeddings_size)
     ]
     for i, batch in enumerate(existing_conversation_starters_as_batch):
@@ -78,7 +91,9 @@ def get_existing_conversation_starters(
         # extends embeddings with batch
         embeddings.extend(emb)
         if logger:
-            logger.info(f"Computed embeddings - {len(batch)*i}/{len(existing_conversation_starters)}")
+            logger.info(
+                f"Computed embeddings - {len(batch)*(i+1)}/{len(existing_conversation_starters)}"
+            )
 
     # flatten embeddings
     embeddings = np.array(embeddings)
@@ -116,7 +131,12 @@ def generate_conversation_starter(
     use_gpu: bool = False,
     deterministic: bool = False,
     logger: Optional[Logger] = None,
-) -> str:
+    use_classification: bool = False,
+    parallel_completions: int = 1,
+    fix_grammar: bool = False,
+    grammar_model: Optional[T5ForConditionalGeneration] = None,
+    grammar_tokenizer: Optional[T5Tokenizer] = None,
+) -> List[dict]:
     """
     Build a prompt for the OpenAI API based on a list of conversation starters.
     :param index: The index to use.
@@ -131,12 +151,13 @@ def generate_conversation_starter(
     :param use_gpu: Whether to use the GPU if using local completion.
     :param deterministic: Whether to use the deterministic version of local completion.
     :param logger: The logger to use.
-    :return: conversation_starter
+    :param use_classification: Whether to use the classification model.
+    :param parallel_completion: The number of parallel completion to use.
+    :param fix_grammar: Whether to fix grammar.
+    :return: conversation_starters
     """
     if logger:
-        logger.info(
-            "Building prompt using sentence embeddings"
-        )
+        logger.info("Building prompt using sentence embeddings")
     prompt = build_prompt(
         index=index,
         conversation_starter_examples=conversation_starter_examples,
@@ -146,27 +167,87 @@ def generate_conversation_starter(
     )
     if logger:
         logger.info(f"prompt: {prompt}")
-    text = None
-    if completion_type is CompletionType.openai_api:
-        text = openai_completion(prompt)
-    elif completion_type is CompletionType.local:
-        assert (
-            model is not None and tokenizer is not None
-        ), "model and tokenizer must be provided"
-        text = local_completion(
-            model, tokenizer, prompt, use_gpu=use_gpu, deterministic=deterministic
-        )
-    elif completion_type is CompletionType.huggingface_api:
-        text = huggingface_api_completion(prompt)
-    else:
-        raise Exception(f"Unknown completion type {completion_type}")
-    conversation_starter = text.strip()
-    if logger:
-        logger.info(f"conversation_starter: {conversation_starter}")
-    if profanity_threshold.value > 1:
-        # We check the whole output text,
-        # in the future should probably check
-        # topics and text in parallel and aggregate
-        if is_profane(text) > (3 - profanity_threshold.value):
-            raise ProfaneException()
-    return conversation_starter
+
+    async def gen() -> dict:
+        text = {"conversation_starter": ""}
+        if completion_type is CompletionType.openai_api:
+            text["conversation_starter"] = openai_completion(prompt)
+        elif completion_type is CompletionType.local:
+            # TODO: should batch local completion
+            text["conversation_starter"] = local_completion(
+                model, tokenizer, prompt, use_gpu=use_gpu, deterministic=deterministic
+            )
+        elif completion_type is CompletionType.huggingface_api:
+            text["conversation_starter"] = huggingface_api_completion(prompt)
+        elif completion_type is CompletionType.gooseai:
+            text["conversation_starter"] = gooseai_completion(prompt)
+        else:
+            return text
+        text["conversation_starter"] = text["conversation_starter"].strip()
+        if logger:
+            logger.info(f"conversation starter: {text['conversation_starter']}")
+        if profanity_threshold.value > 1:
+            # We check the whole output text,
+            # in the future should probably check
+            # topics and text in parallel and aggregate
+            if is_profane(text["conversation_starter"]) > (
+                3 - profanity_threshold.value
+            ):
+                text["profane"] = True
+        if fix_grammar: # TODO: might do in batch after instead
+            input_text = "fix: { " + text["conversation_starter"] + " }"
+            input_ids = grammar_tokenizer.encode(
+                input_text,
+                return_tensors="pt",
+                max_length=256,
+                truncation=True,
+                add_special_tokens=True,
+            ).to("cuda:0" if use_gpu else "cpu")
+
+            outputs = grammar_model.generate(
+                input_ids=input_ids,
+                max_length=256,
+                num_beams=4,
+                repetition_penalty=1.0,
+                length_penalty=1.0,
+                early_stopping=True,
+            )
+
+            sentence = grammar_tokenizer.decode(
+                outputs[0],
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True,
+            )
+            if logger:
+                logger.info(f"Fixed grammar: {sentence}")
+            if (
+                len(sentence) < 20
+                or string_similarity(text["conversation_starter"], sentence) < 0.5
+            ):
+                if logger:
+                    logger.warning(
+                        f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
+                        + " after grammar fix"
+                    )
+                return text
+            elif string_similarity(text["conversation_starter"], sentence) < 0.9:
+                text["broken_grammar"] = sentence
+            text["conversation_starter"] = sentence
+        if use_classification:
+            classification = openai_completion(
+                prompt=f"{','.join(topics)} ### {text['conversation_starter']} ~~~",
+                fine_tuned_model="ada:ft-personal-2022-02-08-19-57-38",
+            )
+            text["classification"] = classification
+            if logger:
+                logger.info(
+                    f"{text['conversation_starter']} classification: {classification}"
+                )
+        return text
+
+    loop = asyncio.get_event_loop()
+    conversation_starters = loop.run_until_complete(
+        asyncio.gather(*[gen() for _ in range(parallel_completions)])
+    )
+
+    return list(conversation_starters)

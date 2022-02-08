@@ -77,7 +77,13 @@ def social_bot(data, context):
         rate_limit_doc.reference.set({"last_query": firestore.SERVER_TIMESTAMP})
 
     if not user_message:
-        conversation_starter, user_message = request_starter(logger, client, topics)
+        conversation_starter, user_message = request_starter(
+            logger,
+            client,
+            topics,
+            fix_grammar=False,  # TODO: too slow / low quality
+            parallel_completions=3,
+        )
         if conversation_starter:
             user_message = conversation_starter
 
