@@ -12,37 +12,79 @@ class CompletionType(Enum):
     openai_api = 1
     local = 2
     huggingface_api = 3
-    gooseai = 4
 
 
 class FinishReasonLengthException(Exception):
     pass
 
 
-def openai_completion(prompt: str, 
-    fine_tuned_model: Optional[str] = None,
-    stop: List[str] = None) -> str:
+def is_base_openai_model(model: str) -> bool:
+    """
+    Returns whether the model is a fine-tuned model.
+    :param model: Model name
+    :return: True if fine-tuned model, False otherwise
+    """
+    return model in [
+        "davinci",
+        "curie",
+        "ada",
+        "babbage",
+        "davinci-codex",
+        "davinci-instruct-beta-v3",
+    ]
+
+
+def is_base_gooseai_model(model: str) -> bool:
+    """
+    Returns whether the model is a fine-tuned model.
+    :param model: Model name
+    :return: True if fine-tuned model, False otherwise
+    """
+    # "gpt" or "fairseq" in model
+    return "gpt" in model or "fairseq" in model
+
+def openai_completion(
+    prompt: str,
+    model: str = "davinci-codex",
+    stop: List[str] = None,
+    is_classification: bool = False,
+) -> str:
     """
     OpenAI completion
     :param prompt:
-    :param fine_tuned_model:
+    :param model:
     :param stop:
     """
-    response = openai.Completion.create(
-        engine="davinci-codex",
-        prompt=prompt,
-        temperature=1,
-        max_tokens=200,
-        top_p=1,
-        frequency_penalty=0.7,
-        presence_penalty=0,
-        stop=stop if stop else ["\n"],
-    ) if not fine_tuned_model else openai.Completion.create(
-        model=fine_tuned_model,
-        prompt=prompt,
-        temperature=0,
-        max_tokens=100,
-        stop=stop if stop else ["\n"],
+    is_gooseai = is_base_gooseai_model(model)
+    is_openai_model = is_base_openai_model(model)
+    openai.api_base = (
+        "https://api.goose.ai/v1" if is_gooseai else "https://api.openai.com/v1"
+    )
+    openai.api_key = os.environ.get("GOOSEAI_KEY" if is_gooseai else "OPENAI_KEY")
+    openai.organization = "" if is_gooseai else os.environ.get("OPENAI_ORG")
+    response = (
+        openai.Completion.create(
+            engine=model if is_gooseai else "davinci-codex",
+            prompt=prompt,
+            temperature=1,
+            max_tokens=100,
+            top_p=1,
+            frequency_penalty=0.7,
+            presence_penalty=0,
+            stop=stop if stop else ["\n"],
+        )
+        # If not gooseai and not default openai model, must be a fine tuned one
+        if is_gooseai or is_openai_model
+        else openai.Completion.create(
+            model=model,
+            prompt=prompt,
+            temperature=0 if is_classification else 1,
+            max_tokens=100,
+            top_p=1,
+            frequency_penalty=0.7,
+            presence_penalty=0,
+            stop=stop if stop else ["\n"],
+        )
     )
     if (
         response["choices"][0]["finish_reason"] == "length"
@@ -117,31 +159,3 @@ def huggingface_api_completion(prompt: str) -> str:
     data = json.loads(response.content.decode("utf-8"))
     completions = data[0]["generated_text"].strip()
     return completions
-
-
-def gooseai_completion(prompt: str) -> str:
-    """
-    https://goose.ai/docs/api/completions
-    """
-    API_URL = "https://api.goose.ai/v1/engines/gpt-neo-20b/completions"
-    headers = {"Authorization": f"Bearer {os.environ.get('GOOSEAI_KEY')}"}
-    data = json.dumps(
-        {
-            "prompt": prompt,
-            "stop": ["\n"],
-            "presence_penalty": 0,
-            "frequency_penalty": 0.7,
-            "max_tokens": 100,
-        }
-    )
-    response = requests.request("POST", API_URL, headers=headers, data=data)
-    data = json.loads(response.content.decode("utf-8"))
-    if "error" in data:
-        raise Exception(data["error"])
-    if (
-        data["choices"][0]["finish_reason"] == "length"
-        or not data["choices"][0]["text"]
-    ):
-        raise FinishReasonLengthException()
-    return data["choices"][0]["text"].strip()
-

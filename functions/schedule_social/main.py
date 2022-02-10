@@ -148,7 +148,7 @@ def schedule_social(_, ctx):
                 firestore_client,
                 topics,
                 parallel_completions=3,
-                fix_grammar=True,
+                fix_grammar=False,
             )
             if starter is None:
                 logger.warning(

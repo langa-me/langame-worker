@@ -14,7 +14,6 @@ from langame.completion import (
     local_completion,
     openai_completion,
     huggingface_api_completion,
-    gooseai_completion,
 )
 from langame.prompts import build_prompt
 from langame.profanity import ProfanityThreshold, is_profane, ProfaneException
@@ -136,6 +135,7 @@ def generate_conversation_starter(
     fix_grammar: bool = False,
     grammar_model: Optional[T5ForConditionalGeneration] = None,
     grammar_tokenizer: Optional[T5Tokenizer] = None,
+    api_completion_model: Optional[str] = None,
 ) -> List[dict]:
     """
     Build a prompt for the OpenAI API based on a list of conversation starters.
@@ -154,6 +154,9 @@ def generate_conversation_starter(
     :param use_classification: Whether to use the classification model.
     :param parallel_completion: The number of parallel completion to use.
     :param fix_grammar: Whether to fix grammar.
+    :param grammar_model: The grammar model to use.
+    :param grammar_tokenizer: The grammar tokenizer to use.
+    :param api_completion_model: The gooseai model to use.
     :return: conversation_starters
     """
     if logger:
@@ -171,7 +174,7 @@ def generate_conversation_starter(
     async def gen() -> dict:
         text = {"conversation_starter": ""}
         if completion_type is CompletionType.openai_api:
-            text["conversation_starter"] = openai_completion(prompt)
+            text["conversation_starter"] = openai_completion(prompt, model=api_completion_model)
         elif completion_type is CompletionType.local:
             # TODO: should batch local completion
             text["conversation_starter"] = local_completion(
@@ -179,8 +182,6 @@ def generate_conversation_starter(
             )
         elif completion_type is CompletionType.huggingface_api:
             text["conversation_starter"] = huggingface_api_completion(prompt)
-        elif completion_type is CompletionType.gooseai:
-            text["conversation_starter"] = gooseai_completion(prompt)
         else:
             return text
         text["conversation_starter"] = text["conversation_starter"].strip()
@@ -236,7 +237,8 @@ def generate_conversation_starter(
         if use_classification:
             classification = openai_completion(
                 prompt=f"{','.join(topics)} ### {text['conversation_starter']} ~~~",
-                fine_tuned_model="ada:ft-personal-2022-02-08-19-57-38",
+                model="ada:ft-personal-2022-02-08-19-57-38",
+                is_classification=True,
             )
             text["classification"] = classification
             if logger:

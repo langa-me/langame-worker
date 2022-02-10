@@ -1,5 +1,4 @@
 import json
-from tkinter import FALSE
 import requests
 from time import sleep
 from logging import Logger
@@ -20,6 +19,9 @@ def request_starter(
     topics: List[str],
     fix_grammar: bool = False,
     parallel_completions: int = 2,
+    completion_type: str = "openai_api",
+    profanity_threshold: str = "open",
+    api_completion_model: str = "ada:ft-personal-2022-02-09-23-45-15",
 ) -> Tuple[Optional[str], Optional[str]]:
     """
     Request a conversation starter from the API.
@@ -44,6 +46,9 @@ def request_starter(
             "confirmed": False,
             "fixGrammar": fix_grammar,
             "parallelCompletions": parallel_completions,
+            "completionType": completion_type,
+            "profanityThreshold": profanity_threshold,
+            "apiCompletionModel": api_completion_model,
         }
     )[1]
     # Poll until a conversation starter is generated

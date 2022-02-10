@@ -2,7 +2,6 @@ from langame.completion import (
     openai_completion,
     local_completion,
     huggingface_api_completion,
-    gooseai_completion,
 )
 from firebase_admin import credentials
 import firebase_admin
@@ -27,7 +26,7 @@ class TestCompletion(unittest.TestCase):
     def test_openai_completion_fine_tune(self):
         classification = openai_completion(
             prompt=f"ice breaker ### foo bar? ~~~",
-            fine_tuned_model="ada:ft-personal-2022-02-08-19-57-38",
+            model="ada:ft-personal-2022-02-08-19-57-38",
         )
         assert classification is not None
         assert classification == "0"
@@ -69,7 +68,7 @@ class TestCompletion(unittest.TestCase):
 
     def test_gooseai_completion(self):
         start = time.time()
-        response = gooseai_completion("- foo\n- bar\n-")
+        response = openai_completion("- foo\n- bar\n-", model="gpt-neo-1-3b")
         assert response is not None
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")

@@ -1,6 +1,6 @@
 import openai
 from enum import Enum
-
+import os
 
 class ProfanityThreshold(Enum):
     open = 1
@@ -20,6 +20,9 @@ def is_profane(text: str, toxic_threshold: float = -0.355) -> int:
     vs. should be discarded as a false positive
     :return: True if text contains profanity, False otherwise.
     """
+    openai.api_base = "https://api.openai.com/v1"
+    openai.api_key = os.environ.get("OPENAI_KEY")
+    openai.organization = os.environ.get("OPENAI_ORG")
     response = openai.Completion.create(
         engine="content-filter-alpha",
         prompt="<|endoftext|>" + text + "\n--\nLabel:",

@@ -93,10 +93,11 @@ class TestConversationStarters(unittest.TestCase):
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
             sentence_embeddings_model=sentence_embeddings_model,
-            fix_grammar=True,
+            fix_grammar=False,
             parallel_completions=3,
             grammar_tokenizer=grammar_tokenizer,
             grammar_model=grammar_model,
+            api_completion_model="curie:ft-personal-2022-02-09-05-17-08"
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
@@ -237,14 +238,15 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        conversation_starter = generate_conversation_starter(
+        conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
             sentence_embeddings_model=sentence_embeddings_model,
-            completion_type=CompletionType.gooseai,
+            completion_type=CompletionType.openai_api,
             prompt_rows=5,
+            gooseai_model="gpt-neo-1-3b",
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
-        print(conversation_starter)
+        print(conversation_starters)
