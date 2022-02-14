@@ -3,9 +3,11 @@ GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev
 ifeq ($(GCLOUD_PROJECT),langame-dev)
 $(info "Using develoment configuration")
 DISCORD_APPLICATION_ID := $(shell cat ../../.env.development | grep -w DISCORD_APPLICATION_ID | cut -d "=" -f 2)
+DISCORD_BOT_TOKEN := $(shell cat ../../.env.development | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 else
 $(info "Using production configuration")
 DISCORD_APPLICATION_ID:=$(shell cat ../../.env.production | grep -w DISCORD_APPLICATION_ID | cut -d "=" -f 2)
+DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 endif
 
 third_party: ## [Local development] third party dependencies
@@ -19,7 +21,8 @@ deploy: ## [Local development] deploy to GCP.
 		--timeout 180 \
 		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
   		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/social_interactions/{interactionId}" \
-		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
+		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID} \
+		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
 
 .PHONY: help
 

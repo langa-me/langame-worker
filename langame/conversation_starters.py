@@ -11,6 +11,8 @@ import torch
 from faiss.swigfaiss import IndexFlat
 from langame.completion import (
     CompletionType,
+    is_base_gooseai_model,
+    is_base_openai_model,
     local_completion,
     openai_completion,
     huggingface_api_completion,
@@ -161,6 +163,7 @@ def generate_conversation_starter(
     """
     if logger:
         logger.info("Building prompt using sentence embeddings")
+
     prompt = build_prompt(
         index=index,
         conversation_starter_examples=conversation_starter_examples,
@@ -174,7 +177,9 @@ def generate_conversation_starter(
     async def gen() -> dict:
         text = {"conversation_starter": ""}
         if completion_type is CompletionType.openai_api:
-            text["conversation_starter"] = openai_completion(prompt, model=api_completion_model)
+            text["conversation_starter"] = openai_completion(
+                prompt, model=api_completion_model
+            )
         elif completion_type is CompletionType.local:
             # TODO: should batch local completion
             text["conversation_starter"] = local_completion(
@@ -195,7 +200,7 @@ def generate_conversation_starter(
                 3 - profanity_threshold.value
             ):
                 text["profane"] = True
-        if fix_grammar: # TODO: might do in batch after instead
+        if fix_grammar:  # TODO: might do in batch after instead
             input_text = "fix: { " + text["conversation_starter"] + " }"
             input_ids = grammar_tokenizer.encode(
                 input_text,

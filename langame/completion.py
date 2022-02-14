@@ -18,6 +18,8 @@ class FinishReasonLengthException(Exception):
     pass
 
 
+    
+
 def is_base_openai_model(model: str) -> bool:
     """
     Returns whether the model is a fine-tuned model.
@@ -42,6 +44,14 @@ def is_base_gooseai_model(model: str) -> bool:
     """
     # "gpt" or "fairseq" in model
     return "gpt" in model or "fairseq" in model
+
+def is_fine_tuned_openai(model: str) -> bool:
+    """
+    Returns whether the model is an OpenAI fine-tuned model.
+    :param model: Model name
+    :return: True if an OpenAI fine-tuned model, False otherwise
+    """
+    return not is_base_openai_model(model) and not is_base_gooseai_model(model)
 
 def openai_completion(
     prompt: str,

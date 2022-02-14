@@ -22,6 +22,10 @@ def build_prompt(
     :param prompt_rows: The number of rows in the prompt.
     :return: prompt
     """
+    # zero-shot completion
+    if prompt_rows <= 1:
+        return ",".join(topics) + " ###"
+
     query = np.array(
         [sentence_embeddings_model.encode(",".join(topics), show_progress_bar=False)]
     )
@@ -54,6 +58,4 @@ def build_prompt(
         ]
     )
 
-    return (
-        prompt + "\nThis is a conversation starter about \"" + ",".join(topics) + "\" ###"
-    )
+    return prompt + "\n" + ",".join(topics) + " ###"

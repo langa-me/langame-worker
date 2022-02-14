@@ -1,4 +1,5 @@
 from langame.completion import (
+    is_fine_tuned_openai,
     openai_completion,
     local_completion,
     huggingface_api_completion,
@@ -73,3 +74,7 @@ class TestCompletion(unittest.TestCase):
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
         print(response)
+
+    def test_is_fine_tuned_openai(self):
+        model = "ada:ft-personal-2022-02-08-19-57-38"
+        assert is_fine_tuned_openai(model), f"{model} is a fine tuned model"

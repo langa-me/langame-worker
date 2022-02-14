@@ -115,6 +115,8 @@ class TestConversationStarters(unittest.TestCase):
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
             sentence_embeddings_model=sentence_embeddings_model,
+            api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
+            prompt_rows=3,
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
@@ -245,7 +247,7 @@ class TestConversationStarters(unittest.TestCase):
             sentence_embeddings_model=sentence_embeddings_model,
             completion_type=CompletionType.openai_api,
             prompt_rows=5,
-            gooseai_model="gpt-neo-1-3b",
+            api_completion_model="gpt-neo-1-3b",
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")

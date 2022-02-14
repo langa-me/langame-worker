@@ -12,6 +12,7 @@ from third_party.common.messages import (
 from third_party.common.services import request_starter
 
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
+DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 client: Client = firestore.Client()
 
 
@@ -114,3 +115,17 @@ def social_bot(data, context):
         )
     logger.info(f"Done sending message to {social_software}:{user_message}")
     affected_doc.update({"state": "delivered", "user_message": user_message})
+
+    if social_software == "discord":
+        # collecting some info about the discord and writing to discord_users collection
+        guild_id = data["value"]["fields"]["guild_id"]["stringValue"]
+        logger.info(
+            f"Collecting info about {guild_id}, writing to discord_users collection"
+        )
+        url = f"https://discord.com/api/v8/guilds/{guild_id}"
+        guild_info = requests.get(
+            url, headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"}
+        ).json()
+        client.collection("discord_users").document(guild_id).set(
+            guild_info, merge=True
+        )
