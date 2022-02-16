@@ -11,13 +11,7 @@ if __name__ == "__main__":
         author_email="louis.beaumont@langa.me",
         url="https://github.com/langa-me/langame-worker",
         install_requires=[
-            "fire",
-            "Flask",
-            "torch",
-            "transformers",
-            "sentencepiece",
-            "discord.py",
-            "langame @ git+ssh://git@github.com/langa-me/langame-worker.git",
+            "grpcio",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

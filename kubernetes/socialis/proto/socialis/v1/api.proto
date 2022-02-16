@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package socialis;
+
+message CallInfo {
+  string session_id = 1;
+  string media = 2;
+}
+
+message CallState {
+  enum State {
+    // The default state.
+    UNDEFINED = 0;
+    // The call is newly created.
+    NEW = 1;
+    // The call is connected.
+    ACTIVE = 6;
+    // The call is finished.
+    ENDED = 7;
+  }
+  State state = 2;
+}
+
+message StreamCallRequest {
+  string phone_number = 1;
+}
+
+message StreamCallResponse {
+  oneof stream_call_response {
+    CallInfo call_info = 1;
+    CallState call_state = 2;
+  } 
+}
+
+service Phone {
+  // Makes a phone call and communicate states via a stream.
+  rpc StreamCall(stream StreamCallRequest) returns (stream StreamCallResponse);
+}

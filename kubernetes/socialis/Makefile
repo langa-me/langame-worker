@@ -24,6 +24,13 @@ install: ## [Local development] Upgrade pip, install requirements, install packa
 		python3 -m pip install -r requirements-test.txt; \
 	)
 
+protos: ## [Local development] Generate protos.
+	python3 -m grpc_tools.protoc \
+		--python_out=socialis \
+		--grpc_python_out=socialis \
+		-I proto/socialis/v1 \
+		proto/socialis/v1/*.proto
+
 lint: ## [Local development] Run pylint to check code style.
 	@echo "Linting"
 	env/bin/python3 -m pylint socialis
