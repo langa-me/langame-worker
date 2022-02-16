@@ -81,7 +81,7 @@ def openai_completion(
             top_p=1,
             frequency_penalty=0.7,
             presence_penalty=0,
-            stop=stop if stop else ["\n"],
+            stop=stop if stop else ["\n", "##"],
         )
         # If not gooseai and not default openai model, must be a fine tuned one
         if is_gooseai or is_openai_model
@@ -93,7 +93,7 @@ def openai_completion(
             top_p=1,
             frequency_penalty=0.7,
             presence_penalty=0,
-            stop=stop if stop else ["\n"],
+            stop=stop if stop else ["\n", "##"],
         )
     )
     if (
