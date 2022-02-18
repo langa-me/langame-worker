@@ -1,38 +1,29 @@
 syntax = "proto3";
 
-package socialis;
+package langame.socialis;
 
-message CallInfo {
-  string session_id = 1;
-  string media = 2;
-}
-
-message CallState {
-  enum State {
-    // The default state.
-    UNDEFINED = 0;
-    // The call is newly created.
-    NEW = 1;
-    // The call is connected.
-    ACTIVE = 6;
-    // The call is finished.
-    ENDED = 7;
+message AddPlayersRequest {
+  oneof players {
+    string text = 1;
+    bytes speech = 2;
   }
-  State state = 2;
+};
+
+message ValidatePlayersRequest {
+  bool valid = 1;
+};
+
+enum GameState {
+  PLAYER_ADD = 0;
+  PLAYER_VALIDATE = 1;
 }
 
-message StreamCallRequest {
-  string phone_number = 1;
-}
+message Game {
+  string text = 1;
+  GameState state = 2;
+};
 
-message StreamCallResponse {
-  oneof stream_call_response {
-    CallInfo call_info = 1;
-    CallState call_state = 2;
-  } 
-}
-
-service Phone {
-  // Makes a phone call and communicate states via a stream.
-  rpc StreamCall(stream StreamCallRequest) returns (stream StreamCallResponse);
-}
+service Socialis {
+  rpc AddPlayers (AddPlayersRequest) returns (Game);
+  rpc ValidatePlayers (ValidatePlayersRequest) returns (Game);
+};

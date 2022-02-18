@@ -12,6 +12,10 @@ if __name__ == "__main__":
         url="https://github.com/langa-me/langame-worker",
         install_requires=[
             "grpcio",
+            "firebase-admin",
+            "fire",
+            "transformers",
+            "torch",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

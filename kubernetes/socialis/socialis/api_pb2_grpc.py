@@ -5,7 +5,7 @@ import grpc
 import api_pb2 as api__pb2
 
 
-class PhoneStub(object):
+class SocialisStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,43 +14,58 @@ class PhoneStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.StreamCall = channel.stream_stream(
-                '/socialis.Phone/StreamCall',
-                request_serializer=api__pb2.StreamCallRequest.SerializeToString,
-                response_deserializer=api__pb2.StreamCallResponse.FromString,
+        self.AddPlayers = channel.unary_unary(
+                '/langame.socialis.Socialis/AddPlayers',
+                request_serializer=api__pb2.AddPlayersRequest.SerializeToString,
+                response_deserializer=api__pb2.Game.FromString,
+                )
+        self.ValidatePlayers = channel.unary_unary(
+                '/langame.socialis.Socialis/ValidatePlayers',
+                request_serializer=api__pb2.ValidatePlayersRequest.SerializeToString,
+                response_deserializer=api__pb2.Game.FromString,
                 )
 
 
-class PhoneServicer(object):
+class SocialisServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def StreamCall(self, request_iterator, context):
-        """Makes a phone call and communicate states via a stream.
-        """
+    def AddPlayers(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ValidatePlayers(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_PhoneServicer_to_server(servicer, server):
+def add_SocialisServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'StreamCall': grpc.stream_stream_rpc_method_handler(
-                    servicer.StreamCall,
-                    request_deserializer=api__pb2.StreamCallRequest.FromString,
-                    response_serializer=api__pb2.StreamCallResponse.SerializeToString,
+            'AddPlayers': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddPlayers,
+                    request_deserializer=api__pb2.AddPlayersRequest.FromString,
+                    response_serializer=api__pb2.Game.SerializeToString,
+            ),
+            'ValidatePlayers': grpc.unary_unary_rpc_method_handler(
+                    servicer.ValidatePlayers,
+                    request_deserializer=api__pb2.ValidatePlayersRequest.FromString,
+                    response_serializer=api__pb2.Game.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'socialis.Phone', rpc_method_handlers)
+            'langame.socialis.Socialis', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Phone(object):
+class Socialis(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def StreamCall(request_iterator,
+    def AddPlayers(request,
             target,
             options=(),
             channel_credentials=None,
@@ -60,8 +75,25 @@ class Phone(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/socialis.Phone/StreamCall',
-            api__pb2.StreamCallRequest.SerializeToString,
-            api__pb2.StreamCallResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/langame.socialis.Socialis/AddPlayers',
+            api__pb2.AddPlayersRequest.SerializeToString,
+            api__pb2.Game.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ValidatePlayers(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/langame.socialis.Socialis/ValidatePlayers',
+            api__pb2.ValidatePlayersRequest.SerializeToString,
+            api__pb2.Game.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

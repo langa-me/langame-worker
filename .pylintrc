@@ -206,6 +206,10 @@ max-module-lines=99999
 # tab).
 indent-string='    '
 
+# Set the linting for string quotes
+string-quote=single
+triple-quote=double
+docstring-quote=double
 
 [SIMILARITIES]
 
@@ -321,8 +325,6 @@ deprecated-members=string.atof,string.atoi,string.atol,string.capitalize,string.
 # List of exceptions that do not need to be mentioned in the Raises section of
 # a docstring.
 ignore-exceptions=AssertionError,NotImplementedError,StopIteration,TypeError
-
-
 
 [TOKENS]
 

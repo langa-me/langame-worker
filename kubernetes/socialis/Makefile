@@ -11,6 +11,8 @@ GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev
 K8S_NAMESPACE=$(shell cat .env | grep K8S_NAMESPACE | cut -d '=' -f 2)
 HELM_VALUES=$(shell cat .env | grep HELM_VALUES | cut -d '=' -f 2)
 
+LANGAME_APP_PATH ?= "${HOME}/Documents/langame-app"
+
 # eval $(cat .env | sed 's/^/export /')
 
 # baremetal
@@ -30,13 +32,21 @@ protos: ## [Local development] Generate protos.
 		--grpc_python_out=socialis \
 		-I proto/socialis/v1 \
 		proto/socialis/v1/*.proto
+	@echo "Assuming path to langa-me/langame-app is ${LANGAME_APP_PATH}"
+	mkdir -p ${LANGAME_APP_PATH}/lib/models/langame/socialis
+	protoc -I proto/socialis/v1 \
+		--dart_out=grpc:${LANGAME_APP_PATH}/lib/models/langame/socialis \
+		proto/socialis/v1/*.proto
+	
 
 lint: ## [Local development] Run pylint to check code style.
 	@echo "Linting"
 	env/bin/python3 -m pylint socialis
 
 run: ## [Local development] run the main entrypoint
-	python3 $(shell pwd)/socialis/main.py --service_account_key_path=../../svc.dev.json
+	envoy -c envoy.yaml &
+	python3 $(shell pwd)/socialis/main.py
+	# kill -9 $(ps -ef | grep envoy | grep -v grep | awk '{print $2}')
 
 .PHONY: help
 

@@ -1,78 +1,189 @@
-from concurrent.futures import ThreadPoolExecutor
+"""The Python implementation of the GRPC helloworld.Greeter server."""
+
+from concurrent import futures
 import logging
-import threading
-import time
-from typing import Iterable
-
-from google.protobuf.json_format import MessageToJson
+import fire
 import grpc
-
 import api_pb2
 import api_pb2_grpc
+from auth import RequestHeaderValidatorInterceptor
+from log import RequestLoggerInterceptor
+import signal
+from firebase_admin import initialize_app
+
+from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
+import torch
+
+import numpy as np
 
 
-def create_state_response(
-        call_state: api_pb2.CallState.State) -> api_pb2.StreamCallResponse:
-    response = api_pb2.StreamCallResponse()
-    response.call_state.state = call_state
-    return response
+def speech_to_text(data):
+    # load model and tokenizer
+    model_name = "facebook/wav2vec2-base-960h"
+    processor = Wav2Vec2Processor.from_pretrained(model_name)
+    model = Wav2Vec2ForCTC.from_pretrained(model_name)
+    # tokenize
+    data = np.frombuffer(data, dtype=np.uint8).astype(np.float32)
+    # data_16hz = librosa.resample(data.astype(np.float32),sr,16000)
+    input_values = processor(
+        data,
+        return_tensors="pt",
+        padding="longest",
+        sampling_rate=16000,
+    ).input_values
+    # retrieve logits
+    logits = model(input_values).logits
+
+    # take argmax and decode
+    predicted_ids = torch.argmax(logits, dim=-1)
+    transcription = processor.batch_decode(predicted_ids)
+    return transcription
 
 
-class Phone(api_pb2_grpc.PhoneServicer):
+def find_names_in_sentence(inputs: str):
+    """
+    [
+        {
+            "entity_group": "PER",
+            "score": 0.9999847412109375,
+            "word": "Wolfgang",
+            "start": 11,
+            "end": 19
+        },
+        {
+            "entity_group": "LOC",
+            "score": 0.9999942779541016,
+            "word": "Berlin",
+            "start": 34,
+            "end": 40
+        }
+    ]
+    """
 
-    def __init__(self):
-        self._id_counter = 0
-        self._lock = threading.RLock()
+    import requests
 
-    def _create_call_session(self) -> api_pb2.CallInfo:
-        call_info = api_pb2.CallInfo()
-        with self._lock:
-            call_info.session_id = str(self._id_counter)
-            self._id_counter += 1
-        call_info.media = "https://link.to.audio.resources"
-        logging.info("Created a call session [%s]", MessageToJson(call_info))
-        return call_info
+    API_URL = "https://api-inference.huggingface.co/models/xlm-roberta-large-finetuned-conll03-english"
+    headers = {"Authorization": "Bearer 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"}
 
-    def _clean_call_session(self, call_info: api_pb2.CallInfo) -> None:
-        logging.info("Call session cleaned [%s]", MessageToJson(call_info))
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.json()
 
-    def StreamCall(
-        self, request_iterator: Iterable[api_pb2.StreamCallRequest],
-        context: grpc.ServicerContext
-    ) -> Iterable[api_pb2.StreamCallResponse]:
-        try:
-            request = next(request_iterator)
-            logging.info("Received a phone call request for number [%s]",
-                         request.phone_number)
-        except StopIteration:
-            raise RuntimeError("Failed to receive call request")
-        # Simulate the acceptance of call request
-        time.sleep(1)
-        yield create_state_response(api_pb2.CallState.NEW)
-        # Simulate the start of the call session
-        time.sleep(1)
-        call_info = self._create_call_session()
-        context.add_callback(lambda: self._clean_call_session(call_info))
-        response = api_pb2.StreamCallResponse()
-        response.call_info.session_id = call_info.session_id
-        response.call_info.media = call_info.media
-        yield response
-        yield create_state_response(api_pb2.CallState.ACTIVE)
-        # Simulate the end of the call
-        time.sleep(2)
-        yield create_state_response(api_pb2.CallState.ENDED)
-        logging.info("Call finished [%s]", request.phone_number)
+    output = query({"inputs": inputs})
+    # return found names in sentence
+    return [e["word"] for e in output if e["entity_group"] == "PER"]
 
 
-def serve(address: str) -> None:
-    server = grpc.server(ThreadPoolExecutor())
-    api_pb2_grpc.add_PhoneServicer_to_server(Phone(), server)
-    server.add_insecure_port(address)
-    server.start()
-    logging.info("Server serving at %s", address)
-    server.wait_for_termination()
+class Socialiser(api_pb2_grpc.SocialisServicer):
+    def __init__(self, logger):
+        self.logger = logger
+        self.state = api_pb2.PLAYER_ADD
+
+    def AddPlayers(self, request: api_pb2.AddPlayersRequest, context):
+        if request.text:
+            self.logger.info(f"AddPlayers: {request.text}")
+            players_name = ", ".join(find_names_in_sentence(request.text))
+            return api_pb2.Game(
+                text=f"The players are, {players_name}, correct?",
+                state=api_pb2.PLAYER_VALIDATE,
+            )
+        elif request.speech:
+            raise NotImplementedError
+            self.logger.info(f"AddPlayers, transcripting speech")
+            players_transcription = speech_to_text(request.players)[0].split(" ")
+            self.logger.info(f"AddPlayers, transcription: {players_transcription}")
+            return api_pb2.Game(
+                text=f"Hello, the players are {players_transcription}, right?"
+            )
+        else:
+            return api_pb2.Game(
+                text="The datacenter is in trouble",
+                state=api_pb2.PLAYER_ADD,
+            )
+
+    def ValidatePlayers(self, request: api_pb2.ValidatePlayersRequest, context):
+        self.logger.info(f"ValidatePlayers: {request.valid}")
+        if request.valid:
+            return api_pb2.Game(
+                text="Great, let's start the game",
+                state=api_pb2.PLAYER_VALIDATE,  # TODO
+            )
+        else:
+            return api_pb2.Game(text="Sorry, try again", state=api_pb2.PLAYER_ADD)
+
+
+class SocialisServer:
+    """
+    TODO:
+    """
+
+    def __init__(
+        self,
+        logger: logging.Logger = None,
+    ):
+        self.logger = logger
+        self.logger.info("initializing...")
+        self.stopped = False
+        header_validator = RequestHeaderValidatorInterceptor(
+            "authorization",
+            "42",
+            grpc.StatusCode.UNAUTHENTICATED,
+            "Access denied!",
+            self.logger,
+        )
+        logger_interceptor = RequestLoggerInterceptor(self.logger)
+        self.server = grpc.server(
+            futures.ThreadPoolExecutor(max_workers=10),
+            interceptors=(
+                header_validator,
+                # logger_interceptor,
+            ),
+        )
+        api_pb2_grpc.add_SocialisServicer_to_server(
+            Socialiser(
+                self.logger,
+            ),
+            self.server,
+        )
+        self.server.add_insecure_port("[::]:50051")
+        initialize_app()
+
+    def run(self):
+        """
+        Run in a loop.
+        """
+        self.logger.info("Starting server")
+        self.server.start()
+        # Setup signal handler
+        signal.signal(signal.SIGINT, self.shutdown)
+        signal.signal(signal.SIGTERM, self.shutdown)
+        self.server.wait_for_termination()
+
+    def shutdown(self, _, __):
+        """
+        Stop the ava service.
+        """
+        print("\b\b\r")
+        self.logger.info("Ctrl+C pressed. Stopping server...")
+        self.stopped = True
+        self.server.stop(0)
+
+
+def serve():
+    """
+    TODO
+    """
+    SocialisServer(logger=logging.getLogger("socialis")).run()
+
+
+def main():
+    """
+    Starts socialis.
+    """
+    logging.basicConfig(level=logging.INFO)
+
+    fire.Fire(serve)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    serve("[::]:50051")
+    main()
