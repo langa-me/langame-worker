@@ -45,6 +45,7 @@ def get_existing_conversation_starters(
     :param limit: The limit of the number of conversation starters to get.
     :param batch_embeddings_size: The size of the batch to use for computing embeddings.
     :param confirmed: Whether to only get confirmed conversation starters.
+    :return: conversation starters, faiss index, sentence embeddings model.
     """
     existing_conversation_starters = []
     collection = client.collection("memes")

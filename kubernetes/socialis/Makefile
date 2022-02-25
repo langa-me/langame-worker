@@ -1,15 +1,18 @@
 REGISTRY ?= 5306t2h8.gra7.container-registry.ovh.net/$(shell cat .env | grep OVH_PROJECT_ID | cut -d '=' -f 2)/ava
 # take version in setup.py, only what's between the quotes """
 VERSION ?= $(shell cat setup.py | grep version | cut -d '"' -f 2)
-OPENAI_KEY ?= $(shell cat .env | grep OPENAI_KEY | cut -d '=' -f 2)
-OPENAI_ORG ?= $(shell cat .env | grep OPENAI_ORG | cut -d '=' -f 2)
-HUGGINGFACE_TOKEN ?= $(shell cat .env | grep HUGGINGFACE_TOKEN | cut -d '=' -f 2)
-HUGGINGFACE_KEY ?= $(shell cat .env | grep HUGGINGFACE_KEY | cut -d '=' -f 2)
-SVC_DEV_PATH ?= "./svc.dev.json"
-SVC_PROD_PATH ?= "./svc.prod.json"
+
+ifeq ($(GCLOUD_PROJECT),langame-dev)
+$(info "Using develoment configuration")
+DISCORD_BOT_TOKEN := $(shell cat ../../.env.development | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+DISCORD_CLIENT_PUBLIC_KEY := $(shell cat ../../.env.development | grep -w DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
+else
+$(info "Using production configuration")
+DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
+DISCORD_CLIENT_PUBLIC_KEY:=$(shell cat ../../.env.production | grep -w DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
+endif
+
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
-K8S_NAMESPACE=$(shell cat .env | grep K8S_NAMESPACE | cut -d '=' -f 2)
-HELM_VALUES=$(shell cat .env | grep HELM_VALUES | cut -d '=' -f 2)
 
 LANGAME_APP_PATH ?= "${HOME}/Documents/langame-app"
 
@@ -44,8 +47,8 @@ lint: ## [Local development] Run pylint to check code style.
 	env/bin/python3 -m pylint socialis
 
 run: ## [Local development] run the main entrypoint
-	envoy -c envoy.yaml &
-	python3 $(shell pwd)/socialis/main.py
+	# envoy -c envoy.yaml &
+	python3 $(shell pwd)/socialis/main.py --discord_bot_token ${DISCORD_BOT_TOKEN}
 	# kill -9 $(ps -ef | grep envoy | grep -v grep | awk '{print $2}')
 
 .PHONY: help

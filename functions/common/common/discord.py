@@ -7,7 +7,7 @@ headers = {
     "Authorization": f"Bot {DISCORD_BOT_TOKEN}"
 }
 
-def get_most_talkative_players_from_channel(channel_id) -> List[dict]:
+def get_most_talkative_players_from_channel(channel_id: str) -> List[dict]:
     """
     Get the most talkative players from a Discord channel.
     :param channel_id: the channel id

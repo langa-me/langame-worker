@@ -58,6 +58,9 @@ def openai_completion(
     model: str = "davinci-codex",
     stop: List[str] = None,
     is_classification: bool = False,
+    temperature: float = 1,
+    max_tokens: int = 100,
+    ignore_finish_reason: bool = False,
 ) -> str:
     """
     OpenAI completion
@@ -76,8 +79,8 @@ def openai_completion(
         openai.Completion.create(
             engine=model if is_gooseai else "davinci-codex",
             prompt=prompt,
-            temperature=1,
-            max_tokens=100,
+            temperature=temperature,
+            max_tokens=max_tokens,
             top_p=1,
             frequency_penalty=0.7,
             presence_penalty=0,
@@ -88,8 +91,8 @@ def openai_completion(
         else openai.Completion.create(
             model=model,
             prompt=prompt,
-            temperature=0 if is_classification else 1,
-            max_tokens=100,
+            temperature=0 if is_classification else temperature,
+            max_tokens=max_tokens,
             top_p=1,
             frequency_penalty=0.7,
             presence_penalty=0,
@@ -97,7 +100,8 @@ def openai_completion(
         )
     )
     if (
-        response["choices"][0]["finish_reason"] == "length"
+        not ignore_finish_reason
+        and response["choices"][0]["finish_reason"] == "length"
         or not response["choices"][0]["text"]
     ):
         raise FinishReasonLengthException()

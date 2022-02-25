@@ -1,5 +1,4 @@
-"""The Python implementation of the GRPC helloworld.Greeter server."""
-
+import os
 from concurrent import futures
 import logging
 import fire
@@ -8,6 +7,7 @@ import api_pb2
 import api_pb2_grpc
 from auth import RequestHeaderValidatorInterceptor
 from log import RequestLoggerInterceptor
+from discord_bot import DiscordBot
 import signal
 from firebase_admin import initialize_app
 
@@ -40,7 +40,7 @@ def speech_to_text(data):
     return transcription
 
 
-def find_names_in_sentence(inputs: str):
+def find_names_in_sentence(inputs: str, hf_token: str):
     """
     [
         {
@@ -63,7 +63,7 @@ def find_names_in_sentence(inputs: str):
     import requests
 
     API_URL = "https://api-inference.huggingface.co/models/xlm-roberta-large-finetuned-conll03-english"
-    headers = {"Authorization": "Bearer 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"}
+    headers = {"Authorization": f"Bearer {hf_token}"}
 
     def query(payload):
         response = requests.post(API_URL, headers=headers, json=payload)
@@ -75,14 +75,19 @@ def find_names_in_sentence(inputs: str):
 
 
 class Socialiser(api_pb2_grpc.SocialisServicer):
-    def __init__(self, logger):
+    """
+    TODO
+    """
+
+    def __init__(self, logger, huggingface_token):
         self.logger = logger
         self.state = api_pb2.PLAYER_ADD
+        self.huggingface_token = huggingface_token
 
     def AddPlayers(self, request: api_pb2.AddPlayersRequest, context):
         if request.text:
             self.logger.info(f"AddPlayers: {request.text}")
-            players_name = ", ".join(find_names_in_sentence(request.text))
+            players_name = ", ".join(find_names_in_sentence(request.text, self.huggingface_token))
             return api_pb2.Game(
                 text=f"The players are, {players_name}, correct?",
                 state=api_pb2.PLAYER_VALIDATE,
@@ -119,6 +124,7 @@ class SocialisServer:
 
     def __init__(
         self,
+        huggingface_token: str,
         logger: logging.Logger = None,
     ):
         self.logger = logger
@@ -142,6 +148,7 @@ class SocialisServer:
         api_pb2_grpc.add_SocialisServicer_to_server(
             Socialiser(
                 self.logger,
+                huggingface_token,
             ),
             self.server,
         )
@@ -169,11 +176,25 @@ class SocialisServer:
         self.server.stop(0)
 
 
-def serve():
+def serve(discord_bot_token: str):
     """
     TODO
     """
-    SocialisServer(logger=logging.getLogger("socialis")).run()
+    logger = logging.getLogger("socialis")
+    # # start socialis and the discord bot in different thread
+    # import threading
+
+    # socialis_thread = threading.Thread(target=SocialisServer(logger).run)
+    # SocialisServer(logger=logger).run()
+    # def d():
+    #     DiscordBot(logger).run()
+    # discord_thread = threading.Thread(target=d)
+    # discord_thread.start()
+    # socialis_thread.start()
+    # DISCORD_CLIENT_PUBLIC_KEY = os.getenv("DISCORD_CLIENT_PUBLIC_KEY")
+    # DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+    DiscordBot(logger).run(discord_bot_token)
+
 
 
 def main():
