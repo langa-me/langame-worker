@@ -9,7 +9,7 @@ from auth import RequestHeaderValidatorInterceptor
 from log import RequestLoggerInterceptor
 from discord_bot import DiscordBot
 import signal
-from firebase_admin import initialize_app
+from firebase_admin import initialize_app, credentials, firestore
 
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import torch
@@ -87,7 +87,9 @@ class Socialiser(api_pb2_grpc.SocialisServicer):
     def AddPlayers(self, request: api_pb2.AddPlayersRequest, context):
         if request.text:
             self.logger.info(f"AddPlayers: {request.text}")
-            players_name = ", ".join(find_names_in_sentence(request.text, self.huggingface_token))
+            players_name = ", ".join(
+                find_names_in_sentence(request.text, self.huggingface_token)
+            )
             return api_pb2.Game(
                 text=f"The players are, {players_name}, correct?",
                 state=api_pb2.PLAYER_VALIDATE,
@@ -153,7 +155,6 @@ class SocialisServer:
             self.server,
         )
         self.server.add_insecure_port("[::]:50051")
-        initialize_app()
 
     def run(self):
         """
@@ -176,12 +177,12 @@ class SocialisServer:
         self.server.stop(0)
 
 
-def serve(discord_bot_token: str):
+def serve(discord_bot_token: str, svc_path: str):
     """
     TODO
     """
     logger = logging.getLogger("socialis")
-    # # start socialis and the discord bot in different thread
+    # start socialis and the discord bot in different thread
     # import threading
 
     # socialis_thread = threading.Thread(target=SocialisServer(logger).run)
@@ -191,10 +192,14 @@ def serve(discord_bot_token: str):
     # discord_thread = threading.Thread(target=d)
     # discord_thread.start()
     # socialis_thread.start()
-    # DISCORD_CLIENT_PUBLIC_KEY = os.getenv("DISCORD_CLIENT_PUBLIC_KEY")
-    # DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = svc_path
+    initialize_app(
+        credentials.Certificate(
+            svc_path,
+        )
+    )
+    firestore.Client()
     DiscordBot(logger).run(discord_bot_token)
-
 
 
 def main():
