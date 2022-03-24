@@ -198,8 +198,8 @@ def serve(discord_bot_token: str, svc_path: str):
             svc_path,
         )
     )
-    firestore.Client()
-    DiscordBot(logger).run(discord_bot_token)
+    firestore_client = firestore.Client()
+    DiscordBot(logger, firestore_client).run(discord_bot_token)
 
 
 def main():

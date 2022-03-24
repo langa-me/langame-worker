@@ -1,10 +1,7 @@
 import json
 import requests
-from time import sleep
 from logging import Logger
 from typing import List, Optional, Tuple, Any
-from firebase_admin import firestore
-from google.cloud.firestore import DocumentSnapshot, DocumentReference, Client
 from third_party.common.messages import (
     UNIMPLEMENTED_TOPICS_MESSAGES,
     FAILING_MESSAGES,
@@ -13,67 +10,6 @@ from third_party.common.messages import (
 from random import choice
 
 
-def request_starter(
-    logger: Logger,
-    firestore_client: Client,
-    topics: List[str],
-    fix_grammar: bool = False,
-    parallel_completions: int = 2,
-    completion_type: str = "openai_api",
-    profanity_threshold: str = "open",
-    api_completion_model: str = "ada:ft-personal-2022-02-09-23-45-15",
-) -> Tuple[Optional[str], Optional[str]]:
-    """
-    Request a conversation starter from the API.
-    Args:
-        logger: Logger object.
-        firestore_client: Firestore client.
-        topics: List of topics to request a starter for.
-        fix_grammar: Whether to fix grammar.
-        parallel_completions: The number of parallel completion to use.
-    Returns:
-        Tuple of (starter, user message).
-    """
-    conversation_starter, user_message = None, None
-    new_meme_ref: DocumentReference = firestore_client.collection("memes").add(
-        {
-            "topics": topics,
-            "createdAt": firestore.SERVER_TIMESTAMP,
-            "disabled": True,
-            "tweet": False,
-            "state": "to-process",
-            "shard": 0,
-            "confirmed": False,
-            "fixGrammar": fix_grammar,
-            "parallelCompletions": parallel_completions,
-            "completionType": completion_type,
-            "profanityThreshold": profanity_threshold,
-            "apiCompletionModel": api_completion_model,
-        }
-    )[1]
-    # Poll until a conversation starter is generated
-    new_meme_doc: DocumentSnapshot = None
-    max_tries = 20
-    for i in range(max_tries):
-        logger.info(f"Polling for conversation starter n°{i}/{max_tries}")
-        sleep((i / 2) ** 3)
-        new_meme_doc = new_meme_ref.get()
-        conversation_starter = new_meme_doc.to_dict().get("content")
-        if conversation_starter and len(conversation_starter) > 0:
-            break
-    if not conversation_starter:
-        error = new_meme_doc.to_dict().get("error", None)
-        if error == "no-topics":
-            user_message = choice(UNIMPLEMENTED_TOPICS_MESSAGES)
-        elif error == "profane":
-            user_message = choice(PROFANITY_MESSAGES)
-            user_message = user_message.replace("[TOPICS]", f"\"{','.join(topics)}\"")
-        else:
-            user_message = choice(FAILING_MESSAGES)
-        logger.warning("Failed to generate conversation starter")
-    return conversation_starter, user_message
-
-# TODO: fix grammar, parallel completion
 def request_starter_for_service(
     url: str,
     api_key_id: str,
@@ -81,13 +17,19 @@ def request_starter_for_service(
     topics: List[str],
     quantity: int = 1,
     translated: bool = False,
-) -> List[Any]:
+    fix_grammar: bool = False,
+    parallel_completions: int = 2,
+) -> Tuple[Optional[Any], Optional[Any]]:
     """
     Request a conversation starter from the API.
     Args:
         logger: Logger object.
         firestore_client: Firestore client.
         topics: List of topics to request a starter for.
+        quantity: The number of conversation starters to request.
+        translated: Whether to request translated conversation starters.
+        fix_grammar: Whether to fix grammar.
+        parallel_completions: The number of parallel completion to use.
     Returns:
         Tuple of (starter, user message).
     """
@@ -99,16 +41,27 @@ def request_starter_for_service(
         "topics": topics,
         "quantity": quantity,
         "translated": translated,
+        "fixGrammar": fix_grammar,
+        "parallelCompletions": parallel_completions,
     }
     response = requests.post(url, headers=headers, data=json.dumps({"data": data}))
     response_data = response.json()
-    if response_data.get("error", None) or "result" not in response_data:
+    error = response_data.get("error", None)
+    if error or "result" not in response_data:
         if logger:
             logger.warning(f"Failed to request starter for {api_key_id}")
+        if error == "no-topics":
+            user_message = choice(UNIMPLEMENTED_TOPICS_MESSAGES)
+        elif error == "profane":
+            user_message = choice(PROFANITY_MESSAGES)
+            user_message = user_message.replace("[TOPICS]", f"\"{','.join(topics)}\"")
+        else:
+            user_message = choice(FAILING_MESSAGES)
         return None, {
             "message": response_data.get("error", {}).get("message", "Unknown error"),
             "code": response.status_code,
             "status": response_data.get("error", {}).get("status", "INTERNAL_ERROR"),
+            "user_message": user_message,
         }
 
     return response_data["result"]["memes"], None

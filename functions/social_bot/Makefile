@@ -1,4 +1,5 @@
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
+GET_MEMES_URL ?= "https://us-central1-${GCLOUD_PROJECT}.cloudfunctions.net/getMemes"
 
 ifeq ($(GCLOUD_PROJECT),langame-dev)
 $(info "Using develoment configuration")
@@ -17,12 +18,12 @@ third_party: ## [Local development] third party dependencies
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \
-		--min-instances 0 \
 		--timeout 180 \
 		--trigger-event "providers/cloud.firestore/eventTypes/document.create" \
   		--trigger-resource "projects/${GCLOUD_PROJECT}/databases/(default)/documents/social_interactions/{interactionId}" \
 		--set-env-vars=DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID} \
-		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN} \
+		--set-env-vars GET_MEMES_URL=${GET_MEMES_URL}
 
 .PHONY: help
 

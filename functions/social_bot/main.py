@@ -4,16 +4,12 @@ import requests
 import logging
 from firebase_admin import firestore
 from google.cloud.firestore import Client
-from random import choice
-from datetime import datetime, timedelta
-from third_party.common.messages import (
-    RATE_LIMIT_MESSAGES,
-)
-from third_party.common.services import request_starter
+from third_party.common.services import request_starter_for_service
 
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 client: Client = firestore.Client()
+GET_MEMES_URL = os.getenv("GET_MEMES_URL")
 
 
 def social_bot(data, context):
@@ -58,35 +54,40 @@ def social_bot(data, context):
     if "username" in data["value"]["fields"]:
         username = data["value"]["fields"]["username"]["stringValue"]
 
+    if "guild_id" in data["value"]["fields"]:
+        guild_id = data["value"]["fields"]["guild_id"]["stringValue"]
+
     if not username:
         logger.error("No username in document. Skipping.")
         return
-    rate_limit_doc = client.collection("rate_limits").document(username).get()
     user_message = ""
 
-    # check if last query happenned less than a minute ago
-    if (
-        rate_limit_doc.exists
-        and "last_query" in rate_limit_doc.to_dict()
-        and datetime.now()
-        < datetime.fromtimestamp(rate_limit_doc.get("last_query").timestamp())
-        + timedelta(seconds=10)
-    ):
-        logger.warning(f"Rate limit for {username} expired")
-        user_message = choice(RATE_LIMIT_MESSAGES)
-    else:
-        rate_limit_doc.reference.set({"last_query": firestore.SERVER_TIMESTAMP})
-
     if not user_message:
-        conversation_starter, user_message = request_starter(
-            logger,
-            client,
-            topics,
-            fix_grammar=False,  # TODO: too slow / low quality
-            parallel_completions=3,
-        )
-        if conversation_starter:
-            user_message = conversation_starter
+        docs = client.collection("api_keys").where("owner", "==", guild_id).stream()
+        key = next(docs, None)
+        if not key:
+            user_message = (
+                "😥 It seems your Langame bot was not properly configured."
+                + " Please, as an admin of the Discord server, reinstall the bot"
+                + " from https://discord.me/langame or authenticate with Discord at"
+                + " https://langa.me/signin."
+            )
+        else:
+            conversation_starter, um = request_starter_for_service(
+                url=GET_MEMES_URL,
+                api_key_id=key.id,
+                logger=logger,
+                topics=topics,
+                fix_grammar=False,  # TODO: too slow / low quality
+                parallel_completions=3,
+            )
+            user_message = (
+                um["user_message"]
+                if um and "user_message" in um
+                else user_message
+            )
+            if conversation_starter:
+                user_message = conversation_starter[0]["content"]
 
     if social_software == "slack":
         logger.info(f"Sending message to slack {user_message}")
@@ -115,17 +116,3 @@ def social_bot(data, context):
         )
     logger.info(f"Done sending message to {social_software}:{user_message}")
     affected_doc.update({"state": "delivered", "user_message": user_message})
-
-    if social_software == "discord":
-        # collecting some info about the discord and writing to discord_users collection
-        guild_id = data["value"]["fields"]["guild_id"]["stringValue"]
-        logger.info(
-            f"Collecting info about {guild_id}, writing to discord_users collection"
-        )
-        url = f"https://discord.com/api/v8/guilds/{guild_id}"
-        guild_info = requests.get(
-            url, headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"}
-        ).json()
-        client.collection("discord_users").document(guild_id).set(
-            guild_info, merge=True
-        )

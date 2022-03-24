@@ -7,3 +7,4 @@ pytest
 ipykernel
 Flask
 ipywidgets
+plotly

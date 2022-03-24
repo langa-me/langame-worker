@@ -11,7 +11,40 @@ from google.cloud.firestore import Client
 initialize_app()
 
 GET_MEMES_URL = os.environ["GET_MEMES_URL"]
+
+
 def public_starter(_):
+    """
+    foo
+    """
+    # Set CORS headers for the preflight request
+    if request.method == "OPTIONS":
+        # Allows GET requests from any origin with the Content-Type
+        # header and caches preflight response for an 3600s
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": ["Content-Type", "X-Api-Key"],
+            "Access-Control-Max-Age": "3600",
+        }
+
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "This is a preflight request.",
+                        "status": "preflight",
+                    },
+                    "results": [],
+                }
+            ),
+            204,
+            headers,
+        )
+
+    # Set CORS headers for the main request
+    headers = {"Access-Control-Allow-Origin": "*"}
+
     logger = logging.getLogger("public_starter")
     logging.basicConfig(level=logging.INFO)
     api_key = request.headers.get("X-Api-Key", None)
@@ -48,6 +81,7 @@ def public_starter(_):
                     }
                 ),
                 error["code"],
+                headers,
             )
 
         def build_response(meme: Any):
@@ -70,6 +104,7 @@ def public_starter(_):
                 }
             ),
             200,
+            headers,
         )
     logger.warning(f"Invalid API key {api_key}")
     return (
@@ -83,4 +118,5 @@ def public_starter(_):
             }
         ),
         401,
+        headers,
     )
