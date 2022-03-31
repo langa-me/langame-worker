@@ -10,12 +10,12 @@ from log import RequestLoggerInterceptor
 from discord_bot import DiscordBot
 import signal
 from firebase_admin import initialize_app, credentials, firestore
-
+import websocket
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import torch
-
+import json
 import numpy as np
-
+import traceback
 
 def speech_to_text(data):
     # load model and tokenizer

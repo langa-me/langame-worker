@@ -16,6 +16,9 @@ if __name__ == "__main__":
             "fire",
             "transformers",
             "torch",
+            "websocket-client",
+            "discord",
+            "deep-translator",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

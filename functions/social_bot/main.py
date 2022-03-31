@@ -57,6 +57,32 @@ def social_bot(data, context):
     if "guild_id" in data["value"]["fields"]:
         guild_id = data["value"]["fields"]["guild_id"]["stringValue"]
 
+    if "channel_id" in data["value"]["fields"]:
+        channel_id = data["value"]["fields"]["channel_id"]["stringValue"]
+        url = f"https://discord.com/api/v8/channels/{channel_id}"
+        r = requests.get(
+            url,
+            headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
+        )
+        if r.status_code != 200:
+            logger.error(f"Error while getting channel: {r.status_code} {r.text}")
+            return
+        r = r.json()
+
+        docs = client.collection("configs").where("guild_id", "==", guild_id).stream()
+        doc = next(docs, None)
+
+        logger.info(f"config: {doc}")
+        translation = doc.to_dict().get("translation", None) if doc else None
+        if not translation and doc:
+            # if no global config found, try to get channel config by name
+            translation = (
+                doc.to_dict()
+                .get("channels", {})
+                .get(r["name"], {})
+                .get("translation", None)
+            )
+
     if not username:
         logger.error("No username in document. Skipping.")
         return
@@ -80,14 +106,17 @@ def social_bot(data, context):
                 topics=topics,
                 fix_grammar=False,  # TODO: too slow / low quality
                 parallel_completions=3,
+                translated=translation,
             )
             user_message = (
-                um["user_message"]
-                if um and "user_message" in um
-                else user_message
+                um["user_message"] if um and "user_message" in um else user_message
             )
             if conversation_starter:
-                user_message = conversation_starter[0]["content"]
+                user_message = (
+                    conversation_starter[0]["content"]
+                    if not translation
+                    else conversation_starter[0]["translated"][translation]
+                )
 
     if social_software == "slack":
         logger.info(f"Sending message to slack {user_message}")

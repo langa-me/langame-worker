@@ -6,10 +6,11 @@ from datetime import datetime
 from random import sample, randint
 from firebase_admin import firestore
 from google.cloud.firestore import Client
-from third_party.common.services import request_starter
 from third_party.common.discord import get_most_talkative_players_from_channel
+from third_party.common.services import request_starter_for_service
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+GET_MEMES_URL = os.getenv("GET_MEMES_URL")
 
 # TODO: on failure, DM the admin
 # TODO: wrap into try except, send error to GCP etc.?
@@ -40,6 +41,34 @@ def schedule_social(_, ctx):
         if not channel_id:
             logger.warning("No channel_id for schedule: %s", schedule.id)
             continue
+
+        url = f"https://discord.com/api/v8/channels/{channel_id}"
+        r = requests.get(
+            url,
+            headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
+        )
+        if r.status_code != 200:
+            logger.error(f"Error while getting channel: {r.status_code} {r.text}")
+            return
+        r = r.json()
+
+        docs = (
+            firestore_client.collection("configs")
+            .where("guild_id", "==", guild_id)
+            .stream()
+        )
+        doc = next(docs, None)
+
+        logger.info(f"config: {doc}")
+        translation = doc.to_dict().get("translation", None) if doc else None
+        if not translation and doc:
+            # if no global config found, try to get channel config by name
+            translation = (
+                doc.to_dict()
+                .get("channels", {})
+                .get(r["name"], {})
+                .get("translation", None)
+            )
         # frequency is either in minutes (30m, 120m...),
         # in hours (3h, 12h...),
         # or in days (2d, 5d...)
@@ -72,6 +101,7 @@ def schedule_social(_, ctx):
         ):
             # send a new Langame
             logger.info(f"Sending a new Langame for schedule {schedule.id}.")
+
             # get the list of topics
             topics = data.get("topics")
             if topics is None:
@@ -92,7 +122,9 @@ def schedule_social(_, ctx):
                 # sample from most talkative players
                 players = sample(
                     most_talkative_players,
-                    k=randint(2, 3) if len(most_talkative_players) > 2 else len(most_talkative_players),
+                    k=randint(2, 3)
+                    if len(most_talkative_players) > 2
+                    else len(most_talkative_players),
                 )
                 # turn players into a list of ids
                 players = [player.get("id") for player in players]
@@ -141,21 +173,46 @@ def schedule_social(_, ctx):
             # turn into <@id>
             players = [f"<@{player}>" for player in players]
             logger.info(f"Players selected: {players}")
-
-            # send the message
-            starter, user_message = request_starter(
-                logger,
-                firestore_client,
-                topics,
-                parallel_completions=3,
-                fix_grammar=False,
+            user_message = ""
+            docs = (
+                firestore_client.collection("api_keys")
+                .where("owner", "==", guild_id)
+                .stream()
             )
-            if starter is None:
-                logger.warning(
-                    f"No starter found for schedule {schedule.id}. Skipping. {user_message}"
+            key = next(docs, None)
+            if not key:
+                user_message = (
+                    "😥 It seems your Langame bot was not properly configured."
+                    + " Please, as an admin of the Discord server, reinstall the bot"
+                    + " from https://discord.me/langame or authenticate with Discord at"
+                    + " https://langa.me/signin."
                 )
-                continue
-            logger.info(f"Will send the Langame to {channel_id}. Starter: {starter}")
+            else:
+                starter, um = request_starter_for_service(
+                    url=GET_MEMES_URL,
+                    api_key_id=key.id,
+                    logger=logger,
+                    topics=topics,
+                    fix_grammar=False,  # TODO: too slow / low quality
+                    parallel_completions=3,
+                    translated=translation,
+                )
+                if starter:
+                    user_message = (
+                        starter[0]["content"]
+                        if not translation
+                        else starter[0]["translated"][translation]
+                    )
+                else:
+                    # we only send errors of configuration to channel, otherwise
+                    # just continue next schedule
+                    logger.warning(
+                        f"No starter found for schedule {schedule.id}. Skipping. {um}"
+                    )
+                    continue
+            logger.info(
+                f"Will send the Langame to {channel_id}. Starter: {user_message}"
+            )
             r = requests.post(
                 f"https://discord.com/api/v8/channels/{channel_id}/messages",
                 headers={
@@ -166,7 +223,7 @@ def schedule_social(_, ctx):
                     {
                         "content": f"Topics: {','.join(topics)}."
                         + f"\nPlayers: {','.join(players)}."
-                        + f"\n\n**{starter}**",
+                        + f"\n\n**{user_message}**",
                         "allowed_mentions": {
                             "parse": ["users"],
                         },
@@ -187,17 +244,19 @@ def schedule_social(_, ctx):
                 merge=True,
             )
             # add a social_interactions entry
-            firestore_client.collection("social_interactions").add({
-                "guild_id": guild_id,
-                "channel_id": channel_id,
-                "created_at": firestore.SERVER_TIMESTAMP,
-                "schedule_id": schedule.id,
-                "state": "delivered",
-                "social_software": "discord",
-                "topics": topics,
-                "players": players,
-                "user_message": starter,
-            })
+            firestore_client.collection("social_interactions").add(
+                {
+                    "guild_id": guild_id,
+                    "channel_id": channel_id,
+                    "created_at": firestore.SERVER_TIMESTAMP,
+                    "schedule_id": schedule.id,
+                    "state": "delivered",
+                    "social_software": "discord",
+                    "topics": topics,
+                    "players": players,
+                    "user_message": user_message,
+                }
+            )
         else:
             logger.info(
                 f"No Langame to send for schedule {schedule.id} because"

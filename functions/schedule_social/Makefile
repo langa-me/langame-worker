@@ -1,5 +1,6 @@
 TOPIC_NAME ?= schedule_social_topic
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
+GET_MEMES_URL ?= "https://us-central1-${GCLOUD_PROJECT}.cloudfunctions.net/getMemes"
 
 ifeq ($(GCLOUD_PROJECT),langame-dev)
 $(info "Using develoment configuration")
@@ -19,6 +20,7 @@ deploy: ## [Local development] deploy to GCP.
 		--trigger-resource ${TOPIC_NAME} \
 		--trigger-event google.pubsub.topic.publish \
 		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN} \
+		--set-env-vars GET_MEMES_URL=${GET_MEMES_URL} \
 		--timeout 540s
 
 schedule: ## [Local development] schedule to run every minute.

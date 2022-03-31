@@ -379,22 +379,31 @@ def discord_bot(_):
         elif json_request["data"]["name"] == "setup":
             logger.info("Setting up the bot")
             guild_id, channel_id, is_langamer_response = check_langamer(
-                logger, json_request, 'Only users with the role "Langamer" can setup'
-                        + ' Langame bot. Ask your server admin to add the role "Langamer" now 😛.'
+                logger,
+                json_request,
+                'Only users with the role "Langamer" can setup'
+                + ' Langame bot. Ask your server admin to add the role "Langamer" now 😛.',
             )
             if is_langamer_response:
                 return is_langamer_response
             loquacity = get_discord_interaction_option_value(
-                json_request, "loquacity", "1"  # Extrovert
+                json_request, "loquacity", None  # Extrovert
             )
             specific_channel = get_discord_interaction_option_value(
                 json_request, "channel", None
             )
+            save = get_discord_interaction_option_value(json_request, "save", None)
+            translation = get_discord_interaction_option_value(
+                json_request, "translation", None
+            )
             data = {
                 "type": "discord",
                 "guild_id": guild_id,
-                "loquacity": loquacity,
             }
+            if loquacity:
+                data["loquacity"] = loquacity
+            if translation:
+                data["translation"] = translation
 
             docs = (
                 firestore_client.collection("configs")
@@ -405,14 +414,22 @@ def discord_bot(_):
 
             if doc:
                 if specific_channel:
+                    per_channel = {}
+                    if loquacity:
+                        per_channel["loquacity"] = loquacity
+                    if translation:
+                        per_channel["translation"] = translation
                     data["channels"] = {
                         **doc.to_dict().get("channels", {}),
                         specific_channel: {
-                            "loquacity": loquacity,
+                            **per_channel,
                         },
                     }
                     # remove global loquacity
-                    data["loquacity"] = firestore.DELETE_FIELD
+                    if loquacity:
+                        data["loquacity"] = firestore.DELETE_FIELD
+                    if translation:
+                        data["translation"] = firestore.DELETE_FIELD
                 firestore_client.collection("configs").document(doc.id).set(
                     {
                         **data,
@@ -422,29 +439,43 @@ def discord_bot(_):
                 )
             else:
                 if specific_channel:
+                    per_channel = {}
+                    if loquacity:
+                        per_channel["loquacity"] = loquacity
+                    if translation:
+                        per_channel["translation"] = translation
                     data["channels"] = {
+                        **doc.to_dict().get("channels", {}),
                         specific_channel: {
-                            "loquacity": loquacity,
-                        }
+                            **per_channel,
+                        },
                     }
                     # remove global loquacity
-                    del data["loquacity"]
+                    if loquacity:
+                        del data["loquacity"]
+                    if translation:
+                        del data["translation"]
                 firestore_client.collection("configs").add(
                     {
                         **data,
                         "created_at": firestore.SERVER_TIMESTAMP,
                     }
                 )
+            message_content = (
+                "⚠️ Experimental ⚠️. Understood. "
+                + (f"\nLoquacity set to {loquacity}" if loquacity else "")
+                + (f"\nTranslation set to {translation}" if translation else "")
+                + (
+                    f' for channel {json_request["data"]["options"]["channel"]["name"]}.'
+                    if specific_channel
+                    else "."
+                )
+            )
             return jsonify(
                 {
                     "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                     "data": {
-                        "content": f"⚠️ Experimental ⚠️. Understood. Loquacity set to {loquacity}"
-                        + (
-                            f' for channel {json_request["data"]["options"]["channel"]["name"]}.'
-                            if specific_channel
-                            else "."
-                        ),
+                        "content": message_content,
                     },
                 }
             )
