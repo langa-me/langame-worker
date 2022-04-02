@@ -8,7 +8,7 @@ from firebase_admin import firestore
 from google.cloud.firestore import Client
 from third_party.common.discord import get_most_talkative_players_from_channel
 from third_party.common.services import request_starter_for_service
-
+import time
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 GET_MEMES_URL = os.getenv("GET_MEMES_URL")
 
@@ -43,14 +43,15 @@ def schedule_social(_, ctx):
             continue
 
         url = f"https://discord.com/api/v8/channels/{channel_id}"
-        r = requests.get(
+        channel_response = requests.get(
             url,
             headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
         )
-        if r.status_code != 200:
-            logger.error(f"Error while getting channel: {r.status_code} {r.text}")
-            return
-        r = r.json()
+        if channel_response.status_code != 200:
+            logger.warning(f"Error while getting channel: {channel_response.status_code} {channel_response.text}")
+            # maybe private channel :)
+            continue
+        channel_response = channel_response.json()
 
         docs = (
             firestore_client.collection("configs")
@@ -66,7 +67,7 @@ def schedule_social(_, ctx):
             translation = (
                 doc.to_dict()
                 .get("channels", {})
-                .get(r["name"], {})
+                .get(channel_response["name"], {})
                 .get("translation", None)
             )
         # frequency is either in minutes (30m, 120m...),
@@ -130,31 +131,31 @@ def schedule_social(_, ctx):
                 players = [player.get("id") for player in players]
             else:
                 # (default to random_server)
-                r = requests.get(
+                members = requests.get(
                     # https://discord.com/developers/docs/resources/guild#list-guild-members
                     f"https://discord.com/api/v8/guilds/{guild_id}/members?limit=1000",  # TODO: paginate
                     headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
                 )
                 # gettings roles, to filter bots
-                r_2 = requests.get(
+                roles = requests.get(
                     f"https://discord.com/api/v8/guilds/{guild_id}/roles",  # TODO: paginate
                     headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
                 )
-                if r.status_code != 200 or r_2.status_code != 200:
+                if members.status_code != 200 or roles.status_code != 200:
                     logger.error(
-                        f"Failed to get the list of players for guild {guild_id}. Skipping. {r.text}",
+                        f"Failed to get the list of players for guild {guild_id}. Skipping. {members.text}",
                     )
                     continue
-                r = r.json()
-                r_2 = r_2.json()
-                logger.info(f"Got the list of players for guild {guild_id}: {r}")
+                members = members.json()
+                roles = roles.json()
+                logger.info(f"Got the list of players for guild {guild_id}: {members}")
                 # find any role named "Bot"
                 bot_role = next(
-                    (role for role in r_2 if role.get("name") == "Bot"),
+                    (role for role in roles if role.get("name") == "Bot"),
                     None,
                 )
                 players = []
-                for member in r:
+                for member in members:
                     # filter out bots (role "Bot") or ["user"]["bot"]=True
                     if member.get("user", {}).get("bot", False) or (
                         bot_role and bot_role.get("id") in member.get("roles")
@@ -213,7 +214,7 @@ def schedule_social(_, ctx):
             logger.info(
                 f"Will send the Langame to {channel_id}. Starter: {user_message}"
             )
-            r = requests.post(
+            message_response = requests.post(
                 f"https://discord.com/api/v8/channels/{channel_id}/messages",
                 headers={
                     "Content-Type": "application/json",
@@ -230,9 +231,9 @@ def schedule_social(_, ctx):
                     }
                 ),
             )
-            if r.status_code != 200:
+            if message_response.status_code != 200:
                 logger.error(
-                    f"Failed to send the Langame to channel {channel_id}. Skipping. {r.text}"
+                    f"Failed to send the Langame to channel {channel_id}. Skipping. {channel_response.text}"
                 )
                 continue
             # update the last langame
@@ -257,6 +258,8 @@ def schedule_social(_, ctx):
                     "user_message": user_message,
                 }
             )
+            # rate limit AI APIs
+            time.sleep(20)
         else:
             logger.info(
                 f"No Langame to send for schedule {schedule.id} because"
