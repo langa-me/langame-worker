@@ -11,3 +11,5 @@ def talk():
         result = ws.recv()
         print(result)
     ws.close()
+
+talk()

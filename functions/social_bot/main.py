@@ -114,7 +114,7 @@ def social_bot(data, context):
             if conversation_starter:
                 user_message = (
                     conversation_starter[0]["content"]
-                    if not translation
+                    if not translation or translation == "en"
                     else conversation_starter[0]["translated"][translation]
                 )
 

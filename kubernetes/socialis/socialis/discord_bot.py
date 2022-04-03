@@ -1,3 +1,4 @@
+import logging
 from logging import Logger
 from typing import List
 import discord
@@ -9,6 +10,8 @@ from google.cloud.firestore import Client, DocumentSnapshot
 from websocket import WebSocket
 import json
 from deep_translator import GoogleTranslator
+from discord import Message
+
 
 def is_message_author_langame(message) -> bool:
     return (
@@ -20,6 +23,75 @@ def is_message_author_langame(message) -> bool:
 
 def is_conversation_starter(message) -> bool:
     return is_message_author_langame(message) and "Topics" in message.content
+
+
+def send_message_to_parlai(ws: WebSocket, message: Message, message_content: str):
+    """
+    Sends a message to the websocket to parlai.
+    """
+    response = ""
+    try:
+        ws.send(
+            json.dumps(
+                {
+                    "mid": message.id,
+                    "sender": {
+                        "id": message.author.id,
+                    },
+                    "text": message_content,
+                }
+            )
+        )
+        response = ws.recv()
+
+        # load json
+        response = json.loads(response)
+        # if empty message return
+        if not response or "text" not in response or len(response["text"]) < 2:
+            return ""
+        response = response["text"]
+
+        if "Welcome to the Langame Ava overworld." in response:
+            ws.send(
+                json.dumps(
+                    {
+                        "mid": message.id,
+                        "sender": {
+                            "id": message.author.id,
+                        },
+                        "text": "begin",
+                    }
+                )
+            )
+            response = ws.recv()
+            response = json.loads(response)
+            # if empty message return
+            if not response or "text" not in response or len(response["text"]) < 2:
+                return
+
+            ws.send(
+                json.dumps(
+                    {
+                        "mid": message.id,
+                        "sender": {
+                            "id": hash(message.channel.id + message.author.id),
+                        },
+                        "text": message_content,
+                    }
+                )
+            )
+            response = ws.recv()
+
+            # load json
+            response = json.loads(response)
+            # if empty message return
+            if not response or "text" not in response or len(response["text"]) < 2:
+                return
+            response = response["text"]
+    except Exception as e:
+        logging.warning(e)
+
+    return response
 
 
 class DiscordBot(discord.Client):
@@ -37,7 +109,7 @@ class DiscordBot(discord.Client):
         super().__init__(*args, **kwargs)
         self.logger = logger
         self.firestore_client = firestore_client
-        self.parlai_websockets = {}
+        self.parlai_websockets: dict[str, WebSocket] = {}
         self.discord_configs = {}
 
         # Create an Event for notifying main thread.
@@ -90,13 +162,19 @@ class DiscordBot(discord.Client):
             self.parlai_websockets[socket_id] = WebSocket()
         if not self.parlai_websockets[socket_id].connected:
             self.logger.info("Try to reconnect to parlai websocket")
-            self.parlai_websockets[socket_id].connect("ws://localhost:8082")
+            try:
+                self.parlai_websockets[socket_id].connect("ws://localhost:8082", timeout=60)
+            except Exception as e:
+                self.logger.warning(e)
+                del self.parlai_websockets[socket_id]
+                return
 
         config = self.discord_configs.get(
             str(message.guild.id),
             {
                 "loquacity": "1",
                 "translation": "en",
+                "save": False,
             },
         )
         db = firestore.Client()
@@ -110,7 +188,6 @@ class DiscordBot(discord.Client):
             loquacity = (
                 config.get("channels", {}).get(channel.name, {}).get("loquacity", "1")
             )
-        self.logger.info(f"loquacity: {loquacity}")
         if loquacity == "0":
             self.logger.info(f"Loquacity is 0 for {channel.name}")
             return
@@ -118,9 +195,17 @@ class DiscordBot(discord.Client):
         if not translation:
             # if no global config found, try to get channel config by name
             translation = (
-                config.get("channels", {}).get(channel.name, {}).get("translation", "en")
+                config.get("channels", {})
+                .get(channel.name, {})
+                .get("translation", "en")
             )
-        self.logger.info(f"loquacity: {loquacity}")
+        save = config.get("save", None)
+        if not save:
+            # if no global config found, try to get channel config by name
+            save = config.get("channels", {}).get(channel.name, {}).get("save", False)
+        self.logger.info(
+            f"loquacity: {loquacity} translation: {translation} save: {save}"
+        )
         history = await channel.history().flatten()
         hundred_history = history[-20:]
         # count messages from langame in history
@@ -168,42 +253,37 @@ class DiscordBot(discord.Client):
 
         # if this channel answers to Langame are to be saved
         # and this is an answer to a conversation starter, save
-        # TODO:
-        # if (
-        #     channel.id in config["savedChannels"]
-        #     and is_conversation_starter(lg_m)
-        #     and len(message.content) > 1
-        # ):
-        #     self.logger.info(f"on_message saving {message.content} to {channel.name}")
-        #     _, doc_ref = db.collection("saved_conversations").add(
-        #         {
-        #             "createdAt": now,
-        #             "channel": {
-        #                 "id": channel.id,
-        #                 "name": channel.name,
-        #             },
-        #             "guild": {
-        #                 "id": message.guild.id,
-        #                 "name": message.guild.name,
-        #             },
-        #             "conversation": [
-        #                 {
-        #                     "author": message.author.name,
-        #                     "bot": message.author.bot,
-        #                     "content": message.content,
-        #                     "createdAt": message.created_at,
-        #                     "editedAt": message.edited_at,
-        #                 },
-        #                 {
-        #                     "author": "Langame",
-        #                     "bot": True,
-        #                     "content": lg_m.content,
-        #                     "createdAt": lg_m.created_at,
-        #                     "editedAt": lg_m.edited_at,
-        #                 },
-        #             ],
-        #         }
-        #     )
+        if save and is_conversation_starter(lg_m) and len(message.content) > 1:
+            self.logger.info(f"on_message saving {message.content} to {channel.name}")
+            _, doc_ref = db.collection("saved_conversations").add(
+                {
+                    "createdAt": now,
+                    "channel": {
+                        "id": channel.id,
+                        "name": channel.name,
+                    },
+                    "guild": {
+                        "id": message.guild.id,
+                        "name": message.guild.name,
+                    },
+                    "conversation": [
+                        {
+                            "author": message.author.name,
+                            "bot": message.author.bot,
+                            "content": message.content,
+                            "createdAt": message.created_at,
+                            "editedAt": message.edited_at,
+                        },
+                        {
+                            "author": "Langame",
+                            "bot": True,
+                            "content": lg_m.content,
+                            "createdAt": lg_m.created_at,
+                            "editedAt": lg_m.edited_at,
+                        },
+                    ],
+                }
+            )
 
         if (
             message.content
@@ -242,78 +322,19 @@ class DiscordBot(discord.Client):
 
                 self.logger.info(f"on_message:input {message.content}")
 
-                message_content = GoogleTranslator(target="en").translate(message.content)
-                self.parlai_websockets[socket_id].send(
-                    json.dumps(
-                        {
-                            "mid": message.id,
-                            "sender": {
-                                "id": message.author.id,
-                            },
-                            "text": message_content,
-                        }
-                    )
+                message_content = GoogleTranslator(target="en").translate(
+                    message.content
                 )
-                response = self.parlai_websockets[socket_id].recv()
 
-                # load json
-                response = json.loads(response)
-                self.logger.info(f"on_message:output {response}")
-                # if empty message return
-                if not response or "text" not in response or len(response["text"]) < 2:
+                response = send_message_to_parlai(
+                    self.parlai_websockets[socket_id], message, message_content
+                )
+
+                if not response:
+                    self.parlai_websockets[socket_id].close()
+                    del self.parlai_websockets[socket_id]
+                    self.logger.warning("on_message:no response from parlai, closed websocket")
                     return
-                response = response["text"]
-
-                if "Welcome to the Langame Ava overworld." in response:
-                    self.parlai_websockets[socket_id].send(
-                        json.dumps(
-                            {
-                                "mid": message.id,
-                                "sender": {
-                                    "id": message.author.id,
-                                },
-                                "text": "begin",
-                            }
-                        )
-                    )
-                    response = self.parlai_websockets[socket_id].recv()
-                    self.logger.info(f"response: {response}")
-                    response = json.loads(response)
-                    self.logger.info(f"on_message:output {response}")
-                    # if empty message return
-                    if (
-                        not response
-                        or "text" not in response
-                        or len(response["text"]) < 2
-                    ):
-                        return
-
-                    self.logger.info(f"on_message:input {message_content}")
-
-                    self.parlai_websockets[socket_id].send(
-                        json.dumps(
-                            {
-                                "mid": message.id,
-                                "sender": {
-                                    "id": hash(message.channel.id + message.author.id),
-                                },
-                                "text": message_content,
-                            }
-                        )
-                    )
-                    response = self.parlai_websockets[socket_id].recv()
-
-                    # load json
-                    response = json.loads(response)
-                    self.logger.info(f"on_message:output {response}")
-                    # if empty message return
-                    if (
-                        not response
-                        or "text" not in response
-                        or len(response["text"]) < 2
-                    ):
-                        return
-                    response = response["text"]
 
                 # need translation?
                 if translation != "en":

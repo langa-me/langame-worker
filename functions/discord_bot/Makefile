@@ -1,11 +1,12 @@
 DISCORD_CLIENT_PUBLIC_KEY ?= foo
 DISCORD_BOT_TOKEN ?= bar
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
-
+MIN_INSTANCE ?= 1
 ifeq ($(GCLOUD_PROJECT),langame-dev)
 $(info "Using develoment configuration")
 DISCORD_BOT_TOKEN := $(shell cat ../../.env.development | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 DISCORD_CLIENT_PUBLIC_KEY := $(shell cat ../../.env.development | grep -w DISCORD_CLIENT_PUBLIC_KEY | cut -d "=" -f 2)
+MIN_INSTANCE := 0
 else
 $(info "Using production configuration")
 DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
@@ -21,7 +22,7 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
-		--min-instances 1 \
+		--min-instances ${MIN_INSTANCE} \
 		--set-env-vars=DISCORD_CLIENT_PUBLIC_KEY=${DISCORD_CLIENT_PUBLIC_KEY} \
 		--set-env-vars=DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
 

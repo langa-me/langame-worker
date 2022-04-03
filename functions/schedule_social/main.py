@@ -201,7 +201,7 @@ def schedule_social(_, ctx):
                 if starter:
                     user_message = (
                         starter[0]["content"]
-                        if not translation
+                        if not translation or translation == "en"
                         else starter[0]["translated"][translation]
                     )
                 else:

@@ -402,6 +402,8 @@ def discord_bot(_):
             }
             if loquacity:
                 data["loquacity"] = loquacity
+            if save:
+                data["save"] = bool(save)
             if translation:
                 data["translation"] = translation
 
@@ -417,6 +419,8 @@ def discord_bot(_):
                     per_channel = {}
                     if loquacity:
                         per_channel["loquacity"] = loquacity
+                    if save:
+                        per_channel["save"] = bool(save)
                     if translation:
                         per_channel["translation"] = translation
                     data["channels"] = {
@@ -428,6 +432,10 @@ def discord_bot(_):
                     # remove global loquacity
                     if loquacity:
                         data["loquacity"] = firestore.DELETE_FIELD
+                    # remove global save
+                    if save:
+                        data["save"] = firestore.DELETE_FIELD
+                    # remove global translation
                     if translation:
                         data["translation"] = firestore.DELETE_FIELD
                 firestore_client.collection("configs").document(doc.id).set(
@@ -442,6 +450,8 @@ def discord_bot(_):
                     per_channel = {}
                     if loquacity:
                         per_channel["loquacity"] = loquacity
+                    if save:
+                        per_channel["save"] = bool(save)
                     if translation:
                         per_channel["translation"] = translation
                     data["channels"] = {
@@ -453,6 +463,10 @@ def discord_bot(_):
                     # remove global loquacity
                     if loquacity:
                         del data["loquacity"]
+                    # remove global save
+                    if save:
+                        del data["save"]
+                    # remove global translation
                     if translation:
                         del data["translation"]
                 firestore_client.collection("configs").add(
@@ -464,12 +478,9 @@ def discord_bot(_):
             message_content = (
                 "⚠️ Experimental ⚠️. Understood. "
                 + (f"\nLoquacity set to {loquacity}" if loquacity else "")
-                + (f"\nTranslation set to {translation}" if translation else "")
-                + (
-                    f' for channel {json_request["data"]["options"]["channel"]["name"]}.'
-                    if specific_channel
-                    else "."
-                )
+                + (f"\nSave set to {save}" if save else "")
+                + (f"\nLanguage set to {translation}" if translation else "")
+                + (f" for channel {specific_channel}." if specific_channel else ".")
             )
             return jsonify(
                 {
