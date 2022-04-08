@@ -1,18 +1,8 @@
-set_prod: ## Set the GCP project to prod
+prod: ## Set the GCP project to prod
 	gcloud config set project langame-86ac4
 
-set_dev: ## Set the GCP project to dev
+dev: ## Set the GCP project to dev
 	gcloud config set project langame-dev
-
-
-install: ## [Local development] Install virtualenv, activate, install requirements, install package.
-	(\
-		python3 -m virtualenv env; \
-		. env/bin/activate; \
-		python3 -m pip install -e .; \
-		python3 -m pip install -r requirements-test.txt; \
-		ls functions/**/*requirements*.txt | xargs -L1 pip install -r; \
-	)
 
 clean:
 	rm -rf env build **/wandb **/embeddings **/indexes *.egg-info **/index_infos.json **/__pycache__

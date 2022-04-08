@@ -37,6 +37,5 @@ ENV PYTHONUNBUFFERED 0
 # COPY --from=compile-image /socialis.egg-info socialis.egg-info
 USER ${UID}:${GID}
 
-# ENTRYPOINT ["/opt/venv/bin/python", "./socialis/main.py"]
-# CMD ["--fix_grammar", "False", "--profanity_threshold", "tolerant", "--completion_type", "huggingface_api", "--tweet_on_generate", "False"]
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
+ENTRYPOINT ["/opt/venv/bin/python", "./socialis/main.py"]
+CMD ["--svc_path", "./svc.json"]

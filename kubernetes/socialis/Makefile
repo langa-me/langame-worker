@@ -17,42 +17,49 @@ endif
 
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 
-LANGAME_APP_PATH ?= "${HOME}/Documents/langame-app"
-
-# eval $(cat .env | sed 's/^/export /')
-
-# baremetal
-
-install: ## [Local development] Upgrade pip, install requirements, install package.
-	(\
-		python3 -m virtualenv env; \
-		. env/bin/activate; \
-		python3 -m pip install -U pip; \
-		python3 -m pip install -e .; \
-		python3 -m pip install -r requirements-test.txt; \
-	)
-
-protos: ## [Local development] Generate protos.
-	python3 -m grpc_tools.protoc \
-		--python_out=socialis \
-		--grpc_python_out=socialis \
-		-I proto/socialis/v1 \
-		proto/socialis/v1/*.proto
-	@echo "Assuming path to langa-me/langame-app is ${LANGAME_APP_PATH}"
-	mkdir -p ${LANGAME_APP_PATH}/lib/models/langame/socialis
-	protoc -I proto/socialis/v1 \
-		--dart_out=grpc:${LANGAME_APP_PATH}/lib/models/langame/socialis \
-		proto/socialis/v1/*.proto
-	
 
 lint: ## [Local development] Run pylint to check code style.
 	@echo "Linting"
 	env/bin/python3 -m pylint socialis
 
-run: ## [Local development] run the main entrypoint
-	# envoy -c envoy.yaml &
+bare/run: ## [Local development] run the main entrypoint
 	python3 $(shell pwd)/socialis/main.py --discord_bot_token ${DISCORD_BOT_TOKEN} --svc_path ${SVC_PATH}
-	# kill -9 $(ps -ef | grep envoy | grep -v grep | awk '{print $2}')
+
+
+docker/build: ## [Local development] build the docker image
+	mkdir -p third_party/langame-worker/langame
+	cp -r ../langame-worker/langame/ third_party/langame-worker/
+	cp ../langame-worker/setup.py third_party/langame-worker/setup.py
+	docker build -t ${REGISTRY}:${VERSION} . -f ./Dockerfile --build-arg HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+	rm -rf third_party
+
+docker/run: docker/build ## [Local development] run the docker container
+	docker run \
+		-v $(shell pwd)/svc.dev.json:/etc/secrets/primary/svc.json \
+		-e OPENAI_KEY=${OPENAI_KEY} \
+		-e OPENAI_ORG=${OPENAI_ORG} \
+		-e HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN} \
+		-e HUGGINGFACE_KEY=${HUGGINGFACE_KEY} \
+		${REGISTRY}:${VERSION} \
+		--profanity_threshold tolerant \
+		--completion_type local \
+		--tweet_on_generate False \
+		--use_gpu False
+
+docker/push: docker_build ## [Local development] push the docker image to GCR
+	docker push ${REGISTRY}:${VERSION}
+	docker push ${REGISTRY}:latest
+
+# k8s
+
+k8s_deploy: ## [Local development] deploy to Kubernetes.
+	helm install ava helm -f ${HELM_VALUES} -n ${K8S_NAMESPACE} --create-namespace
+k8s_upgrade: ## [Local development] upgrade with new config.
+	helm upgrade ava helm -f ${HELM_VALUES} -n ${K8S_NAMESPACE}
+	# --recreate-pods
+k8s_undeploy: ## [Local development] undeploy from Kubernetes.
+	helm uninstall ava -n ${K8S_NAMESPACE}
+
 
 .PHONY: help
 

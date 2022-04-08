@@ -33,6 +33,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--discord_bot_token"
+            - "{{ required .Values.discord.bot_token }}"
+            - "--svc_path"
+            - "/etc/secrets/svc.json"
           ports:
             - name: http
               containerPort: 80
@@ -45,6 +50,10 @@ spec:
             httpGet:
               path: /
               port: http
+          volumeMounts:
+            - name: google-cloud-service-account
+              mountPath: /etc/secrets/svc.json
+              subPath: svc.json
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -59,3 +68,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: google-cloud-service-account
+          secret:
+            secretName: google-cloud-service-account
