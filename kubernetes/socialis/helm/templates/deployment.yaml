@@ -35,21 +35,23 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - "--discord_bot_token"
-            - "{{ required .Values.discord.bot_token }}"
+            - "{{ .Values.discord.botToken }}"
             - "--svc_path"
             - "/etc/secrets/svc.json"
+            - "--parlai_websocket_url"
+            - "{{ .Values.parlai.websocketUrl }}"
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           volumeMounts:
             - name: google-cloud-service-account
               mountPath: /etc/secrets/svc.json

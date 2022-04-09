@@ -177,7 +177,7 @@ class SocialisServer:
         self.server.stop(0)
 
 
-def serve(discord_bot_token: str, svc_path: str):
+def serve(discord_bot_token: str, svc_path: str, parlai_websocket_url: str):
     """
     TODO
     """
@@ -199,7 +199,7 @@ def serve(discord_bot_token: str, svc_path: str):
         )
     )
     firestore_client = firestore.Client()
-    DiscordBot(logger, firestore_client).run(discord_bot_token)
+    DiscordBot(logger, firestore_client, parlai_websocket_url).run(discord_bot_token)
 
 
 def main():

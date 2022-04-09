@@ -6,15 +6,18 @@ googleCloud:
   serviceAccount: svc.prod.json
 
 discord:
-  bot_token: ""
+  botToken: ""
+
+parlai:
+  websocketUrl: "ws://parlai:9090"
 
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: 5306t2h8.gra7.container-registry.ovh.net/prod/socialis
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""

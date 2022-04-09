@@ -103,12 +103,14 @@ class DiscordBot(discord.Client):
         self,
         logger: Logger,
         firestore_client: Client,
+        parlai_websocket_url: str,
         *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.logger = logger
         self.firestore_client = firestore_client
+        self.parlai_websocket_url = parlai_websocket_url
         self.parlai_websockets: dict[str, WebSocket] = {}
         self.discord_configs = {}
 
@@ -163,7 +165,7 @@ class DiscordBot(discord.Client):
         if not self.parlai_websockets[socket_id].connected:
             self.logger.info("Try to reconnect to parlai websocket")
             try:
-                self.parlai_websockets[socket_id].connect("ws://localhost:8082", timeout=60)
+                self.parlai_websockets[socket_id].connect(self.parlai_websocket_url, timeout=60)
             except Exception as e:
                 self.logger.warning(e)
                 del self.parlai_websockets[socket_id]
