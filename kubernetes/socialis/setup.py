@@ -5,10 +5,10 @@ if __name__ == "__main__":
         name="socialis",
         packages=find_packages(),
         include_package_data=True,
-        version="1.0.0",
+        version="1.0.5",
         entry_points={"console_scripts": ["ava = ava:main"]},
         author="Louis Beaumont",
-        author_email="louis.beaumont@langa.me",
+        author_email="louis@langa.me",
         url="https://github.com/langa-me/langame-worker",
         install_requires=[
             "grpcio",
@@ -16,9 +16,9 @@ if __name__ == "__main__":
             "fire",
             "transformers",
             "torch",
-            "websocket-client",
             "discord",
             "deep-translator",
+            "tornado",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",

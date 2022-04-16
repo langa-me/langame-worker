@@ -10,7 +10,6 @@ from log import RequestLoggerInterceptor
 from discord_bot import DiscordBot
 import signal
 from firebase_admin import initialize_app, credentials, firestore
-import websocket
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import torch
 import json
@@ -199,6 +198,7 @@ def serve(discord_bot_token: str, svc_path: str, parlai_websocket_url: str):
         )
     )
     firestore_client = firestore.Client()
+    logger.info(f"initialized Firebase with project {firestore_client.project}")
     DiscordBot(logger, firestore_client, parlai_websocket_url).run(discord_bot_token)
 
 

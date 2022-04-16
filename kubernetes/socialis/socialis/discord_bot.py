@@ -1,16 +1,17 @@
 import logging
 from logging import Logger
-from typing import List
+from typing import Any, List
 import discord
 import asyncio
 from firebase_admin import firestore
 from datetime import datetime
 import threading
 from google.cloud.firestore import Client, DocumentSnapshot
-from websocket import WebSocket
-import json
+from socialis.ws_client import WebSocketClient
 from deep_translator import GoogleTranslator
 from discord import Message
+import tornado.ioloop
+import tornado.websocket
 
 
 def is_message_author_langame(message) -> bool:
@@ -23,75 +24,6 @@ def is_message_author_langame(message) -> bool:
 
 def is_conversation_starter(message) -> bool:
     return is_message_author_langame(message) and "Topics" in message.content
-
-
-def send_message_to_parlai(ws: WebSocket, message: Message, message_content: str):
-    """
-    Sends a message to the websocket to parlai.
-    """
-    response = ""
-    try:
-        ws.send(
-            json.dumps(
-                {
-                    "mid": message.id,
-                    "sender": {
-                        "id": message.author.id,
-                    },
-                    "text": message_content,
-                }
-            )
-        )
-        response = ws.recv()
-
-        # load json
-        response = json.loads(response)
-        # if empty message return
-        if not response or "text" not in response or len(response["text"]) < 2:
-            return ""
-        response = response["text"]
-
-        if "Welcome to the Langame Ava overworld." in response:
-            ws.send(
-                json.dumps(
-                    {
-                        "mid": message.id,
-                        "sender": {
-                            "id": message.author.id,
-                        },
-                        "text": "begin",
-                    }
-                )
-            )
-            response = ws.recv()
-            response = json.loads(response)
-            # if empty message return
-            if not response or "text" not in response or len(response["text"]) < 2:
-                return
-
-            ws.send(
-                json.dumps(
-                    {
-                        "mid": message.id,
-                        "sender": {
-                            "id": hash(message.channel.id + message.author.id),
-                        },
-                        "text": message_content,
-                    }
-                )
-            )
-            response = ws.recv()
-
-            # load json
-            response = json.loads(response)
-            # if empty message return
-            if not response or "text" not in response or len(response["text"]) < 2:
-                return
-            response = response["text"]
-    except Exception as e:
-        logging.warning(e)
-
-    return response
 
 
 class DiscordBot(discord.Client):
@@ -111,7 +43,7 @@ class DiscordBot(discord.Client):
         self.logger = logger
         self.firestore_client = firestore_client
         self.parlai_websocket_url = parlai_websocket_url
-        self.parlai_websockets: dict[str, WebSocket] = {}
+        self.parlai_websockets: dict[str, WebSocketClient] = {}
         self.discord_configs = {}
 
         # Create an Event for notifying main thread.
@@ -153,7 +85,7 @@ class DiscordBot(discord.Client):
         foo
         """
         self.logger.info(
-            f"on_message {message.guild.id} {message.channel.name} {message.author.name} {message.content}"
+            f"on_message {message.guild.name} {message.channel.name} {message.author.name} {message.content}"
         )
 
         if message.author == self.user:
@@ -161,29 +93,38 @@ class DiscordBot(discord.Client):
 
         socket_id = hash(message.channel.id + message.guild.id)
         if socket_id not in self.parlai_websockets:
-            self.parlai_websockets[socket_id] = WebSocket()
-        if not self.parlai_websockets[socket_id].connected:
-            self.logger.info("Try to reconnect to parlai websocket")
-            try:
-                self.parlai_websockets[socket_id].connect(self.parlai_websocket_url, timeout=60)
-            except Exception as e:
-                self.logger.warning(e)
-                del self.parlai_websockets[socket_id]
-                return
+            # Create an event loop (what Tornado calls an IOLoop).
+            io_loop = tornado.ioloop.IOLoop.current()
 
+            def on_websocket_message(response: str):
+                # need translation?
+                if translation != "en":
+                    response = GoogleTranslator(target=translation).translate(response)
+                    self.logger.info(f"on_message:output:translation {response}")
+                # TODO async?
+                self.logger.info(f"on_message:sending to discord {response}")
+                io_loop.add_callback(lambda: message.channel.send(response))
+
+            def on_close():
+                del self.parlai_websockets[socket_id]
+
+            self.parlai_websockets[socket_id] = WebSocketClient(
+                io_loop,
+                self.parlai_websocket_url,
+                on_websocket_message,
+                socket_id,
+                on_close,
+            )
+            io_loop.add_callback(self.parlai_websockets[socket_id].start)
+
+        channel = self.get_channel(message.channel.id)
+        guild_id = channel.guild.id
         config = self.discord_configs.get(
-            str(message.guild.id),
-            {
-                "loquacity": "1",
-                "translation": "en",
-                "save": False,
-            },
+            str(guild_id), {"loquacity": "1", "translation": "en", "save": False,},
         )
         db = firestore.Client()
         now = datetime.now()
-        local_now = now.astimezone()
         self.logger.info(f"config: {config}")
-        channel = self.get_channel(message.channel.id)
         loquacity = config.get("loquacity", None)
         if not loquacity:
             # if no global config found, try to get channel config by name
@@ -214,6 +155,58 @@ class DiscordBot(discord.Client):
         langame_messages_lately = len(
             [m for m in hundred_history if is_message_author_langame(m)]
         )
+        lg_m = history[1]
+        index_of_lg_m = 1
+        referenced_message = [
+            e
+            for e in history
+            if message.reference and e.id == message.reference.message_id
+        ]
+        if referenced_message:
+            self.logger.info(
+                f"on_message using referenced_message {referenced_message}"
+            )
+            lg_m = referenced_message[0]
+            index_of_lg_m = history.index(lg_m)
+
+        # if this channel answers to Langame are to be saved
+        # and this is an answer to a conversation starter, save
+        if save and is_conversation_starter(lg_m) and len(message.content) > 1:
+            self.logger.info(
+                f"on_message saving {message.content} to {guild_id}/{channel.name}"
+            )
+            d = {
+                "createdAt": now,
+                "guildId": str(guild_id),
+                "guildName": channel.guild.name,
+                "channelId": str(channel.id),
+                "channelName": channel.name,
+                "conversation": [
+                    {
+                        "author": message.author.name,
+                        "bot": message.author.bot,
+                        "content": message.content,
+                        "createdAt": message.created_at,
+                        "editedAt": message.edited_at,
+                    },
+                    {
+                        "author": "Langame",
+                        "bot": True,
+                        "content": lg_m.content,
+                        "createdAt": lg_m.created_at,
+                        "editedAt": lg_m.edited_at,
+                    },
+                ],
+            }
+            self.logger.info(f"on_message: saving to firestore document {d}")
+            _, doc_ref = db.collection("saved_conversations").add(d)
+            firestore_url = (
+                "https://console.cloud.google.com/firestore/data/"
+                + f"saved_conversations/{doc_ref.id}?project={self.firestore_client.project}"
+            )
+            self.logger.info(f"on_message saved {firestore_url}")
+            self.logger.info(f"data: {doc_ref.get().to_dict()}")
+
         if loquacity == "1":
             # more than 10% of messages, ignore
             if langame_messages_lately > round(len(hundred_history) * 0.1):
@@ -239,53 +232,6 @@ class DiscordBot(discord.Client):
                     + f" that's above 40% of {len(hundred_history)} messages"
                 )
                 return
-        lg_m = history[1]
-        index_of_lg_m = 1
-        referenced_message = [
-            e
-            for e in history
-            if message.reference and e.id == message.reference.message_id
-        ]
-        if referenced_message:
-            self.logger.info(
-                f"on_message using referenced_message {referenced_message}"
-            )
-            lg_m = referenced_message[0]
-            index_of_lg_m = history.index(lg_m)
-
-        # if this channel answers to Langame are to be saved
-        # and this is an answer to a conversation starter, save
-        if save and is_conversation_starter(lg_m) and len(message.content) > 1:
-            self.logger.info(f"on_message saving {message.content} to {channel.name}")
-            _, doc_ref = db.collection("saved_conversations").add(
-                {
-                    "createdAt": now,
-                    "channel": {
-                        "id": channel.id,
-                        "name": channel.name,
-                    },
-                    "guild": {
-                        "id": message.guild.id,
-                        "name": message.guild.name,
-                    },
-                    "conversation": [
-                        {
-                            "author": message.author.name,
-                            "bot": message.author.bot,
-                            "content": message.content,
-                            "createdAt": message.created_at,
-                            "editedAt": message.edited_at,
-                        },
-                        {
-                            "author": "Langame",
-                            "bot": True,
-                            "content": lg_m.content,
-                            "createdAt": lg_m.created_at,
-                            "editedAt": lg_m.edited_at,
-                        },
-                    ],
-                }
-            )
 
         if (
             message.content
@@ -328,59 +274,9 @@ class DiscordBot(discord.Client):
                     message.content
                 )
 
-                response = send_message_to_parlai(
-                    self.parlai_websockets[socket_id], message, message_content
+                self.parlai_websockets[socket_id].send_message(
+                    message.id, message_content
                 )
-
-                if not response:
-                    self.parlai_websockets[socket_id].close()
-                    del self.parlai_websockets[socket_id]
-                    self.logger.warning("on_message:no response from parlai, closed websocket")
-                    return
-
-                # need translation?
-                if translation != "en":
-                    response = GoogleTranslator(target=translation).translate(response)
-                    self.logger.info(f"on_message:output:translation {response}")
-                await message.channel.send(response)
-            # insert conversation in firestore
-            _, doc_ref = db.collection("conversations").add(
-                {
-                    "confirmed": False,
-                    "createdAt": now,
-                    "updatedAt": now,
-                    "origin": "discord",
-                    "conversation": [
-                        {
-                            "author": e.author.name,
-                            "bot": e.author.bot,
-                            "content": e.content,
-                            "createdAt": e.created_at,
-                            "editedAt": e.edited_at,
-                        }
-                        for e in reversed(last_five_messages_before_lg_m)
-                    ]
-                    + [
-                        {
-                            "author": message.author.name,
-                            "bot": message.author.bot,
-                            "content": message.content,
-                            "createdAt": message.created_at,
-                            "editedAt": message.edited_at,
-                            # "reactions": message.reactions,
-                        },
-                        {
-                            "author": "Langame",
-                            "bot": True,
-                            "content": response,
-                            "createdAt": local_now,
-                            "editedAt": local_now,
-                            # "reactions": [],
-                        },
-                    ],
-                }
-            )
-            self.logger.info(f"on_message:firestore:conversations {doc_ref.id}")
 
     async def my_background_task(self):
         await self.wait_until_ready()

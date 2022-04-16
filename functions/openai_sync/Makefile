@@ -5,8 +5,8 @@ deploy: ## [Local development] deploy to GCP.
 		--runtime python39 \
 		--trigger-resource ${TOPIC_NAME} \
 		--trigger-event google.pubsub.topic.publish \
-		--set-secrets "OPENAI_KEY=openai_key:1" \
-		--set-secrets "OPENAI_ORG=openai_org:1" \
+		--set-secrets "OPENAI_KEY=openai_key:latest" \
+		--set-secrets "OPENAI_ORG=openai_org:latest" \
 		--timeout 540s
 
 schedule: ## [Local development] schedule to run every minute.

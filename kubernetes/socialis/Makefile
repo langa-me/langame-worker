@@ -27,7 +27,10 @@ lint: ## [Local development] Run pylint to check code style.
 	env/bin/python3 -m pylint social${NAME}is
 
 bare/run: ## [Local development] run the main entrypoint
-	python3 $(shell pwd)/socialis/main.py --svc_path ${SVC_PATH}
+	python3 socialis/main.py \
+		--svc_path ${SVC_PATH} \
+		--discord_bot_token ${DISCORD_BOT_TOKEN} \
+		--parlai_websocket_url ws://localhost:8083
 
 docker/build: ## [Local development] build the docker image
 	docker buildx build -t ${REGISTRY}:${VERSION} -t ${REGISTRY}:latest --platform linux/amd64 . -f ./Dockerfile
