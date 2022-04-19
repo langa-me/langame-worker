@@ -5,4 +5,7 @@ grpc-gateway-protoc-gen-openapiv2
 # gcloud
 google-api-python-client
 protobuf
+sentry-sdk
+
 # google-cloud-firestore
+# google-cloud-logging # TODO

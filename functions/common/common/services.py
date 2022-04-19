@@ -1,3 +1,4 @@
+import time
 import json
 import requests
 from logging import Logger
@@ -8,7 +9,7 @@ from third_party.common.messages import (
     PROFANITY_MESSAGES,
 )
 from random import choice
-
+from sentry_sdk import capture_exception
 
 def request_starter_for_service(
     url: str,
@@ -19,6 +20,7 @@ def request_starter_for_service(
     translated: bool = False,
     fix_grammar: bool = False,
     parallel_completions: int = 2,
+    max_tries: int = 3,
 ) -> Tuple[Optional[Any], Optional[Any]]:
     """
     Request a conversation starter from the API.
@@ -44,12 +46,18 @@ def request_starter_for_service(
         "fixGrammar": fix_grammar,
         "parallelCompletions": parallel_completions,
     }
-    response = requests.post(url, headers=headers, data=json.dumps({"data": data}))
-    response_data = response.json()
-    error = response_data.get("error", None)
+    tries = 0
+    error = "something"
+    while error and tries < max_tries:
+        response = requests.post(url, headers=headers, data=json.dumps({"data": data}))
+        response_data = response.json()
+        error = response_data.get("error", None)
+        tries += 1
+        time.sleep(1)
     if error or "result" not in response_data:
+        capture_exception(error)
         if logger:
-            logger.warning(f"Failed to request starter for {api_key_id}")
+            logger.error(f"Failed to request starter for {api_key_id}", exc_info=1)
         if error == "no-topics":
             user_message = choice(UNIMPLEMENTED_TOPICS_MESSAGES)
         elif error == "profane":

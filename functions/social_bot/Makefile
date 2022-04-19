@@ -11,8 +11,10 @@ DISCORD_APPLICATION_ID:=$(shell cat ../../.env.production | grep -w DISCORD_APPL
 DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 endif
 
-third_party: ## [Local development] third party dependencies
+clean:
 	rm -rf third_party
+
+third_party: clean ## [Local development] third party dependencies
 	python3 -m pip install -t third_party ../common
 
 deploy: ## [Local development] deploy to GCP.

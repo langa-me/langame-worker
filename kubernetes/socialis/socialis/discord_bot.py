@@ -87,11 +87,17 @@ class DiscordBot(discord.Client):
         self.logger.info(
             f"on_message {message.guild.name} {message.channel.name} {message.author.name} {message.content}"
         )
+        socket_id = hash(message.channel.id + message.guild.id)
 
         if message.author == self.user:
+            # reset history and set context to bot
+            if is_conversation_starter(message) and len(message.content) > 1:
+                self.parlai_websockets[socket_id].send_message(message.id, "[RESET]")
+                self.parlai_websockets[socket_id].send_message(
+                    message.id, f"[CONTEXT] {message.content}"
+                )
             return
 
-        socket_id = hash(message.channel.id + message.guild.id)
         if socket_id not in self.parlai_websockets:
             # Create an event loop (what Tornado calls an IOLoop).
             io_loop = tornado.ioloop.IOLoop.current()
