@@ -1,3 +1,8 @@
+"""
+python3 scripts/self_chat.py generate_seeds
+see ../ParlAI for self chat
+"""
+
 import os
 import logging
 import sys
@@ -6,6 +11,38 @@ import pandas as pd
 from itertools import chain
 from langame import LangameClient
 from tqdm import tqdm
+from langame.conversation_starters import get_existing_conversation_starters
+import datetime
+def generate_seeds():
+    """
+    a
+    """
+    c = LangameClient("./config.yaml")
+    logger = logging.getLogger("generate_seeds")
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler(sys.stdout)
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    (
+        conversation_starters,
+        _,
+        __,
+    ) = get_existing_conversation_starters(c._firestore_client, logger=logger)
+    logger.info("started")
+    # write a file in data/all_prod_{YYYY_MM_DD}.txt
+    # with conversation starters
+    date_today = datetime.datetime.now().strftime("%Y_%m_%d")
+    # delete existing file
+    fp = f"./data/all_prod_{date_today}.txt"
+    if os.path.exists(fp):
+        os.remove(fp)
+    for i in tqdm(range(len(conversation_starters))):
+        conversation_starter = conversation_starters[i].get("content", None)
+        if not conversation_starter: continue
+        with open(fp, "a") as f:
+            f.write(conversation_starter + "\n")
 
 
 def to_firestore(
@@ -70,4 +107,7 @@ def to_firestore(
 
 
 if __name__ == "__main__":
-    fire.Fire(to_firestore)
+    fire.Fire({
+        "generate_seeds": generate_seeds,
+        "to_firestore": to_firestore,
+    })

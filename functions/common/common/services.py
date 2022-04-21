@@ -9,7 +9,8 @@ from third_party.common.messages import (
     PROFANITY_MESSAGES,
 )
 from random import choice
-from sentry_sdk import capture_exception
+# import sentry_sdk
+# from sentry_sdk import capture_exception
 
 def request_starter_for_service(
     url: str,
@@ -55,7 +56,7 @@ def request_starter_for_service(
         tries += 1
         time.sleep(1)
     if error or "result" not in response_data:
-        capture_exception(error)
+        # capture_exception(error)
         if logger:
             logger.error(f"Failed to request starter for {api_key_id}", exc_info=1)
         if error == "no-topics":
