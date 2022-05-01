@@ -139,6 +139,7 @@ def generate_conversation_starter(
     grammar_model: Optional[T5ForConditionalGeneration] = None,
     grammar_tokenizer: Optional[T5Tokenizer] = None,
     api_completion_model: Optional[str] = None,
+    api_classification_model: Optional[str] = "ada:ft-personal-2022-02-08-19-57-38",
 ) -> List[dict]:
     """
     Build a prompt for the OpenAI API based on a list of conversation starters.
@@ -159,7 +160,8 @@ def generate_conversation_starter(
     :param fix_grammar: Whether to fix grammar.
     :param grammar_model: The grammar model to use.
     :param grammar_tokenizer: The grammar tokenizer to use.
-    :param api_completion_model: The gooseai model to use.
+    :param api_completion_model: The api model to use.
+    :param api_classification_model: The api classification model to use.
     :return: conversation_starters
     """
     if logger:
@@ -243,7 +245,7 @@ def generate_conversation_starter(
         if use_classification:
             classification = openai_completion(
                 prompt=f"{','.join(topics)} ### {text['conversation_starter']} ~~~",
-                model="ada:ft-personal-2022-02-08-19-57-38",
+                model=api_classification_model,
                 is_classification=True,
             )
             text["classification"] = classification
