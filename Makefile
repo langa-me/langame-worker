@@ -7,6 +7,11 @@ dev: ## Set the GCP project to dev
 clean:
 	rm -rf env build **/wandb **/embeddings **/indexes *.egg-info **/index_infos.json **/__pycache__
 
+self_chat:
+#python3 scripts/self_chat.py generate_seeds
+	parlai self_chat --model-file zoo:seeker/seeker_dialogue_400M/model --task empathetic_dialogues --num-self-chats 200 --display-examples True --seed_messages_from_file="../langame-worker/seeds.txt" --outfile="./out" --rag-retriever-type search_engine 
+#--search_server http://localhost:8083
+
 .PHONY: help
 
 help: # Run `make help` to get help on the make commands

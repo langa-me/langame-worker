@@ -27,7 +27,8 @@ from transformers import (
     T5ForConditionalGeneration,
     T5Tokenizer,
 )
-
+from datasets import Dataset
+import pandas as pd
 
 def get_existing_conversation_starters(
     client: Client,
@@ -36,6 +37,7 @@ def get_existing_conversation_starters(
     limit: int = None,
     batch_embeddings_size: int = 256,
     confirmed: bool = True,
+    push_to_hub: bool = False,
 ) -> Tuple[List[Any], IndexFlat, SentenceTransformer]:
     """
     Get the existing conversation starters from the database.
@@ -45,6 +47,7 @@ def get_existing_conversation_starters(
     :param limit: The limit of the number of conversation starters to get.
     :param batch_embeddings_size: The size of the batch to use for computing embeddings.
     :param confirmed: Whether to only get confirmed conversation starters.
+    :param push_to_hub: Whether to push the conversation starters to the Huggingface dataset hub.
     :return: conversation starters, faiss index, sentence embeddings model.
     """
     existing_conversation_starters = []
@@ -63,6 +66,11 @@ def get_existing_conversation_starters(
         logger.info(
             f"Got {len(existing_conversation_starters)} existing conversation starters"
         )
+    if push_to_hub:
+        upload_df = pd.DataFrame(existing_conversation_starters)
+        upload_df.drop(columns=["id", "confirmed", "translated"], inplace=True)
+        Dataset.from_pandas(upload_df).push_to_hub("Langame/starter")
+
     if logger:
         logger.info("Preparing embeddings for existing conversation starters")
     sentence_embeddings_model = None
