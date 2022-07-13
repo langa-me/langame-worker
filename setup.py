@@ -14,7 +14,8 @@ if __name__ == "__main__":
             "transformers",
             "autofaiss==2.5.0",
             "sentence_transformers",
-            "torch"
+            "torch",
+            "datasets",
         ],
         classifiers=[
             "Development Status :: 4 - Beta",
