@@ -112,6 +112,8 @@ def schedule_social(_, ctx):
             # "random_channel" (random players on the channel)
             # "talkative_channel" (most talkative on the channel)
             players = data.get("players")
+            ignore = data.get("ignore", [])
+
             if players == "random_channel":
                 raise NotImplementedError("random_channel not implemented yet")
             elif players == "talkative_channel":
@@ -120,6 +122,11 @@ def schedule_social(_, ctx):
                 )
                 if len(most_talkative_players) == 0:
                     break
+                logger.info(f"Ignored players: {ignore}")
+                # filter out ignored players
+                most_talkative_players = [
+                    player for player in most_talkative_players if player not in ignore
+                ]
                 # sample from most talkative players
                 players = sample(
                     most_talkative_players,
@@ -164,6 +171,11 @@ def schedule_social(_, ctx):
                     member_id = member.get("user", {}).get("id", None)
                     if member_id:
                         players.append(member_id)
+                logger.info(f"Ignored players: {ignore}")
+                # filter out ignored players
+                players = [
+                    player for player in players if player not in ignore
+                ]
                 players = sample(
                     players,
                     k=randint(2, 3) if len(players) > 2 else len(players),

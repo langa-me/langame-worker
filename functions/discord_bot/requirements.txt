@@ -1,2 +1,3 @@
 discord-interactions
 firebase_admin
+google-cloud-firestore==2.4.0

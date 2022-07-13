@@ -52,6 +52,7 @@ def public_starter(_):
     db: Client = firestore.client()
     # TODO: firestore data bundle etc. optimise caching...
     docs = db.collection("api_keys").where("apiKey", "==", api_key).stream()
+
     for doc in docs:
         json_data = request.get_json()
         logger.info(f"{datetime.now()} - {json_data}")

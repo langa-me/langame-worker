@@ -134,7 +134,7 @@ def generate_conversation_starter(
     deterministic: bool = False,
     logger: Optional[Logger] = None,
     use_classification: bool = False,
-    parallel_completions: int = 1,
+    parallel_completions: int = 2,
     fix_grammar: bool = False,
     grammar_model: Optional[T5ForConditionalGeneration] = None,
     grammar_tokenizer: Optional[T5Tokenizer] = None,

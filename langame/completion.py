@@ -173,3 +173,17 @@ def huggingface_api_completion(prompt: str) -> str:
     data = json.loads(response.content.decode("utf-8"))
     completions = data[0]["generated_text"].strip()
     return completions
+
+
+def get_last_model(is_classification: bool = False):
+    fts = openai.FineTune.list()["data"]
+    # filter out when fine_tuned_model is null
+    fts = [f for f in fts if f["fine_tuned_model"]]
+    # filter out classification or not
+    if is_classification:
+        # TODO: find better hack
+        fts = [f for f in fts if f["model"] == "ada"]
+    else:
+        fts = [f for f in fts if f["model"] == "curie"]
+    fts = sorted(fts, key=lambda x: x["created_at"], reverse=True)
+    return fts[0]
