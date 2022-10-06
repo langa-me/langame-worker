@@ -16,6 +16,13 @@
           "langame-prod-api"
         ]
       }
+    },
+    "ai-marketing-dev": {
+      "hosting": {
+        "api": [
+          "langame-prod-api"
+        ]
+      }
     }
   }
 }

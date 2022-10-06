@@ -6,10 +6,21 @@
       "ignore": [
         "**/.*"
       ],
-      "rewrites": [ {
-        "source": "v1/conversation/starter",
-        "function": "public_starter"
-      }
-    ]
-  }]
+      "rewrites": [
+        {
+          "source": "v1/conversation/starter",
+          "function": "public_starter"
+        },
+        {
+          "source": "v1/conversation/playlists/*",
+          "function": "list_playlists"
+        },
+        {
+          "source": "v1/conversation/playlists",
+          "function": "list_playlists"
+        }
+      ],
+      "trailingSlash": false
+    }
+  ]
 }

@@ -182,8 +182,8 @@ def get_last_model(is_classification: bool = False):
     # filter out classification or not
     if is_classification:
         # TODO: find better hack
-        fts = [f for f in fts if f["model"] == "ada"]
+        fts = [f for f in fts if "generation" in f["fine_tuned_model"]]
     else:
-        fts = [f for f in fts if f["model"] == "curie"]
+        fts = [f for f in fts if "classification" in f["model"]]
     fts = sorted(fts, key=lambda x: x["created_at"], reverse=True)
     return fts[0]
