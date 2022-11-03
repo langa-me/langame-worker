@@ -3,8 +3,7 @@ import confuse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from google.cloud.firestore_v1.base_client import BaseClient
-from google.cloud.firestore_v1.base_collection import BaseCollectionReference
+from google.cloud.firestore import Client, CollectionReference
 import openai
 
 class LangameClient:
@@ -25,7 +24,7 @@ class LangameClient:
         cred = credentials.Certificate(
             f'{os.path.dirname(path_to_config_file)}/{conf["google"]["service_account"]}')
         firebase_admin.initialize_app(cred)
-        self._firestore_client: BaseClient = firestore.client()
+        self._firestore_client: Client = firestore.client()
         self._memes_ref: BaseCollectionReference = self._firestore_client.collection(
             u"memes")
 
