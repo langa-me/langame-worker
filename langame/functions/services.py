@@ -3,15 +3,17 @@ import json
 import requests
 from logging import Logger
 from typing import List, Optional, Tuple, Any
-from third_party.common.messages import (
+from langame.messages import (
     UNIMPLEMENTED_TOPICS_MESSAGES,
     FAILING_MESSAGES,
     PROFANITY_MESSAGES,
 )
 from random import choice
 
-# import sentry_sdk
-# from sentry_sdk import capture_exception
+import sentry_sdk
+from sentry_sdk import capture_exception
+from errors import init_errors
+init_errors(env="production")
 
 
 def request_starter_for_service(
@@ -62,7 +64,7 @@ def request_starter_for_service(
         tries += 1
         time.sleep(1)
     if error or "result" not in response_data:
-        # capture_exception(error)
+        capture_exception(error)
         if logger:
             logger.error(f"Failed to request starter for {api_key_id}", exc_info=1)
         if error == "no-topics":

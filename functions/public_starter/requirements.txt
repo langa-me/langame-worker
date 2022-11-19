@@ -1,4 +1,3 @@
-firebase_admin
+--extra-index-url https://us-central1-python.pkg.dev/langame-86ac4/langame/simple langame
+
 functions_framework
-sentry-sdk
---extra-index-url https://us-central1-python.pkg.dev/langame-86ac4/langame/simple/ langame
