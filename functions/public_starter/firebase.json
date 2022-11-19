@@ -12,12 +12,12 @@
           "function": "public_starter"
         },
         {
-          "source": "v1/conversation/playlists/*",
-          "function": "list_playlists"
+          "source": "v1/conversation/collection/*",
+          "function": "collection_conversation_starter"
         },
         {
-          "source": "v1/conversation/playlists",
-          "function": "list_playlists"
+          "source": "v1/conversation/collection/*/starter/*",
+          "function": "collection_conversation_starter"
         }
       ],
       "trailingSlash": false

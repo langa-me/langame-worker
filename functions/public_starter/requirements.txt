@@ -1,1 +1,3 @@
 firebase_admin
+functions_framework
+sentry-sdk

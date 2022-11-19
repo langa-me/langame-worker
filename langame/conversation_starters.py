@@ -212,29 +212,11 @@ def generate_conversation_starter(
             ):
                 text["profane"] = True
         if fix_grammar:  # TODO: might do in batch after instead
-            input_text = "fix: { " + text["conversation_starter"] + " }"
-            input_ids = grammar_tokenizer.encode(
-                input_text,
-                return_tensors="pt",
-                max_length=256,
-                truncation=True,
-                add_special_tokens=True,
-            ).to("cuda:0" if use_gpu else "cpu")
-
-            outputs = grammar_model.generate(
-                input_ids=input_ids,
-                max_length=256,
-                num_beams=4,
-                repetition_penalty=1.0,
-                length_penalty=1.0,
-                early_stopping=True,
-            )
-
-            sentence = grammar_tokenizer.decode(
-                outputs[0],
-                skip_special_tokens=True,
-                clean_up_tokenization_spaces=True,
-            )
+            sentence = openai_completion(
+                "Correct this to standard English:\n\n" + text["conversation_starter"],
+                model="text-davinci-002",
+                temperature=0,
+            ).strip()
             if logger:
                 logger.info(f"Fixed grammar: {sentence}")
             if (

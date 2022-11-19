@@ -5,11 +5,11 @@
     "python.linting.pylintEnabled": true,
     "python.languageServer": "Default",
     "python.testing.pytestArgs": [
-        "langame",
+        "functions/public_starter",
         "--verbose",
         "--log-cli-level=DEBUG",
-        "--ignore",
-        "${workspaceFolder}/functions/*"
+        // "--ignore",
+        // "${workspaceFolder}/functions/*"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

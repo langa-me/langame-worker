@@ -2,24 +2,19 @@ import os
 import json
 import unittest
 import requests
+
+
 class TestMain(unittest.TestCase):
-    def test_get_conversation_starter(self):
+    # pylint: disable=missing-docstring
+    def test_get_conversation_collection(self):
         headers = {
             "Content-Type": "application/json",
-            "X-Api-Key": os.environ["DEV_LANGAME_API_KEY"],
+            "X-Api-Key": os.environ["LANGAME_API_KEY"],
         }
-        data = {
-            "topics": ["ice breaker"],
-            "limit": 1,
-        }
-        responses = []
-        for _ in range(3):
-            response = requests.post(
-                "https://dapi.langa.me/v1/conversation/starter",
-                headers=headers,
-                data=json.dumps(data),
-            )
-            
-            responses.append(response)
-        # Last response should have been rate limited
-        self.assertEqual(responses[-1].status_code, 429)
+        # pylint: disable=missing-timeout
+        response = requests.post(
+            "http://localhost:8080/conversation/collection",
+            headers=headers,
+        )
+
+        self.assertEqual(response.status_code, 200)

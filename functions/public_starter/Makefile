@@ -1,5 +1,4 @@
 GCLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
-FUNCTION_NAME ?= "public_starter"
 REGION="us-central1"
 GET_MEMES_URL ?= "https://us-central1-${GCLOUD_PROJECT}.cloudfunctions.net/getMemes"
 
@@ -20,18 +19,20 @@ deploy/public_starter: ## [Local development] deploy to GCP.
 		--entry-point public_starter \
 		--set-env-vars GET_MEMES_URL=${GET_MEMES_URL}
 
-deploy/list_playlists: ## [Local development] deploy to GCP.
+test/collection_conversation_starter: ## [Local development] Test the function.
+	functions_framework --target=collection_conversation_starter --debug
+
+deploy/collection_conversation_starter: ## [Local development] deploy to GCP.
 	firebase use ${GCLOUD_PROJECT}
 	firebase deploy --only hosting
-	gcloud beta functions deploy list_playlists \
+	gcloud beta functions deploy collection_conversation_starter \
 		--runtime python39 \
 		--trigger-http \
 		--allow-unauthenticated \
 		--project ${GCLOUD_PROJECT} \
 		--timeout 540s \
-		--entry-point list_playlists
-
-deploy: deploy/public_starter deploy/list_playlists ## [Local development] deploy to GCP.
+		--entry-point collection_conversation_starter
+deploy: deploy/public_starter deploy/collection_conversation_starter
 
 apply_dev: ## [Local development] https://firebase.google.com/docs/hosting/multisites
 	firebase use ${GCLOUD_PROJECT}
@@ -41,10 +42,11 @@ apply_prod: ## [Local development] https://firebase.google.com/docs/hosting/mult
 	firebase target:apply hosting api langame-prod-api
 
 curl/starter:
-	curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: $$API_KEY" -d '{"topics": []}' https://api.langa.me/v1/conversation/playlists | jq '.'
+	curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: $$API_KEY" -d '{"topics": ["ice breaker"]}' https://api.langa.me/v1/conversation/starter | jq '.'
 
-curl/playlists:
-	curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: $$API_KEY" -d '{"topics": []}' https://api.langa.me/v1/conversation/starter | jq '.'
+curl/conversation_collection/get:
+	curl -X GET -H "Content-Type: application/json" -H "X-Api-Key: $$API_KEY" https://api.langa.me/v1/conversation/collection | jq '.'
+
 
 .PHONY: help
 

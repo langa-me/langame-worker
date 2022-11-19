@@ -7,6 +7,19 @@ dev: ## Set the GCP project to dev
 clean:
 	rm -rf env build **/wandb **/embeddings **/indexes *.egg-info **/index_infos.json **/__pycache__
 
+release:
+	@VERSION=$$(cat setup.py | grep version | cut -d '"' -f 2); \
+	echo "Releasing version $$VERSION"; \
+	git add .; \
+	read -p "Commit content:" COMMIT; \
+	echo "Committing '$$VERSION: $$COMMIT'"; \
+	git commit -m "$$VERSION: $$COMMIT"; \
+	git push origin main; \
+	git tag $$VERSION; \
+	git push origin $$VERSION
+	@echo "Done, check https://github.com/langa-me/langame-worker/actions"
+
+
 self_chat:
 #python3 scripts/self_chat.py generate_seeds
 	parlai self_chat --model-file zoo:seeker/seeker_dialogue_400M/model --task empathetic_dialogues --num-self-chats 200 --display-examples True --seed_messages_from_file="../langame-worker/seeds.txt" --outfile="./out" --rag-retriever-type search_engine 

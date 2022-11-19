@@ -9,8 +9,10 @@ from third_party.common.messages import (
     PROFANITY_MESSAGES,
 )
 from random import choice
+
 # import sentry_sdk
 # from sentry_sdk import capture_exception
+
 
 def request_starter_for_service(
     url: str,
@@ -19,8 +21,8 @@ def request_starter_for_service(
     topics: List[str],
     quantity: int = 1,
     translated: bool = False,
-    fix_grammar: bool = False,
-    parallel_completions: int = 2,
+    fix_grammar: bool = True,
+    parallel_completions: int = 3,
     max_tries: int = 3,
 ) -> Tuple[Optional[Any], Optional[Any]]:
     """
@@ -50,7 +52,11 @@ def request_starter_for_service(
     tries = 0
     error = "something"
     while error and tries < max_tries:
-        response = requests.post(url, headers=headers, data=json.dumps({"data": data}))
+        response = requests.post(
+            url,
+            headers=headers,
+            data=json.dumps({"data": data}),
+        )
         response_data = response.json()
         error = response_data.get("error", None)
         tries += 1
