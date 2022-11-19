@@ -93,6 +93,7 @@ gcloud artifacts print-settings python \
     --project ${PROJECT_ID} \
     --repository langame \
     --location ${REGION} \
+    --json-key ${KEY_PATH} \
     | sed '1,10!d' > $HOME/.pypirc
 
 # https://pip.pypa.io/en/stable/topics/configuration/#location
@@ -104,6 +105,7 @@ gcloud artifacts print-settings python \
     --project ${PROJECT_ID} \
     --repository langame \
     --location ${REGION} \
+    --json-key ${KEY_PATH} \
     | sed '11,$!d' | tee ${DIR}/pip.conf $VIRTUAL_ENV/pip.conf
 
 pip install build twine keyrings.google-artifactregistry-auth
