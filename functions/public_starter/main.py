@@ -5,7 +5,7 @@ from typing import Any, Tuple, Optional
 from flask import request, jsonify
 import logging
 
-from third_party.common.services import request_starter_for_service
+from langame.functions.common.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client, DocumentSnapshot
 import sentry_sdk

@@ -48,7 +48,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "🤖 The package inkdropy:${{ steps.get_version.outputs.VERSION }} has been released to Google Cloud Artifact Registry. Commit: ${{ github.event.head_commit.message }}"
+          args: "🤖 The package langame:${{ steps.get_version.outputs.VERSION }} has been released to Google Cloud Artifact Registry. Commit: ${{ github.event.head_commit.message }}"
       - name: Generate Changelog
         run: git log | head > ${{ github.workspace }}-CHANGELOG.txt
       - name: Release
