@@ -1,0 +1,74 @@
+name: Continuous delivery production
+
+# GitHub Action ran when changes have been made in the directory "run/*"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'run/**'
+env:
+  PROJECT_ID: langame-86ac4
+  SERVICE: collection
+  REGION: europe-west3
+  GITHUB_USERNAME: ${{ secrets.MY_GITHUB_USERNAME }}
+  GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    # - name: Install, lint and unit tests
+    #   run: |
+    #     make install > /dev/null
+    #     make lint || true && echo "Linting failed"
+    #     make test || true && echo "Tests failed"
+    - id: auth
+      uses: google-github-actions/auth@v0
+      with:
+        credentials_json: "${{ secrets.GCP_SA_KEY_PROD }}"
+
+    - name: Authorize Docker push
+      run: gcloud auth configure-docker
+
+    # - name: Get the version
+    #   id: get_version
+    #   run: echo "VERSION=$(cat setup.py | grep version | cut -d '"' -f 2)" >> $GITHUB_ENV
+
+    - name: Build and Push Container
+      run: |-
+        docker build . -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
+    # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
+    # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
+    - name: Deploy to Cloud Run
+      id: deploy
+      uses: google-github-actions/deploy-cloudrun@v0
+      with:
+        metadata: run/collection/service.prod.yaml
+        project_id: ${{ env.PROJECT_ID }}
+        region: us-central1
+        tag: ${{ env.VERSION }}
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - name: Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: '🤖 The project {{ EVENT_PAYLOAD.repository.full_name }}:${{ env.VERSION }} has been deployed on branch ${{ steps.extract_branch.outputs.branch }} reachable at URL ${{ steps.deploy.outputs.url }}. Commit: ${{ github.event.head_commit.message }}' 
