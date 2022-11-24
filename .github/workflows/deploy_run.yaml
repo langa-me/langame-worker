@@ -11,7 +11,6 @@ on:
 env:
   PROJECT_ID: langame-86ac4
   SERVICE: collection
-  REGION: europe-west3
   GITHUB_USERNAME: ${{ secrets.MY_GITHUB_USERNAME }}
   GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
 jobs:
