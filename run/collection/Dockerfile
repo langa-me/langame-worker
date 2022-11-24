@@ -17,4 +17,5 @@ COPY . ./
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
 # RUN pip install --no-cache-dir -e langame[all]
+
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
