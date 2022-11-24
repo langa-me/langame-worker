@@ -47,6 +47,10 @@ jobs:
       run: |
         gcloud config set artifacts/repository langame
         gcloud config set artifacts/location us-central1
+
+        gcloud config set account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+        gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
+
         gcloud artifacts print-settings python > ~/.pypirc
 
     - name: Authorize Docker push
