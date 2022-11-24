@@ -62,7 +62,8 @@ jobs:
 
     - name: Build and Push Container
       run: |-
-        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
+        # build docker image with .pypirc mounted
+        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile -v ~/.pypirc:/root/.pypirc
         docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
     # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
     # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
