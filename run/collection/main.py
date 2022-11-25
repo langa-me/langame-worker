@@ -11,10 +11,8 @@ from logic import (
 )
 
 BASE = "/v1/conversation/collection"
-
 app = Flask(__name__)  # TODO move base to config
 app.url_map.strict_slashes = False
-
 
 @app.before_request
 def before_request():

@@ -13,7 +13,7 @@ spec:
     spec:
       containerConcurrency: 80
       containers:
-        image: gcr.io/langame-86ac4/collection:0.0.1
+        image: gcr.io/langame-86ac4/collection:1.0.0
         ports:
           - containerPort: 8080
             name: http1

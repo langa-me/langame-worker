@@ -41,6 +41,10 @@ jobs:
     - name: Authorize Docker push
       run: gcloud auth configure-docker
 
+    - name: Get the version
+      id: get_version
+      run: echo "VERSION=$(sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)" >> $GITHUB_ENV
+
     - name: Build and Push Container
       run: |-
         gcloud config set artifacts/repository langame
@@ -56,8 +60,10 @@ jobs:
             --location us-central1 \
             --json-key ${{ env.GOOGLE_APPLICATION_CREDENTIALS }} \
             | sed '11,$!d' | tee run/collection/pip.conf
-
+        
+        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./run/collection/Dockerfile
         docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
         docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
     # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
     # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
