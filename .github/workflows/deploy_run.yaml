@@ -59,7 +59,11 @@ jobs:
         gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
 
         gcloud artifacts print-settings python > ~/.pypirc
-        docker build ./run/collection -v ~/.pypirc:/root/.pypirc -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
+        # add the .pypirc to the container build with "COPY ~/.pypirc ~/.pypirc" in the Dockerfile at ./run/collection/Dockerfile
+        # at line 16 of the Dockerfile
+        cp ~/.pypirc run/collection/
+        sed -i '16i COPY .pypirc ~/.pypirc' run/collection/Dockerfile
+        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
         docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
     # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
     # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
