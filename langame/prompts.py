@@ -5,6 +5,12 @@ from langame.quality import is_garbage
 from faiss.swigfaiss import IndexFlat
 from sentence_transformers import SentenceTransformer
 
+def post_process_inputs(topics: List[str]) -> List[str]:
+    """
+    :param topics: The list of topics.
+    :return: The list of topics post-processed.
+    """
+    return list(set([topic.strip().lower() for topic in topics]))
 
 def build_prompt(
     index: IndexFlat,
@@ -23,7 +29,7 @@ def build_prompt(
     :return: prompt
     """
     # topics post-processing
-    topics = [topic.strip().lower() for topic in topics]
+    topics = post_process_inputs(topics)
 
     # zero-shot completion
     if prompt_rows <= 1:

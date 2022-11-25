@@ -3,8 +3,7 @@ REGION="us-central1"
 
 CLOUD_PROJECT:=$(shell gcloud config list --format 'value(core.project)' 2>/dev/null)
 LATEST_IMAGE_URL=$(shell echo "gcr.io/${CLOUD_PROJECT}/collection:latest")
-VERSION="0.0.1"
-#$(shell cat setup.py | grep version | cut -d '"' -f 2)
+VERSION=$(shell sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)
 IMAGE_URL=$(shell echo "gcr.io/${CLOUD_PROJECT}/collection:${VERSION}")
 
 prod: ## Set the GCP project to prod

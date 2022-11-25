@@ -3,6 +3,7 @@ from langame.completion import (
     openai_completion,
     local_completion,
     huggingface_api_completion,
+    get_last_model,
 )
 from firebase_admin import credentials
 import firebase_admin
@@ -78,3 +79,7 @@ class TestCompletion(unittest.TestCase):
     def test_is_fine_tuned_openai(self):
         model = "ada:ft-personal-2022-02-08-19-57-38"
         assert is_fine_tuned_openai(model), f"{model} is a fine tuned model"
+
+    def test_get_last_model(self):
+        model = get_last_model(is_classification=True)
+        assert model is not None

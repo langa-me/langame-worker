@@ -180,7 +180,7 @@ def get_last_model(is_classification: bool = False):
     # filter out when fine_tuned_model is null
     fts = [f for f in fts if f["fine_tuned_model"]]
     # filter out classification or not
-    if is_classification:
+    if not is_classification:
         # TODO: find better hack
         fts = [f for f in fts if "generation" in f["fine_tuned_model"]]
     else:
