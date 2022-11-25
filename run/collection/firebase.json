@@ -8,10 +8,6 @@
       ],
       "rewrites": [
         {
-          "source": "v1/conversation/starter",
-          "function": "public_starter"
-        },
-        {
           "source": "/v1/conversation/collection/**",
           "run": {
             "serviceId": "collection",
@@ -26,7 +22,7 @@
           }
         },
         {
-          "source": "/v1/conversation/beta/**",
+          "source": "/v1/conversation/starter",
           "run": {
             "serviceId": "collection",
             "region": "us-central1"

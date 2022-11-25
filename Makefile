@@ -36,7 +36,8 @@ self_chat:
 ## Functions & run
 
 run/collection/hosting:
-	firebase use ${GCLOUD_PROJECT}
+	cd run/collection; \
+	firebase use ${GCLOUD_PROJECT}; \
 	firebase deploy --only hosting
 
 run/collection/build: ## [Local development] Build the docker image.
