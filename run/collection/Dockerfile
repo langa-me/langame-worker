@@ -13,6 +13,8 @@ ENV PYTHONUNBUFFERED True
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
+COPY .pypirc /root/.pypirc
+COPY pip.conf /root/.config/pip/pip.conf
 
 RUN pip install --no-cache-dir -r requirements.txt
 # RUN pip install --no-cache-dir -e langame[all]
