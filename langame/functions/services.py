@@ -13,6 +13,7 @@ from random import choice
 import sentry_sdk
 from sentry_sdk import capture_exception
 from errors import init_errors
+
 init_errors(env="production")
 
 
@@ -26,6 +27,7 @@ def request_starter_for_service(
     fix_grammar: bool = True,
     parallel_completions: int = 3,
     max_tries: int = 3,
+    profanity_threshold: str = "tolerant",
 ) -> Tuple[Optional[Any], Optional[Any]]:
     """
     Request a conversation starter from the API.
@@ -37,6 +39,8 @@ def request_starter_for_service(
         translated: Whether to request translated conversation starters.
         fix_grammar: Whether to fix grammar.
         parallel_completions: The number of parallel completion to use.
+        max_tries: The maximum number of tries to request a conversation starter.
+        profanity_threshold: The profanity threshold.
     Returns:
         Tuple of (starter, user message).
     """
@@ -50,6 +54,7 @@ def request_starter_for_service(
         "translated": translated,
         "fixGrammar": fix_grammar,
         "parallelCompletions": parallel_completions,
+        "profanityThreshold": profanity_threshold,
     }
     tries = 0
     error = "something"

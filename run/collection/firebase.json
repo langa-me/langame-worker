@@ -1,0 +1,39 @@
+{
+  "hosting": [
+    {
+      "public": "public",
+      "target": "api",
+      "ignore": [
+        "**/.*"
+      ],
+      "rewrites": [
+        {
+          "source": "v1/conversation/starter",
+          "function": "public_starter"
+        },
+        {
+          "source": "/v1/conversation/collection/**",
+          "run": {
+            "serviceId": "collection",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/v1/conversation/collection",
+          "run": {
+            "serviceId": "collection",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "/v1/conversation/beta/**",
+          "run": {
+            "serviceId": "collection",
+            "region": "us-central1"
+          }
+        }
+      ],
+      "trailingSlash": false
+    }
+  ]
+}

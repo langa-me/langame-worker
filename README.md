@@ -113,3 +113,26 @@ python3 -m build
 gcloud auth login
 twine upload --repository-url ${URL}/ dist/*
 ```
+
+## Automatic Cloud Run deployment
+
+```bash
+PROJECT_ID=$(gcloud config get-value project)
+
+# create service account for pushing containers to gcr
+# and deploying to cloud run
+gcloud iam service-accounts create cloud-run-deployer \
+  --display-name "Cloud Run deployer"
+
+# Grant the appropriate Cloud Run role
+# to the service account to provide repository access
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member serviceAccount:cloud-run-deployer@${PROJECT_ID}.iam.gserviceaccount.com \
+  --role roles/run.admin
+
+# get svc key
+KEY_PATH="langame.cloud-run-deployer.svc.prod.json"
+gcloud iam service-accounts keys create ${KEY_PATH} \
+  --iam-account=cloud-run-deployer@${PROJECT_ID}.iam.gserviceaccount.com
+cat ${KEY_PATH}
+```
