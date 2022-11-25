@@ -5,3 +5,4 @@ gunicorn==20.1.0
 functions_framework
 firebase_admin
 openai
+sentry_sdk

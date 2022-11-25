@@ -125,6 +125,7 @@ def create_starter():
         quantity=quantity,
         translated=translated,
         fix_grammar=True,
+        profanity_threshold="tolerant",
     )
     logger.info(
         f"Got conversation starter response: {conversation_starters} error: {error}"
