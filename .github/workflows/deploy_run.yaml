@@ -43,16 +43,6 @@ jobs:
       with:
         credentials_json: "${{ secrets.GCP_SA_KEY_PROD }}"
 
-    - name: Authenticate to Artifact Registry
-      run: |
-        gcloud config set artifacts/repository langame
-        gcloud config set artifacts/location us-central1
-
-        gcloud config set account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
-        gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
-
-        gcloud artifacts print-settings python > ~/.pypirc
-
     - name: Authorize Docker push
       run: gcloud auth configure-docker
 
@@ -62,7 +52,13 @@ jobs:
 
     - name: Build and Push Container
       run: |-
-        # build docker image with .pypirc mounted
+        gcloud config set artifacts/repository langame
+        gcloud config set artifacts/location us-central1
+
+        gcloud config set account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+        gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
+
+        gcloud artifacts print-settings python > ~/.pypirc
         docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile -v ~/.pypirc:/root/.pypirc
         docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
     # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
