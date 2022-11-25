@@ -30,6 +30,7 @@ from transformers import (
 from datasets import Dataset
 import pandas as pd
 
+
 def get_existing_conversation_starters(
     client: Client,
     logger: Optional[Logger] = None,
@@ -142,7 +143,7 @@ def generate_conversation_starter(
     deterministic: bool = False,
     logger: Optional[Logger] = None,
     use_classification: bool = False,
-    parallel_completions: int = 2,
+    parallel_completions: int = 3,
     fix_grammar: bool = False,
     grammar_model: Optional[T5ForConditionalGeneration] = None,
     grammar_tokenizer: Optional[T5Tokenizer] = None,
@@ -216,6 +217,8 @@ def generate_conversation_starter(
                 "Correct this to standard English:\n\n" + text["conversation_starter"],
                 model="text-davinci-002",
                 temperature=0,
+                max_tokens=len(text["conversation_starter"]) + 800,
+                stop=["\n\n\n"], # TODO: hack change function code becasue None do stupid stuff
             ).strip()
             if logger:
                 logger.info(f"Fixed grammar: {sentence}")

@@ -11,9 +11,10 @@ class TestServices(unittest.TestCase):
                 url=os.environ["GET_MEMES_URL"],
                 api_key_id=os.environ["LANGAME_API_KEY_ID"],
                 logger=None,
-                topics=["ice breaker"],
+                topics=["porn"],
                 quantity=1,
                 fix_grammar=False,
+                profanity_threshold="open",
             )
             responses.append(response)
         # Last response should have been rate limited

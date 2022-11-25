@@ -252,3 +252,22 @@ class TestConversationStarters(unittest.TestCase):
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
         print(conversation_starters)
+
+
+    def test_generate_conversation_starter_grammar(self):
+        firestore_client = firestore.client()
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+            firestore_client,
+            limit=200,
+        )
+        conversation_starter = generate_conversation_starter(
+            index=index,
+            conversation_starter_examples=conversation_starters,
+            topics=["god"],
+            profanity_threshold=ProfanityThreshold.tolerant,
+            sentence_embeddings_model=sentence_embeddings_model,
+            fix_grammar=True,
+            prompt_rows=1,
+            api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
+        )
+        assert conversation_starter is not None
