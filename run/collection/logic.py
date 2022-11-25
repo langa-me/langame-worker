@@ -124,8 +124,8 @@ def create_starter():
         topics=topics,
         quantity=quantity,
         translated=translated,
-        fix_grammar=False,
-        profanity_threshold="tolerant",
+        fix_grammar=True,
+        profanity_threshold="strict",
     )
     logger.info(
         f"Got conversation starter response: {conversation_starters} error: {error}"
@@ -286,7 +286,6 @@ def list_collections():
     return (
         jsonify(
             {
-                "error": None,
                 "results": cols,
             }
         ),
@@ -315,7 +314,6 @@ def get_collection(
     return (
         jsonify(
             {
-                "error": None,
                 "results": [col],
             }
         ),
@@ -344,7 +342,6 @@ def get_collection_starter(
     return (
         jsonify(
             {
-                "error": None,
                 "results": [conversation_starters],
             }
         ),
