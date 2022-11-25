@@ -22,6 +22,9 @@ def build_prompt(
     :param prompt_rows: The number of rows in the prompt.
     :return: prompt
     """
+    # topics post-processing
+    topics = [topic.strip().lower() for topic in topics]
+
     # zero-shot completion
     if prompt_rows <= 1:
         return ",".join(topics) + " ###"
