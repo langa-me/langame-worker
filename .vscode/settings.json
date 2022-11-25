@@ -5,15 +5,15 @@
     "python.linting.pylintEnabled": true,
     "python.languageServer": "Default",
     "python.testing.pytestArgs": [
-        "functions/public_starter",
+        "langame",
         "--verbose",
         "--log-cli-level=DEBUG",
-        // "--ignore",
-        // "${workspaceFolder}/functions/*"
+        "--ignore",
+        "${workspaceFolder}/functions/*"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "jupyter.jupyterServerType": "local",
-    "python.envFile": "${workspaceFolder}/.env",
+    "python.envFile": "${workspaceFolder}/.env.production",
 }

@@ -10,9 +10,8 @@ from langame.messages import (
 )
 from random import choice
 
-import sentry_sdk
 from sentry_sdk import capture_exception
-from errors import init_errors
+from .errors import init_errors
 
 init_errors(env="production")
 
@@ -69,7 +68,7 @@ def request_starter_for_service(
         tries += 1
         time.sleep(1)
     if error or "result" not in response_data:
-        capture_exception(error)
+        capture_exception(Exception(str(error)))
         if logger:
             logger.error(f"Failed to request starter for {api_key_id}", exc_info=1)
         if error == "no-topics":
