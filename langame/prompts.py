@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Coroutine, List, Optional
 import openai
 import numpy as np
@@ -85,7 +86,7 @@ async def extract_topics_from_personas(
     if there is no intersection, return an union of topics
     :return: list of topics
     """
-    topics_per_bio = []
+    topics_per_persona = []
 
     async def _compute_persona(bio: str):
         prompt = f"User self biography:\n{bio}\nConversation topics:\n-"
@@ -101,18 +102,22 @@ async def extract_topics_from_personas(
             )
             topics = response["choices"][0]["text"].split("\n-")
             topics = [topic.strip() for topic in topics]
-            topics_per_bio.append(topics)
+            topics_per_persona.append(topics)
         except:  # pylint: disable=bare-except
             return []
 
     # run in parallel
     await asyncio.gather(*[_compute_persona(persona) for persona in personas])
 
+    if len(topics_per_persona) == 0:
+        logging.warning("Could not extract topics from personas")
+        return []
+
     if aligned:
-        topics = set(topics_per_bio[0])
-        for bio_topics in topics_per_bio[1:]:
+        topics = set(topics_per_persona[0])
+        for bio_topics in topics_per_persona[1:]:
             topics = topics.intersection(bio_topics)
         if not topics:
-            topics = set().union(*topics_per_bio)
+            topics = set().union(*topics_per_persona)
         return list(topics)
-    return list(set().union(*topics_per_bio))
+    return list(set().union(*topics_per_persona))

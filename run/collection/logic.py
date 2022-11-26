@@ -12,12 +12,10 @@ from langame.prompts import extract_topics_from_personas
 
 
 initialize_app()
-
 GET_MEMES_URL = os.environ.get("GET_MEMES_URL", None)
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 db: Client = firestore.client()
-
 
 def base():
     """TODO"""

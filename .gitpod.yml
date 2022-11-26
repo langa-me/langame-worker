@@ -1,8 +1,9 @@
 tasks:
-    - name: Generate service account
+    - name: Basic stuff
       command: |
         make install
         eval $(gp env -e)
+        echo "LANGAME_WORKER_ENV" > .env.production
         echo "$LANGAME_SVC_PROD" > ./svc.prod.json
         echo "$LANGAME_SVC_DEV" > ./svc.dev.json
         echo "$LANGAME_PYPIRC" | base64 -d > ./run/collection/.pypirc

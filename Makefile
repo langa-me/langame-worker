@@ -6,6 +6,13 @@ LATEST_IMAGE_URL=$(shell echo "gcr.io/${CLOUD_PROJECT}/collection:latest")
 VERSION=$(shell sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)
 IMAGE_URL=$(shell echo "gcr.io/${CLOUD_PROJECT}/collection:${VERSION}")
 
+install: ## Install dependencies
+	@echo "Installing dependencies..."
+	virtualenv -p python3 env
+	. env/bin/activate && pip install -e . && \
+		pip install -r requirements-test.txt && \
+		pip install -r optional-requirements.txt
+
 prod: ## Set the GCP project to prod
 	gcloud config set project langame-86ac4
 
