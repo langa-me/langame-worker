@@ -87,7 +87,7 @@ async def extract_topics_from_personas(
     """
     topics_per_bio = []
 
-    async def _compute_bio(bio: str):
+    async def _compute_persona(bio: str):
         prompt = f"User self biography:\n{bio}\nConversation topics:\n-"
         try:
             response = openai.Completion.create(
@@ -106,7 +106,7 @@ async def extract_topics_from_personas(
             return []
 
     # run in parallel
-    await asyncio.gather(*[_compute_bio(bio) for bio in bios])
+    await asyncio.gather(*[_compute_persona(persona) for persona in personas])
 
     if aligned:
         topics = set(topics_per_bio[0])

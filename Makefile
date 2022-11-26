@@ -45,11 +45,11 @@ run/collection/build: ## [Local development] Build the docker image.
 	@docker buildx build ./run/collection --platform linux/amd64 -t ${LATEST_IMAGE_URL} -f ./run/collection/Dockerfile
 	@docker buildx build ./run/collection --platform linux/amd64 -t ${IMAGE_URL} -f ./run/collection/Dockerfile
 
-run/collection/push: ## [Local development] Push the image to GCR.
+run/collection/push: run/collection/build ## [Local development] Push the image to GCR.
 	docker push ${IMAGE_URL}
 	docker push ${LATEST_IMAGE_URL}
 
-run/collection/deploy: run/collection/build run/collection/push ## [Local development] Build docker image, push and deploy to GCP.
+run/collection/deploy: run/collection/push ## [Local development] Build docker image, push and deploy to GCP.
 	@echo "Will deploy to ${REGION} on ${CLOUD_PROJECT}"
 	gcloud beta run services replace ./run/collection/service.prod.yaml --region ${REGION}
 

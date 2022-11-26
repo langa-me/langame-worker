@@ -5,6 +5,8 @@ tasks:
         eval $(gp env -e)
         echo "$LANGAME_SVC_PROD" > ./svc.prod.json
         echo "$LANGAME_SVC_DEV" > ./svc.dev.json
+        echo "$LANGAME_PYPIRC" | base64 -d > ./run/collection/.pypirc
+        echo "$LANGAME_PIPCONF" | base64 -d > ./run/collection/pip.conf
         pip3 install yq
         echo "$LANGAME_CONFIG" | yq -y > ./config.yaml
         mkdir -p ~/kaggle

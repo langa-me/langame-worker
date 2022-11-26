@@ -114,7 +114,7 @@ def create_starter():
     quantity = json_data.get("limit", 1)
     translated = json_data.get("translated", False)
     personas = json_data.get("personas", [])
-    # if bios are provided, extract topics from it
+    # if personas are provided, extract topics from it
     if len(personas) > 0:
         topics = asyncio.run(extract_topics_from_personas(personas))
 

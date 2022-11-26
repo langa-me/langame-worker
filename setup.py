@@ -20,7 +20,7 @@ if __name__ == "__main__":
         name="langame",
         packages=find_packages(),
         include_package_data=True,
-        version="1.2.0",
+        version="1.2.1",
         description="",
         install_requires=[
             "firebase_admin",
