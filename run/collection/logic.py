@@ -8,7 +8,7 @@ import asyncio
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client, DocumentSnapshot
-from langame.prompts import extract_topics_from_bio
+from langame.prompts import extract_topics_from_personas
 
 
 initialize_app()
@@ -113,10 +113,10 @@ def create_starter():
         topics = ["ice breaker"]
     quantity = json_data.get("limit", 1)
     translated = json_data.get("translated", False)
-    bios = json_data.get("bios", [])
+    personas = json_data.get("personas", [])
     # if bios are provided, extract topics from it
-    if len(bios) > 0:
-        topics = asyncio.run(extract_topics_from_bio(bios))
+    if len(personas) > 0:
+        topics = asyncio.run(extract_topics_from_personas(personas))
 
     conversation_starters, error = request_starter_for_service(
         url=GET_MEMES_URL,

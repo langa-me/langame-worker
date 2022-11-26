@@ -1,4 +1,4 @@
-from langame.prompts import build_prompt, extract_topics_from_bio
+from langame.prompts import build_prompt, extract_topics_from_persona
 from langame.conversation_starters import get_existing_conversation_starters
 from firebase_admin import credentials, firestore
 import firebase_admin
@@ -58,7 +58,7 @@ class TestPrompts(IsolatedAsyncioTestCase):
             "I am a biology student, I like to play basketball on my free time",
             "I am a computer science student, I like to play video games on my free time",
         ]
-        topics = await extract_topics_from_bio(bios)
+        topics = await extract_topics_from_persona(bios)
         assert topics is not None
         # should contains "biology" and "computer science" at least
         lower_cased_topics = [t.lower() for t in topics]

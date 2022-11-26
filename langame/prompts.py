@@ -75,13 +75,13 @@ def build_prompt(
     return prompt + "\n" + ",".join(topics) + " ###"
 
 
-async def extract_topics_from_bio(
-    bios: List[str], aligned: bool = True
+async def extract_topics_from_personas(
+    personas: List[str], aligned: bool = True
 ) -> Coroutine[Any, Any, List[str]]:
     """
-    Extract a list of unique topics from a list of bios
-    :param bios: list of bios
-    :param aligned: if True, taking the intersection of topics from all bios
+    Extract a list of unique topics from a list of personas
+    :param personas: list of personass
+    :param aligned: if True, taking the intersection of topics from all personass
     if there is no intersection, return an union of topics
     :return: list of topics
     """
@@ -102,7 +102,7 @@ async def extract_topics_from_bio(
             topics = response["choices"][0]["text"].split("\n-")
             topics = [topic.strip() for topic in topics]
             topics_per_bio.append(topics)
-        except: # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except
             return []
 
     # run in parallel
