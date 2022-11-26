@@ -131,6 +131,7 @@ def create_starter():
     logger.info(
         f"Got conversation starter response: {conversation_starters} error: {error}"
     )
+
     if error:
         return (
             jsonify(
