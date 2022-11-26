@@ -1,13 +1,17 @@
-from langame.prompts import build_prompt
+from langame.prompts import build_prompt, extract_topics_from_bio
 from langame.conversation_starters import get_existing_conversation_starters
 from firebase_admin import credentials, firestore
 import firebase_admin
-import unittest
 import openai
 import os
+from unittest import IsolatedAsyncioTestCase
+
+# disable pylint for docstring
+# pylint: disable=C0116
+# pylint: disable=C0115
 
 
-class TestPrompts(unittest.TestCase):
+class TestPrompts(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         openai.api_key = os.environ["OPENAI_KEY"]
         openai.organization = os.environ["OPENAI_ORG"]
@@ -48,3 +52,15 @@ class TestPrompts(unittest.TestCase):
         assert prompt is not None
         # Check that prompt end with "\nfoo,bar ###"
         assert prompt.endswith("\nnThis is a conversation starter about foo,bar ###")
+
+    async def test_extract_topics_from_bio(self):
+        bios = [
+            "I am a biology student, I like to play basketball on my free time",
+            "I am a computer science student, I like to play video games on my free time",
+        ]
+        topics = await extract_topics_from_bio(bios)
+        assert topics is not None
+        # should contains "biology" and "computer science" at least
+        lower_cased_topics = [t.lower() for t in topics]
+        assert "biology" in lower_cased_topics
+        assert "computer science" in lower_cased_topics

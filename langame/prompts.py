@@ -1,9 +1,13 @@
-from typing import Any, List, Optional
+from typing import Any, Coroutine, List, Optional
 import openai
 import numpy as np
 from langame.quality import is_garbage
 from faiss.swigfaiss import IndexFlat
 from sentence_transformers import SentenceTransformer
+import openai
+from typing import List
+import asyncio
+
 
 def post_process_inputs(topics: List[str]) -> List[str]:
     """
@@ -11,6 +15,7 @@ def post_process_inputs(topics: List[str]) -> List[str]:
     :return: The list of topics post-processed.
     """
     return list(set([topic.strip().lower() for topic in topics]))
+
 
 def build_prompt(
     index: IndexFlat,
@@ -68,3 +73,46 @@ def build_prompt(
     )
 
     return prompt + "\n" + ",".join(topics) + " ###"
+
+
+async def extract_topics_from_bio(
+    bios: List[str], aligned: bool = True
+) -> Coroutine[Any, Any, List[str]]:
+    """
+    Extract a list of unique topics from a list of bios
+    :param bios: list of bios
+    :param aligned: if True, taking the intersection of topics from all bios
+    if there is no intersection, return an union of topics
+    :return: list of topics
+    """
+    topics_per_bio = []
+
+    async def _compute_bio(bio: str):
+        prompt = f"User self biography:\n{bio}\nConversation topics:\n-"
+        try:
+            response = openai.Completion.create(
+                model="text-davinci-002",
+                prompt=prompt,
+                temperature=0.7,
+                max_tokens=256,
+                top_p=1,
+                frequency_penalty=0.1,
+                presence_penalty=0.1,
+            )
+            topics = response["choices"][0]["text"].split("\n-")
+            topics = [topic.strip() for topic in topics]
+            topics_per_bio.append(topics)
+        except: # pylint: disable=bare-except
+            return []
+
+    # run in parallel
+    await asyncio.gather(*[_compute_bio(bio) for bio in bios])
+
+    if aligned:
+        topics = set(topics_per_bio[0])
+        for bio_topics in topics_per_bio[1:]:
+            topics = topics.intersection(bio_topics)
+        if not topics:
+            topics = set().union(*topics_per_bio)
+        return list(topics)
+    return list(set().union(*topics_per_bio))

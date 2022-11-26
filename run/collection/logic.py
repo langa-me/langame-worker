@@ -8,7 +8,8 @@ import asyncio
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client, DocumentSnapshot
-from ai import extract_topics_from_bio
+from langame.prompts import extract_topics_from_bio
+
 
 initialize_app()
 
@@ -124,7 +125,7 @@ def create_starter():
         topics=topics,
         quantity=quantity,
         translated=translated,
-        fix_grammar=False, # increase latency too much?
+        fix_grammar=False,  # increase latency too much?
         profanity_threshold="open",
     )
     logger.info(
@@ -171,6 +172,7 @@ def create_starter():
 
 
 def _get_col(member_id: str, collection_id: str):
+    """TODO"""
     pref = db.collection("preferences").document(member_id).get()
     pref_data = pref.to_dict()
     if not pref_data:
