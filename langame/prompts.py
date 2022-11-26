@@ -115,8 +115,8 @@ async def extract_topics_from_personas(
 
     if aligned:
         topics = set(topics_per_persona[0])
-        for bio_topics in topics_per_persona[1:]:
-            topics = topics.intersection(bio_topics)
+        for persona_topics in topics_per_persona[1:]:
+            topics = topics.intersection(persona_topics)
         if not topics:
             topics = set().union(*topics_per_persona)
         return list(topics)
