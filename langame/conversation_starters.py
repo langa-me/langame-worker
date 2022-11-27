@@ -76,7 +76,7 @@ def get_existing_conversation_starters(
         logger.info("Preparing embeddings for existing conversation starters")
     sentence_embeddings_model = None
 
-    sentence_embeddings_model_name = "sentence-transformers/LaBSE"
+    sentence_embeddings_model_name = "sentence-transformers/all-MiniLM-L6-v2"
     device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
 
     if logger:

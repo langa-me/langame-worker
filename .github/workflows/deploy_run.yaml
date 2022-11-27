@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - 'run/**'
+      - "run/**"
 env:
   PROJECT_ID: langame-86ac4
   SERVICE: collection
@@ -21,69 +21,78 @@ jobs:
         python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install setuptools wheel twine keyrings.google-artifactregistry-auth
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools wheel twine keyrings.google-artifactregistry-auth
 
-    - id: auth
-      uses: google-github-actions/auth@v0
-      with:
-        credentials_json: "${{ secrets.GCP_SA_KEY_PROD }}"
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY_PROD }}"
 
-    - name: Authorize Docker push
-      run: gcloud auth configure-docker
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
 
-    - name: Get the version
-      id: get_version
-      run: echo "VERSION=$(sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)" >> $GITHUB_ENV
+      - name: Get the version
+        id: get_version
+        run: echo "VERSION=$(sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)" >> $GITHUB_ENV
 
-    - name: Build and Push Container
-      run: |-
-        gcloud config set artifacts/repository langame
-        gcloud config set artifacts/location us-central1
+      # if a GitHub workflow "Release" is currently running, wait for it to finish
+      - name: Wait if there is a Release
+        uses: lewagon/wait-on-check-action@v1.2.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: "Release"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
 
-        gcloud config set account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
-        gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
+      - name: Build and Push Container
+        run: |-
+          gcloud config set artifacts/repository langame
+          gcloud config set artifacts/location us-central1
 
-        gcloud artifacts print-settings python > run/collection/.pypirc
-        gcloud artifacts print-settings python \
-            --project ${{ env.PROJECT_ID }} \
-            --repository langame \
-            --location us-central1 \
-            --json-key ${{ env.GOOGLE_APPLICATION_CREDENTIALS }} \
-            | sed '11,$!d' | tee run/collection/pip.conf
-        
-        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./run/collection/Dockerfile
-        docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
-        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
-        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
-    # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
-    # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
-    - name: Deploy to Cloud Run
-      id: deploy
-      uses: google-github-actions/deploy-cloudrun@v0
-      with:
-        metadata: run/collection/service.prod.yaml
-        project_id: ${{ env.PROJECT_ID }}
-        region: us-central1
-        tag: ${{ env.VERSION }}
+          gcloud config set account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+          gcloud auth activate-service-account cloud-run-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=${{ env.GOOGLE_APPLICATION_CREDENTIALS }} --project=${{ env.PROJECT_ID }}
 
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
+          gcloud artifacts print-settings python > run/collection/.pypirc
+          gcloud artifacts print-settings python \
+              --project ${{ env.PROJECT_ID }} \
+              --repository langame \
+              --location us-central1 \
+              --json-key ${{ env.GOOGLE_APPLICATION_CREDENTIALS }} \
+              | sed '11,$!d' | tee run/collection/pip.conf
 
-    - name: Discord Notification
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@master
-      with:
-        args: '🤖 The project {{ EVENT_PAYLOAD.repository.full_name }}:${{ env.VERSION }} has been deployed on branch ${{ steps.extract_branch.outputs.branch }} reachable at URL ${{ steps.deploy.outputs.url }}. Commit: ${{ github.event.head_commit.message }}' 
+          docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./run/collection/Dockerfile
+          docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
+      # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
+      # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          metadata: run/collection/service.prod.yaml
+          project_id: ${{ env.PROJECT_ID }}
+          region: us-central1
+          tag: ${{ env.VERSION }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Discord Notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "🤖 The project {{ EVENT_PAYLOAD.repository.full_name }}:${{ env.VERSION }} has been deployed on branch ${{ steps.extract_branch.outputs.branch }} reachable at URL ${{ steps.deploy.outputs.url }}. Commit: ${{ github.event.head_commit.message }}"

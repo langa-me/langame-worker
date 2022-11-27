@@ -10,10 +10,11 @@ spec:
       annotations:
         run.googleapis.com/cpu-throttling: "true"
         run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/startup-cpu-boost: "true"
     spec:
       containerConcurrency: 80
       containers:
-        image: gcr.io/langame-86ac4/collection:1.0.3
+        image: gcr.io/langame-86ac4/collection:1.0.5
         ports:
           - containerPort: 8080
             name: http1
@@ -25,4 +26,3 @@ spec:
             cpu: "4"
             memory: 8192Mi
       timeoutSeconds: 1200
-      

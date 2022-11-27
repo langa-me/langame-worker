@@ -154,6 +154,7 @@ def create_starter():
         jsonify(
             {
                 "topics": topics,
+                "personas": personas,
                 "limit": quantity,
                 "translated": translated,
                 "results": [build_response(e) for e in conversation_starters],

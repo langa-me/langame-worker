@@ -78,7 +78,7 @@ def dedup(
     # Skip the meme generated under this similarity threshold
     SIMILARITY_THRESHOLD = 0.8
 
-    sentence_embeddings_model_name = "sentence-transformers/LaBSE"
+    sentence_embeddings_model_name = "sentence-transformers/all-MiniLM-L6-v2"
     device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
 
     logger.info(f"Device: {device}")

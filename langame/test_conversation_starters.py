@@ -3,7 +3,7 @@ from langame.conversation_starters import (
     get_existing_conversation_starters,
     generate_conversation_starter,
 )
-from langame.completion import CompletionType
+from langame.completion import CompletionType, get_last_model
 from langame.profanity import ProfaneException, ProfanityThreshold
 from langame.quality import is_garbage
 from firebase_admin import credentials, firestore
@@ -121,6 +121,38 @@ class TestConversationStarters(unittest.TestCase):
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
         print(new_conversation_starters)
+
+    def test_generate_conversation_starter_openai_no_ft_versus_ft(self):
+        firestore_client = firestore.client()
+        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+            firestore_client,
+            limit=4000,
+        )
+        last_cs_model = get_last_model()["fine_tuned_model"]
+        start = time.time()
+        new_conversation_starters = generate_conversation_starter(
+            index=index,
+            conversation_starter_examples=conversation_starters,
+            topics=["monkey"],
+            sentence_embeddings_model=sentence_embeddings_model,
+            api_completion_model="text-davinci-002",
+            prompt_rows=3,
+        )
+        elapsed_seconds = str(time.time() - start)
+        start = time.time()
+        new_ft_conversation_starters = generate_conversation_starter(
+            index=index,
+            conversation_starter_examples=conversation_starters,
+            topics=["monkey"],
+            sentence_embeddings_model=sentence_embeddings_model,
+            api_completion_model=last_cs_model,
+            prompt_rows=1,
+        )
+        ft_elapsed_seconds = str(time.time() - start)
+        print(f"Non-ft elapsed seconds: {elapsed_seconds}")
+        print(f"Ft elapsed seconds: {ft_elapsed_seconds}")
+        print(f"Non-ft: {new_conversation_starters}")
+        print(f"Ft: {new_ft_conversation_starters}")
 
     def test_generate_conversation_starter_openai_with_new_embeddings(self):
         firestore_client = firestore.client()
