@@ -8,6 +8,10 @@ on:
       - main
     paths:
       - "run/**"
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 env:
   PROJECT_ID: langame-86ac4
   SERVICE: collection
@@ -44,15 +48,6 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo "VERSION=$(sed -n 's/.*image:.*:\(.*\)/\1/p' run/collection/service.prod.yaml)" >> $GITHUB_ENV
-
-      # if a GitHub workflow "Release" is currently running, wait for it to finish
-      - name: Wait if there is a Release
-        uses: lewagon/wait-on-check-action@v1.2.0
-        with:
-          ref: ${{ github.ref }}
-          check-name: "Release"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
 
       - name: Build and Push Container
         run: |-

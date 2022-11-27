@@ -17,6 +17,7 @@ COPY .pypirc /root/.pypirc
 COPY pip.conf /root/.config/pip/pip.conf
 
 RUN pip install --no-cache-dir -r requirements.txt
-#&& rm -rf /root/.cache/pip && rm -rf /root/.config/pip
+
+# TODO: && rm -rf /root/.cache/pip && rm -rf /root/.config/pip
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
