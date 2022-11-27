@@ -10,7 +10,7 @@ import requests
 class TestAll(IsolatedAsyncioTestCase):
     async def test_create_starter(self):
 
-        url = "http://127.0.0.1:8080/v1/conversation/beta/starter"
+        url = "http://127.0.0.1:8080/v1/conversation/starter"
         data = {
             "personas": [
                 "I am a biology student, I like to play basketball on my free time",

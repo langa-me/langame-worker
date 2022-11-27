@@ -14,6 +14,7 @@ logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 db: Client = firestore.client()
 
+
 def base():
     """TODO"""
     api_key = request.headers.get("X-Api-Key", None)
@@ -108,6 +109,34 @@ def create_starter():
     translated = json_data.get("translated", False)
     personas = json_data.get("personas", [])
     logging.info(f"Inputs:\n{json_data}")
+    if len(personas) > 4:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "Too many personas, maximum is 4",
+                        "status": "INVALID_ARGUMENT",
+                    },
+                    "results": [],
+                }
+            ),
+            400,
+            {},
+        )
+    if not personas and len(topics) > 5:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "Too many topics, maximum is 5",
+                        "status": "INVALID_ARGUMENT",
+                    },
+                    "results": [],
+                }
+            ),
+            400,
+            {},
+        )
 
     conversation_starters, error = request_starter_for_service(
         url=GET_MEMES_URL,

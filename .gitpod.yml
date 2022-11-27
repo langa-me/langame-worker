@@ -8,6 +8,8 @@ tasks:
         echo "$LANGAME_SVC_DEV" > ./svc.dev.json
         echo "$LANGAME_PYPIRC" | base64 -d > ./run/collection/.pypirc
         echo "$LANGAME_PIPCONF" | base64 -d > ./run/collection/pip.conf
+        cp ./run/collection/pip.conf env/pip.conf
+        cp ./run/collection/.pypirc env/.pypirc
         pip3 install yq
         echo "$LANGAME_CONFIG" | yq -y > ./config.yaml
         mkdir -p ~/kaggle
