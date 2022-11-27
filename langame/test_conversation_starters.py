@@ -88,7 +88,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
@@ -110,7 +110,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=4000,
         )
         start = time.time()
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -130,7 +130,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         last_cs_model = get_last_model()["fine_tuned_model"]
         start = time.time()
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -140,7 +140,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         elapsed_seconds = str(time.time() - start)
         start = time.time()
-        new_ft_conversation_starters = generate_conversation_starter(
+        topics, new_ft_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -165,7 +165,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -193,7 +193,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         start = time.time()
 
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -216,7 +216,7 @@ class TestConversationStarters(unittest.TestCase):
         )
         start = time.time()
 
-        new_conversation_starters = generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
@@ -235,7 +235,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=4000,
         )
         with self.assertRaises(ProfaneException):
-            conversation_starter = generate_conversation_starter(
+            topics, conversation_starter = generate_conversation_starter(
                 index=index,
                 conversation_starter_examples=conversation_starters,
                 topics=["god"],
@@ -244,7 +244,7 @@ class TestConversationStarters(unittest.TestCase):
             )
             # Non deterministic tests, don't run in CI?
             self.assertEqual(conversation_starter, None)
-        conversation_starter = generate_conversation_starter(
+        topics, conversation_starter = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["god"],
@@ -252,7 +252,7 @@ class TestConversationStarters(unittest.TestCase):
             sentence_embeddings_model=sentence_embeddings_model,
         )
         assert conversation_starter is not None
-        conversation_starter = generate_conversation_starter(
+        topics, conversation_starter = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["god"],
@@ -272,7 +272,7 @@ class TestConversationStarters(unittest.TestCase):
             limit=200,
         )
         start = time.time()
-        conversation_starters = generate_conversation_starter(
+        topics, conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["philosophy"],
@@ -292,7 +292,7 @@ class TestConversationStarters(unittest.TestCase):
             firestore_client,
             limit=200,
         )
-        conversation_starter = generate_conversation_starter(
+        topics, conversation_starter = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["god"],

@@ -24,6 +24,9 @@ jobs:
         run: |
           pip install -e .
           pip install -r optional-requirements.txt
+          # just test specific function "test_post_process_inputs" from class "TestPrompts"
+          # TODO
+          # python3 -m unittest langame/test_prompts.py langame.test_prompts.TestPrompts.test_post_process_inputs
       - name: Build Package
         run: |
           pip install wheel twine

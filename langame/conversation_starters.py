@@ -149,7 +149,7 @@ def generate_conversation_starter(
     grammar_tokenizer: Optional[T5Tokenizer] = None,
     api_completion_model: Optional[str] = None,
     api_classification_model: Optional[str] = "ada:ft-personal-2022-02-08-19-57-38",
-) -> List[dict]:
+) -> Tuple[List[str], List[dict]]:
     """
     Build a prompt for the OpenAI API based on a list of conversation starters.
     :param index: The index to use.
@@ -171,12 +171,12 @@ def generate_conversation_starter(
     :param grammar_tokenizer: The grammar tokenizer to use.
     :param api_completion_model: The api model to use.
     :param api_classification_model: The api classification model to use.
-    :return: conversation_starters
+    :return: topics and conversation starters.
     """
     if logger:
         logger.info("Building prompt using sentence embeddings")
 
-    prompt = build_prompt(
+    topics, prompt = build_prompt(
         index=index,
         conversation_starter_examples=conversation_starter_examples,
         topics=topics,
@@ -200,7 +200,7 @@ def generate_conversation_starter(
         elif completion_type is CompletionType.huggingface_api:
             text["conversation_starter"] = huggingface_api_completion(prompt)
         else:
-            return text
+            return topics, text
         text["conversation_starter"] = text["conversation_starter"].strip()
         if logger:
             logger.info(f"conversation starter: {text['conversation_starter']}")
@@ -231,7 +231,7 @@ def generate_conversation_starter(
                         f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
                         + " after grammar fix"
                     )
-                return text
+                return topics, text
             elif string_similarity(text["conversation_starter"], sentence) < 0.9:
                 text["broken_grammar"] = sentence
             text["conversation_starter"] = sentence
@@ -246,11 +246,11 @@ def generate_conversation_starter(
                 logger.info(
                     f"{text['conversation_starter']} classification: {classification}"
                 )
-        return text
+        return topics, text
 
     loop = asyncio.get_event_loop()
     conversation_starters = loop.run_until_complete(
         asyncio.gather(*[gen() for _ in range(parallel_completions)])
     )
 
-    return list(conversation_starters)
+    return topics, list(conversation_starters)

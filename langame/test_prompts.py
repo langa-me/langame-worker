@@ -1,4 +1,4 @@
-from langame.prompts import build_prompt, extract_topics_from_personas
+from langame.prompts import build_prompt, extract_topics_from_personas, post_process_inputs
 from langame.conversation_starters import get_existing_conversation_starters
 from firebase_admin import credentials, firestore
 import firebase_admin
@@ -30,7 +30,7 @@ class TestPrompts(IsolatedAsyncioTestCase):
             limit=1000,
         )
         topics = ["philosophy"]
-        prompt = build_prompt(
+        topics, prompt = build_prompt(
             index,
             conversation_starters,
             topics=topics,
@@ -43,7 +43,7 @@ class TestPrompts(IsolatedAsyncioTestCase):
 
         # Now with unknown topics
         topics = ["foo", "bar"]
-        prompt = build_prompt(
+        topics, prompt = build_prompt(
             index,
             conversation_starters,
             topics,
@@ -64,3 +64,29 @@ class TestPrompts(IsolatedAsyncioTestCase):
         lower_cased_topics = [t.lower() for t in topics]
         assert "biology" in lower_cased_topics
         assert "computer science" in lower_cased_topics
+
+    async def test_post_process_inputs(self):
+        topics = [
+            "What is your favorite video game?",
+            "Biology",
+            "Hobbies",
+            "Art",
+            "What do you think about the philosophy of life?",
+        ]
+        returned_topics = post_process_inputs(topics, prioritize_short_topics=True)
+        assert returned_topics is not None
+        assert len(returned_topics) == 3
+        assert "biology" in returned_topics
+        assert "hobbies" in returned_topics
+        assert "art" in returned_topics
+        topics = [
+            "What is your favorite video game?",
+            "Biology",
+            "What do you think about the philosophy of life?",
+        ]
+        returned_topics = post_process_inputs(topics, prioritize_short_topics=True)
+        assert returned_topics is not None
+        assert len(returned_topics) == 3
+        assert "biology" in returned_topics
+        assert "what do you think about the philosophy of life?" in returned_topics
+        assert "what is your favorite video game?" in returned_topics

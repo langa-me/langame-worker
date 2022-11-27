@@ -3,8 +3,13 @@
 # https://hub.docker.com/_/python
 FROM python:3.10-slim
 
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends git build-essential gcc python3-pip && pip3 install virtualenv
+COPY .pypirc /root/.pypirc
+COPY pip.conf /root/.config/pip/pip.conf
+COPY requirements.txt requirements.txt
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git build-essential gcc && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Allow statements and log messages to immediately appear in the Knative logs
 ENV PYTHONUNBUFFERED True
@@ -13,11 +18,7 @@ ENV PYTHONUNBUFFERED True
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
-COPY .pypirc /root/.pypirc
-COPY pip.conf /root/.config/pip/pip.conf
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-# TODO: && rm -rf /root/.cache/pip && rm -rf /root/.config/pip
+RUN rm -rf /root/.cache/pip && rm -rf /root/.config/pip
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

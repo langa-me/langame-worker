@@ -20,11 +20,12 @@ if __name__ == "__main__":
         name="langame",
         packages=find_packages(),
         include_package_data=True,
-        version="1.2.7",
+        version="1.2.8",
         description="",
         install_requires=[
             "firebase_admin",
             "requests",
+            "sentry-sdk",
         ],
         extras_require=extras_require,
         classifiers=[

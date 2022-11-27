@@ -149,15 +149,21 @@ def create_starter():
             },
         }
 
+    results = []
+    topics = set()
+    for e in conversation_starters:
+        results.append(build_response(e))
+        for topic in e.get("topics", []):
+            topics.add(topic)
     # TODO: return ID and let argument to say "I want different CS than these IDs" (semantically)
     return (
         jsonify(
             {
-                "topics": topics,
+                "topics": list(topics),
                 "personas": personas,
                 "limit": quantity,
                 "translated": translated,
-                "results": [build_response(e) for e in conversation_starters],
+                "results": results,
             }
         ),
         200,

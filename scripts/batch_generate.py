@@ -93,7 +93,7 @@ def generate(
         )
         logger.info(f"Generating conversation starter for topics: {selected_topics}")
         try:
-            conversation_starter = generate_conversation_starter(
+            topics, conversation_starter = generate_conversation_starter(
                 existing_memes,
                 topics,
                 profanity_threshold=ProfanityThreshold.open,
