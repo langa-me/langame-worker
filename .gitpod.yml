@@ -3,7 +3,7 @@ tasks:
       command: |
         make install
         eval $(gp env -e)
-        echo "LANGAME_WORKER_ENV" > .env.production
+        echo "$LANGAME_WORKER_ENV" | base64 -d > .env.production
         echo "$LANGAME_SVC_PROD" > ./svc.prod.json
         echo "$LANGAME_SVC_DEV" > ./svc.dev.json
         echo "$LANGAME_PYPIRC" | base64 -d > ./run/collection/.pypirc
@@ -13,7 +13,7 @@ tasks:
         mkdir -p ~/kaggle
         echo "$KAGGLE_KEY" > ~/.kaggle/kaggle.json
         chmod 600 ~/.kaggle/kaggle.json
-        export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/svc.dev.json
+        export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/svc.prod.json
         gcloud beta auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} --project=$(cat ${GOOGLE_APPLICATION_CREDENTIALS} | jq -r '.project_id')
         mkdir -p ~/.docker
         cat >~/.docker/config.json <<EOL

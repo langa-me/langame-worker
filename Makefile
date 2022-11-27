@@ -11,7 +11,7 @@ install: ## Install dependencies
 	virtualenv -p python3 env
 	. env/bin/activate && pip install -e . && \
 		pip install -r requirements-test.txt && \
-		pip install -r optional-requirements.txt
+		pip install -r optional-requirements.txt --use-deprecated=legacy-resolver
 
 prod: ## Set the GCP project to prod
 	gcloud config set project langame-86ac4
@@ -62,6 +62,12 @@ run/collection/deploy: run/collection/push ## [Local development] Build docker i
 
 run/collection/policy:
 	gcloud run services set-iam-policy collection run/collection/policy.prod.yaml --region ${REGION}
+
+run/collection/local:
+# use .env.production env var into the python process
+# . .env.production && 
+	@echo "Don't forget to run 'set -o allexport; source .env.production; set +o allexport'"
+	python3 run/collection/main.py 
 
 .PHONY: help
 

@@ -103,7 +103,8 @@ async def extract_topics_from_personas(
             topics = response["choices"][0]["text"].split("\n-")
             topics = [topic.strip() for topic in topics]
             topics_per_persona.append(topics)
-        except:  # pylint: disable=bare-except
+        except Exception as e:
+            logging.warning("Error while computing topics for persona: ", e)
             return []
 
     # run in parallel

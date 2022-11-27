@@ -1,18 +1,15 @@
 import os
 import logging
 from datetime import datetime
-from typing import Any, Tuple, Optional
+from typing import Any, Optional
 from flask import request, jsonify
 import logging
-import asyncio
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
-from google.cloud.firestore import Client, DocumentSnapshot
-from langame.prompts import extract_topics_from_personas
-
+from google.cloud.firestore import Client
 
 initialize_app()
-GET_MEMES_URL = os.environ.get("GET_MEMES_URL", None)
+GET_MEMES_URL = os.environ.get("GET_MEMES_URL")
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 db: Client = firestore.client()
@@ -106,15 +103,11 @@ def create_starter():
     if error:
         return error
     json_data = request.get_json()
-    topics = json_data.get("topics", ["ice breaker"])
-    if len(topics) == 0:
-        topics = ["ice breaker"]
+    topics = json_data.get("topics", [])
     quantity = json_data.get("limit", 1)
     translated = json_data.get("translated", False)
     personas = json_data.get("personas", [])
-    # if personas are provided, extract topics from it
-    if len(personas) > 0:
-        topics = asyncio.run(extract_topics_from_personas(personas))
+    logging.info(f"Inputs:\n{json_data}")
 
     conversation_starters, error = request_starter_for_service(
         url=GET_MEMES_URL,
@@ -125,6 +118,7 @@ def create_starter():
         translated=translated,
         fix_grammar=False,  # increase latency too much?
         profanity_threshold="open",
+        personas=personas,
     )
     logger.info(
         f"Got conversation starter response: {conversation_starters} error: {error}"

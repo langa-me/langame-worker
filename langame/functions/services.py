@@ -27,6 +27,7 @@ def request_starter_for_service(
     parallel_completions: int = 3,
     max_tries: int = 3,
     profanity_threshold: str = "tolerant",
+    personas: Optional[List[str]] = None,
 ) -> Tuple[Optional[Any], Optional[Any]]:
     """
     Request a conversation starter from the API.
@@ -40,6 +41,7 @@ def request_starter_for_service(
         parallel_completions: The number of parallel completion to use.
         max_tries: The maximum number of tries to request a conversation starter.
         profanity_threshold: The profanity threshold.
+        personas: The list of personas.
     Returns:
         Tuple of (starter, user message).
     """
@@ -54,6 +56,7 @@ def request_starter_for_service(
         "fixGrammar": fix_grammar,
         "parallelCompletions": parallel_completions,
         "profanityThreshold": profanity_threshold,
+        "personas": personas,
     }
     tries = 0
     error = "something"
