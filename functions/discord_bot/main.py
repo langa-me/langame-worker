@@ -12,7 +12,7 @@ from discord_interactions import (
     InteractionResponseType,
 )
 from firebase_admin import firestore
-from third_party.common.messages import WAITING_MESSAGES, FAILING_MESSAGES
+from langame.functions.messages import WAITING_MESSAGES, FAILING_MESSAGES
 
 DISCORD_CLIENT_PUBLIC_KEY = os.getenv("DISCORD_CLIENT_PUBLIC_KEY")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")

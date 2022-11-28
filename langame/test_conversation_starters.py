@@ -73,11 +73,7 @@ class TestConversationStarters(unittest.TestCase):
         self.assertTrue(os.path.isdir("./indexes"))
 
     def test_generate_conversation_starter_openai(self):
-        model_name = "flexudy/t5-small-wav2vec2-grammar-fixer"
-        grammar_tokenizer = T5Tokenizer.from_pretrained(model_name)
-        grammar_model = T5ForConditionalGeneration.from_pretrained(model_name).to(
-            "cpu"
-        )
+
         firestore_client = firestore.client()
         (
             conversation_starters,
@@ -95,9 +91,7 @@ class TestConversationStarters(unittest.TestCase):
             sentence_embeddings_model=sentence_embeddings_model,
             fix_grammar=False,
             parallel_completions=3,
-            grammar_tokenizer=grammar_tokenizer,
-            grammar_model=grammar_model,
-            api_completion_model="curie:ft-personal-2022-02-09-05-17-08"
+            api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
         )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
@@ -105,7 +99,11 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_openai_new_topic(self):
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=4000,
         )
@@ -124,7 +122,11 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_openai_no_ft_versus_ft(self):
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=4000,
         )
@@ -187,7 +189,11 @@ class TestConversationStarters(unittest.TestCase):
             model_name_or_path, use_auth_token=token
         )
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=4000,
         )
@@ -210,7 +216,11 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_huggingface_api(self):
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=4000,
         )
@@ -230,7 +240,11 @@ class TestConversationStarters(unittest.TestCase):
 
     def test_generate_conversation_starter_profane(self):
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=4000,
         )
@@ -285,10 +299,13 @@ class TestConversationStarters(unittest.TestCase):
         print(f"Elapsed seconds: {elapsed_seconds}")
         print(conversation_starters)
 
-
     def test_generate_conversation_starter_grammar(self):
         firestore_client = firestore.client()
-        conversation_starters, index, sentence_embeddings_model = get_existing_conversation_starters(
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
             firestore_client,
             limit=200,
         )
@@ -303,3 +320,33 @@ class TestConversationStarters(unittest.TestCase):
             api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
         )
         assert conversation_starter is not None
+
+    def test_generate_conversation_starter_with_weird_inputs(self):
+        firestore_client = firestore.client()
+        (
+            conversation_starters,
+            index,
+            sentence_embeddings_model,
+        ) = get_existing_conversation_starters(
+            firestore_client,
+            limit=200,
+        )
+        topics, conversation_starter = generate_conversation_starter(
+            index=index,
+            conversation_starter_examples=conversation_starters,
+            topics=[
+                "bob is a cool guy surfing waves",
+                "god",
+                "icebreaker",
+                "dating",
+                "surf",
+            ],
+            profanity_threshold=ProfanityThreshold.tolerant,
+            sentence_embeddings_model=sentence_embeddings_model,
+            fix_grammar=False,
+            prompt_rows=1,
+            api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
+        )
+        assert conversation_starter is not None
+        expected_topics = ["dating", "god", "icebreaker", "surf"]
+        self.assertEqual(topics, expected_topics)

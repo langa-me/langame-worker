@@ -1,6 +1,3 @@
-third_party: ## [Local development] third party dependencies
-	rm -rf third_party
-	python3 -m pip -t third_party ../common
 
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy slack_bot \

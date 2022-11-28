@@ -10,10 +10,6 @@ $(info "Using production configuration")
 DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 endif
 
-third_party: ## [Local development] third party dependencies
-	rm -rf third_party
-	python3 -m pip install -t third_party ../common
-
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy schedule_social \
 		--runtime python39 \

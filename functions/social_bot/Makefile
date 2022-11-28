@@ -11,12 +11,6 @@ DISCORD_APPLICATION_ID:=$(shell cat ../../.env.production | grep -w DISCORD_APPL
 DISCORD_BOT_TOKEN:=$(shell cat ../../.env.production | grep -w DISCORD_BOT_TOKEN | cut -d "=" -f 2)
 endif
 
-clean:
-	rm -rf third_party
-
-third_party: clean ## [Local development] third party dependencies
-	python3 -m pip install -t third_party ../common
-
 deploy: ## [Local development] deploy to GCP.
 	gcloud beta functions deploy social_bot \
 		--runtime python39 \

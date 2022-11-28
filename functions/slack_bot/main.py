@@ -2,7 +2,7 @@ from flask import request
 from firebase_admin import firestore
 import logging
 from random import choice
-from third_party.common.messages import WAITING_MESSAGES
+from langame.functions.messages import WAITING_MESSAGES
 
 def slack_bot(_):
     logger = logging.getLogger("slack_bot")

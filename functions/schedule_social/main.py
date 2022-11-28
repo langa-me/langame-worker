@@ -6,8 +6,8 @@ from datetime import datetime
 from random import sample, randint
 from firebase_admin import firestore
 from google.cloud.firestore import Client
-from third_party.common.discord import get_most_talkative_players_from_channel
-from third_party.common.services import request_starter_for_service
+from langame.functions.discord import get_most_talkative_players_from_channel
+from langame.functions.services import request_starter_for_service
 import time
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 GET_MEMES_URL = os.getenv("GET_MEMES_URL")

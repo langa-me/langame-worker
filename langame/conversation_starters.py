@@ -200,7 +200,7 @@ def generate_conversation_starter(
         elif completion_type is CompletionType.huggingface_api:
             text["conversation_starter"] = huggingface_api_completion(prompt)
         else:
-            return topics, text
+            return text
         text["conversation_starter"] = text["conversation_starter"].strip()
         if logger:
             logger.info(f"conversation starter: {text['conversation_starter']}")
@@ -231,7 +231,7 @@ def generate_conversation_starter(
                         f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
                         + " after grammar fix"
                     )
-                return topics, text
+                return text
             elif string_similarity(text["conversation_starter"], sentence) < 0.9:
                 text["broken_grammar"] = sentence
             text["conversation_starter"] = sentence
@@ -246,11 +246,11 @@ def generate_conversation_starter(
                 logger.info(
                     f"{text['conversation_starter']} classification: {classification}"
                 )
-        return topics, text
+        return text
 
     loop = asyncio.get_event_loop()
     conversation_starters = loop.run_until_complete(
         asyncio.gather(*[gen() for _ in range(parallel_completions)])
     )
 
-    return topics, list(conversation_starters)
+    return topics, conversation_starters

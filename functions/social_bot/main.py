@@ -4,7 +4,7 @@ import requests
 import logging
 from firebase_admin import firestore
 from google.cloud.firestore import Client
-from third_party.common.services import request_starter_for_service
+from langame.functions.services import request_starter_for_service
 
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
