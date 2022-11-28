@@ -104,7 +104,7 @@ async def extract_topics_from_personas(
     topics_per_persona = []
 
     async def _compute_persona(bio: str):
-        prompt = f"User self biography:\n{bio}\nShort conversation topics:\n-"
+        prompt = f"User biography:\n{bio}\nList of interests:\n-"
         try:
             response = openai.Completion.create(
                 model="text-davinci-002",

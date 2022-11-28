@@ -1,4 +1,8 @@
-from langame.prompts import build_prompt, extract_topics_from_personas, post_process_inputs
+from langame.prompts import (
+    build_prompt,
+    extract_topics_from_personas,
+    post_process_inputs,
+)
 from langame.conversation_starters import get_existing_conversation_starters
 from firebase_admin import credentials, firestore
 import firebase_admin
@@ -55,8 +59,8 @@ class TestPrompts(IsolatedAsyncioTestCase):
 
     async def test_extract_topics_from_bio(self):
         personas = [
-            "I am a biology student, I like to play basketball on my free time",
-            "I am a computer science student, I like to play video games on my free time",
+            "I am a biology student, I like to play basketball on my free time. On my weekends I like to go to the beach with my friends.",
+            "I am a computer science student, I like to play video games on my free time. I also like to read books",
         ]
         topics = await extract_topics_from_personas(personas)
         assert topics is not None
