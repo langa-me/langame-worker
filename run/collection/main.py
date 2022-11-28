@@ -27,20 +27,12 @@ sentry_sdk.init(
 
 BASE = "/v1/conversation/collection"
 app = Flask(__name__)  # TODO move base to config
-CORS(app) 
 app.url_map.strict_slashes = False
+CORS(app)
 
 @app.before_request
 def before_request():
     print(f"Request path: {request.path}")
-
-@app.after_request
-def after_request(response):
-    header = response.headers
-    header["Access-Control-Allow-Origin"] = "*"
-    # Other headers can be added here if needed
-    return response
-
 
 @app.route("/v1/conversation/starter", methods=["POST"])
 def path_create_starter():
