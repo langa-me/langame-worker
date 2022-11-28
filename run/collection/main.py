@@ -11,6 +11,7 @@ from logic import (
 )
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from flask_cors import CORS
 
 sentry_sdk.init(
     dsn="https://89b0a4a5cf3747ff9989710804f50dbb@o404046.ingest.sentry.io/6346831",
@@ -22,16 +23,11 @@ sentry_sdk.init(
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0,
-
-    # By default the SDK will try to use the SENTRY_RELEASE
-    # environment variable, or infer a git commit
-    # SHA as release, however you may want to set
-    # something more human-readable.
-    # release="myapp@1.0.0",
 )
 
 BASE = "/v1/conversation/collection"
 app = Flask(__name__)  # TODO move base to config
+CORS(app) 
 app.url_map.strict_slashes = False
 
 @app.before_request
