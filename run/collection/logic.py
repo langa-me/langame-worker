@@ -98,7 +98,7 @@ def create_starter():
     """
     (
         api_key_doc,
-        _,
+        org_doc,
         member_id,
         error,
     ) = base()
@@ -106,7 +106,7 @@ def create_starter():
         return error
     json_data = request.get_json()
     topics = json_data.get("topics", [])
-    quantity = json_data.get("limit", 1)
+    limit = json_data.get("limit", 1)
     translated = json_data.get("translated", False)
     personas = json_data.get("personas", [])
     logging.info(f"Inputs:\n{json_data}")
@@ -140,11 +140,10 @@ def create_starter():
         )
 
     conversation_starters, error = request_starter_for_service(
-        url=GET_MEMES_URL,
-        api_key_id=api_key_doc.id,
-        logger=logger,
+        api_key_doc=api_key_doc,
+        org_doc=org_doc,
         topics=topics,
-        quantity=quantity,
+        limit=limit,
         translated=translated,
         fix_grammar=False,  # increase latency too much?
         profanity_threshold="open",
@@ -191,7 +190,7 @@ def create_starter():
             {
                 "topics": list(topics),
                 "personas": personas,
-                "limit": quantity,
+                "limit": limit,
                 "translated": translated,
                 "results": results,
             }
