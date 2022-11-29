@@ -6,7 +6,7 @@ from flask import request, jsonify
 import logging
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
-from google.cloud.firestore import Client
+from google.cloud.firestore import Client, DocumentSnapshot
 
 initialize_app()
 GET_MEMES_URL = os.environ.get("GET_MEMES_URL")
@@ -92,17 +92,17 @@ def base():
     )
 
 
-def create_starter():
+async def create_starter():
     """
     foo
     """
     (
         api_key_doc,
         org_doc,
-        member_id,
+        _,
         error,
     ) = base()
-    if error:
+    if error or not api_key_doc or not org_doc:
         return error
     json_data = request.get_json()
     topics = json_data.get("topics", [])
@@ -139,7 +139,23 @@ def create_starter():
             {},
         )
 
-    conversation_starters, error = request_starter_for_service(
+    # limit max 20
+    if limit > 20:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "You can only request up to 20 memes at a time",
+                        "status": "INVALID_ARGUMENT",
+                    },
+                    "results": [],
+                }
+            ),
+            400,
+            {},
+        )
+
+    conversation_starters, error = await request_starter_for_service(
         api_key_doc=api_key_doc,
         org_doc=org_doc,
         topics=topics,
@@ -168,21 +184,21 @@ def create_starter():
             {},
         )
 
-    def build_response(meme: Any):
-        return {
-            "id": meme["id"],
-            # merge "content" (original english version) with "translated" (multi-language version)
-            "conversation_starter": {
-                "en": meme["content"],
-                **(meme.get("translated", {}) if translated else {}),
-            },
-        }
-
     results = []
     topics = set()
-    for e in conversation_starters:
-        results.append(build_response(e))
-        for topic in e.get("topics", []):
+    for conversation_starter in conversation_starters:
+        d = conversation_starter.to_dict()
+        results.append(
+            {
+                "id": conversation_starter.id,
+                # merge "content" (original english version) with "translated" (multi-language version)
+                "conversation_starter": {
+                    "en": d.get("content", ""),
+                    **(d.get("translated", {}) if translated else {}),
+                },
+            }
+        )
+        for topic in d.get("topics", []):
             topics.add(topic)
     # TODO: return ID and let argument to say "I want different CS than these IDs" (semantically)
     return (

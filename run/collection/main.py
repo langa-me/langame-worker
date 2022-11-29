@@ -35,8 +35,8 @@ def before_request():
     print(f"Request path: {request.path}")
 
 @app.route("/v1/conversation/starter", methods=["POST"])
-def path_create_starter():
-    return create_starter()
+async def path_create_starter():
+    return await create_starter()
 
 
 @app.route(BASE, methods=["GET"])

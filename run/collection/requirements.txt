@@ -1,6 +1,7 @@
 --extra-index-url https://us-central1-python.pkg.dev/langame-86ac4/langame/simple/ langame
 langame[functions]
-Flask==2.1.0
+# Flask==2.1.0
+flask[async]
 gunicorn==20.1.0
 sentry-sdk[flask]
 flask_cors
