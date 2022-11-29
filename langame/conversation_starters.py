@@ -215,7 +215,7 @@ def generate_conversation_starter(
         if fix_grammar:  # TODO: might do in batch after instead
             sentence = openai_completion(
                 "Correct this to standard English:\n\n" + text["conversation_starter"],
-                model="text-davinci-002",
+                model="text-davinci-003",
                 temperature=0,
                 max_tokens=len(text["conversation_starter"]) + 800,
                 stop=["\n\n\n"], # TODO: hack change function code becasue None do stupid stuff

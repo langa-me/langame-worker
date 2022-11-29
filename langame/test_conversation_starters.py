@@ -137,7 +137,7 @@ class TestConversationStarters(unittest.TestCase):
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
             sentence_embeddings_model=sentence_embeddings_model,
-            api_completion_model="text-davinci-002",
+            api_completion_model="text-davinci-003",
             prompt_rows=3,
         )
         elapsed_seconds = str(time.time() - start)
