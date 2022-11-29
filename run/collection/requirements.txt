@@ -5,3 +5,4 @@ flask[async]
 gunicorn==20.1.0
 sentry-sdk[flask]
 flask_cors
+pytz
