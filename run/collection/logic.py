@@ -75,6 +75,7 @@ def base():
     return (
         None,
         None,
+        None,
         (
             jsonify(
                 {
