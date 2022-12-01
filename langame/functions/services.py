@@ -102,6 +102,7 @@ async def request_starter_for_service(
                 logging.error(
                     f"Failed to request starter for {api_key_doc.id}", exc_info=1
                 )
+                error = data.get("error", "unknown error")
                 if error == "no-topics":
                     user_message = choice(UNIMPLEMENTED_TOPICS_MESSAGES)
                 elif error == "profane":
@@ -111,7 +112,6 @@ async def request_starter_for_service(
                     )
                 else:
                     user_message = choice(FAILING_MESSAGES)
-                error = data.get("error", "unknown error")
                 capture_exception(Exception(str(error)))
                 return None, {
                     "message": error,
