@@ -18,11 +18,13 @@ sentry_sdk.init(
     integrations=[
         FlaskIntegration(),
     ],
-
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0,
+    _experiments={
+        "profiles_sample_rate": 1.0,
+    },
 )
 
 BASE = "/v1/conversation/collection"
@@ -30,9 +32,11 @@ app = Flask(__name__)  # TODO move base to config
 app.url_map.strict_slashes = False
 CORS(app)
 
+
 @app.before_request
 def before_request():
     print(f"Request path: {request.path}")
+
 
 @app.route("/v1/conversation/starter", methods=["POST"])
 async def path_create_starter():

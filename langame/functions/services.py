@@ -11,11 +11,9 @@ from random import choice
 from firebase_admin import firestore
 from google.cloud.firestore import DocumentSnapshot, Client
 from sentry_sdk import capture_exception
-from .errors import init_errors
 import logging
 import datetime
 
-init_errors(env="production")
 utc = pytz.UTC
 
 async def request_starter_for_service(
