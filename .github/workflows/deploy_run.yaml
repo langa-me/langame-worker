@@ -80,14 +80,24 @@ jobs:
           region: us-central1
           tag: ${{ env.VERSION }}
 
+      - name: Integration test
+        shell: bash
+        run: |
+          pip install requests
+          OUT=$(LANGAME_API_KEY="${{ secrets.LANGAME_API_KEY }}" python3 -m unittest run.collection.test_all.TestAll.test_create_starter)
+          # grab the string after "OUTPUT:", example: OUTPUT: Do you have a preference for long-term relationships or quick flings?
+          # Do you have a preference for long-term relationships or quick flings?
+          # and set it in the output variable
+          echo "::set-output name=CONVERSATION_STARTER::$(echo $OUT | sed -n 's/.*OUTPUT:\(.*\)/\1/p')"
+        id: integration_test
+
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
       - name: Discord Notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
-        with:
-          args: "🤖 The project {{ EVENT_PAYLOAD.repository.full_name }}:${{ env.VERSION }} has been deployed on branch ${{ steps.extract_branch.outputs.branch }} reachable at URL ${{ steps.deploy.outputs.url }}. Commit: ${{ github.event.head_commit.message }}"
+        env:
+          DISCORD_EMBEDS: '[{"author":{"name":"${{ github.event.head_commit.author.name }}"}, "title":"🤖 Langame API has been deployed with version ${{ steps.get_version.outputs.VERSION }}","color":5793266, "description": "Commit ${{ github.event.head_commit.id }}: ${{ github.event.head_commit.message }}.\n\n${{ steps.integration_test.outputs.CONVERSATION_STARTER }}"}]'
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
