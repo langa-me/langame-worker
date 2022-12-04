@@ -11,10 +11,12 @@ spec:
         run.googleapis.com/cpu-throttling: "true"
         run.googleapis.com/execution-environment: gen2
         run.googleapis.com/startup-cpu-boost: "true"
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "100"
     spec:
       containerConcurrency: 80
       containers:
-        image: gcr.io/langame-86ac4/collection:1.1.3
+        image: gcr.io/langame-86ac4/collection:1.1.4
         ports:
           - containerPort: 8080
             name: http1
@@ -22,7 +24,7 @@ spec:
           - name: GET_MEMES_URL
             value: "https://us-central1-langame-86ac4.cloudfunctions.net/getMemes"
           - name: SENTRY_RELEASE
-            value: "1.1.3"
+            value: "1.1.4"
         resources:
           limits:
             cpu: "4"

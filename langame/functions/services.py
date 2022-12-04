@@ -65,6 +65,7 @@ async def request_starter_for_service(
         else []
     )
     new_history = []
+    poll_interval = 0.1
 
     async def generate() -> Tuple[Optional[DocumentSnapshot], Optional[dict]]:
         timeout = 60
@@ -132,7 +133,7 @@ async def request_starter_for_service(
                     "status": "ERROR",
                     "user_message": "error while generating conversation starter",
                 }
-            time.sleep(1)
+            time.sleep(poll_interval)
 
     # generate in parallel for "limit"
     responses = await asyncio.gather(*[generate() for _ in range(limit)])
