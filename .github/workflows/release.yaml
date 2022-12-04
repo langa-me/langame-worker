@@ -16,10 +16,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install setuptools wheel twine keyrings.google-artifactregistry-auth
       - name: Install, lint and unit tests
         run: |
           pip install -e .
@@ -29,7 +25,8 @@ jobs:
           # python3 -m unittest langame/test_prompts.py langame.test_prompts.TestPrompts.test_post_process_inputs
       - name: Build Package
         run: |
-          pip install wheel twine
+          python -m pip install --upgrade pip
+          python -m pip install setuptools wheel twine keyrings.google-artifactregistry-auth
           python setup.py sdist bdist_wheel
       - id: "auth"
         name: "Authenticate to Google Cloud"
