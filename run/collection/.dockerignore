@@ -9,6 +9,5 @@ test*.py
 bench*.py
 public
 .firebase
-.pypirc
 .gitignore
 firebase.json
