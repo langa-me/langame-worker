@@ -1,12 +1,11 @@
 import os
 import logging
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 from flask import request, jsonify
-import logging
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
-from google.cloud.firestore import Client, DocumentSnapshot
+from google.cloud.firestore import Client
 
 initialize_app()
 GET_MEMES_URL = os.environ.get("GET_MEMES_URL")
@@ -154,7 +153,7 @@ async def create_starter():
             400,
             {},
         )
-
+    # https://cloud.google.com/run/docs/tips/general#avoid_background_activities_if_cpu_is_allocated_only_during_request_processing
     conversation_starters, error = await request_starter_for_service(
         api_key_doc=api_key_doc,
         org_doc=org_doc,

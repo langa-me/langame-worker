@@ -7,3 +7,8 @@ __pycache__
 .pytest_cache
 test*.py
 bench*.py
+public
+.firebase
+.pypirc
+.gitignore
+firebase.json
