@@ -25,6 +25,7 @@ sentry_sdk.init(
     _experiments={
         "profiles_sample_rate": 1.0,
     },
+    environment=os.environ.get("ENVIRONMENT", "development"),
 )
 
 BASE = "/v1/conversation/collection"
