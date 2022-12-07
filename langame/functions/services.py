@@ -9,7 +9,7 @@ from langame.messages import (
 import pytz
 from random import choice
 from firebase_admin import firestore
-from google.cloud.firestore import DocumentSnapshot, Client
+from google.cloud.firestore import DocumentSnapshot, AsyncClient
 from sentry_sdk import capture_exception
 import logging
 import datetime
@@ -55,9 +55,10 @@ async def request_starter_for_service(
             "user_message": message,
         }
 
-    db: Client = firestore.client()
+    db: AsyncClient = AsyncClient()
+
     conversation_starters_history_docs = (
-        db.collection("history").document(org_doc.id).get()
+        await db.collection("history").document(org_doc.id).get()
     )
     conversation_starters_history_list = (
         conversation_starters_history_docs.to_dict().get("conversation_starters", [])
@@ -70,7 +71,7 @@ async def request_starter_for_service(
     async def generate() -> Tuple[Optional[DocumentSnapshot], Optional[dict]]:
         timeout = 60
         start_time = time.time()
-        _, ref = db.collection("memes").add(
+        _, ref = await db.collection("memes").add(
             {
                 "state": "to-process",
                 "topics": topics,
@@ -87,7 +88,7 @@ async def request_starter_for_service(
 
         # poll until it's in state "processed" or "error", timeout after 1 minute
         while True:
-            prompt_doc = db.collection("memes").document(ref.id).get()
+            prompt_doc = await db.collection("memes").document(ref.id).get()
             data = prompt_doc.to_dict()
             if data.get("state") == "processed" and data.get("content", None):
                 if translated and not data.get("translated", None):
@@ -153,6 +154,7 @@ async def request_starter_for_service(
         )
         + new_history
     )
+    # don't wait these meta updates
     org_doc.reference.update(
         {
             "credits": firestore.Increment(-1),

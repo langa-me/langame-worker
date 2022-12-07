@@ -52,6 +52,10 @@ run/collection/build: ## [Local development] Build the docker image.
 	@docker buildx build ./run/collection --platform linux/amd64 -t ${LATEST_IMAGE_URL} -f ./run/collection/Dockerfile
 	@docker buildx build ./run/collection --platform linux/amd64 -t ${IMAGE_URL} -f ./run/collection/Dockerfile
 
+run/collection/profile:
+	docker run --rm ${IMAGE_URL} dpkg-query -Wf '${Installed-Size}\t${Package}\t${Description}\n' | sort -n | tail -n10 | column -t -s $'\t'
+
+
 run/collection/push: run/collection/build ## [Local development] Push the image to GCR.
 	docker push ${IMAGE_URL}
 	docker push ${LATEST_IMAGE_URL}
@@ -68,6 +72,17 @@ run/collection/local:
 # . .env.production && 
 	@echo "Don't forget to run 'set -o allexport; source .env.production; set +o allexport'"
 	python3 run/collection/main.py 
+
+run/collection/bench:
+	python3 run/collection/bench.py 
+
+
+functions/slack_bot/deploy: ## [Local development] deploy to GCP.
+	cd functions/slack_bot; gcloud beta functions deploy slack_bot \
+		--runtime python39 \
+		--trigger-http \
+		--allow-unauthenticated
+
 
 .PHONY: help
 

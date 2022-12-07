@@ -31,20 +31,22 @@ class TestServices(IsolatedAsyncioTestCase):
     def setUp(self):
         initialize_app()
     async def test_request_starter_for_service(self):
-        start_time = time.time()
         api_key_doc, org_doc, _, error = k(os.environ["LANGAME_API_KEY"])
         assert error is None, error
-        conversation_starters, error = await request_starter_for_service(
-            api_key_doc=api_key_doc,
-            org_doc=org_doc,
-            topics=["biology", "symbiosis", "love"],
-            limit=1,
-            fix_grammar=False,
-            profanity_threshold="open",
-        )
-        end_time = time.time()
-        print(conversation_starters)
-        print(end_time - start_time)
-        assert error is None, error
-        assert conversation_starters is not None, conversation_starters
-            
+        buckets = [1, 3, 5, 7]
+        for limit in buckets:
+            start_time = time.time()
+            conversation_starters, error = await request_starter_for_service(
+                api_key_doc=api_key_doc,
+                org_doc=org_doc,
+                topics=["biology", "symbiosis", "love"],
+                limit=limit,
+                fix_grammar=False,
+                profanity_threshold="open",
+            )
+            end_time = time.time()
+            print(conversation_starters)
+            print(end_time - start_time)
+            assert error is None, error
+            assert conversation_starters is not None, conversation_starters
+                

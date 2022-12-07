@@ -1,5 +1,5 @@
 import asyncio
-from logging import Logger
+import logging
 import os
 import shutil
 from typing import Any, Optional, Tuple, List
@@ -9,16 +9,15 @@ from autofaiss import build_index
 from sentence_transformers import SentenceTransformer
 import torch
 from faiss.swigfaiss import IndexFlat
+from tqdm import tqdm
 from langame.completion import (
     CompletionType,
-    is_base_gooseai_model,
-    is_base_openai_model,
     local_completion,
     openai_completion,
     huggingface_api_completion,
 )
 from langame.prompts import build_prompt
-from langame.profanity import ProfanityThreshold, is_profane, ProfaneException
+from langame.profanity import ProfanityThreshold, is_profane
 from langame.quality import is_garbage
 from langame.strings import string_similarity
 from transformers import (
@@ -33,7 +32,6 @@ import pandas as pd
 
 def get_existing_conversation_starters(
     client: Client,
-    logger: Optional[Logger] = None,
     use_gpu: bool = False,
     limit: int = None,
     batch_embeddings_size: int = 256,
@@ -43,7 +41,6 @@ def get_existing_conversation_starters(
     """
     Get the existing conversation starters from the database.
     :param client: The firestore client.
-    :param logger: The logger to use.
     :param use_gpu: Whether to use the GPU for rebuilding embeddings or not.
     :param limit: The limit of the number of conversation starters to get.
     :param batch_embeddings_size: The size of the batch to use for computing embeddings.
@@ -57,30 +54,34 @@ def get_existing_conversation_starters(
         collection = collection.limit(limit)
     if confirmed:
         collection = collection.where("confirmed", "==", True)
-    for e in collection.stream():
+    for e in tqdm(collection.stream()):
         if is_garbage(e.to_dict()):
-            if logger:
-                logger.warning(f"Skipping id: {e.id}, garbage")
+            logging.debug(f"Skipping id: {e.id}, garbage")
             continue
         existing_conversation_starters.append({"id": e.id, **e.to_dict()})
-    if logger:
-        logger.info(
-            f"Got {len(existing_conversation_starters)} existing conversation starters"
-        )
+    logging.info(
+        f"Got {len(existing_conversation_starters)} existing conversation starters"
+    )
     if push_to_hub:
         upload_df = pd.DataFrame(existing_conversation_starters)
         upload_df.drop(columns=["id", "confirmed", "translated"], inplace=True)
-        Dataset.from_pandas(upload_df).push_to_hub("Langame/starter")
+        ds = Dataset.from_pandas(upload_df)
+        ds.push_to_hub("Langame/starter", private=True)
 
-    if logger:
-        logger.info("Preparing embeddings for existing conversation starters")
+    logging.info("Preparing embeddings for existing conversation starters")
     sentence_embeddings_model = None
 
     sentence_embeddings_model_name = "sentence-transformers/all-MiniLM-L6-v2"
-    device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
+    device = "cpu"
+    
+    if torch.backends.mps.is_available() and torch.backends.mps.is_built():
+        logging.info("Using MPS")
+        device = "mps"
+    if torch.cuda.is_available() and use_gpu:
+        logging.info("Using GPU")
+        device = "cuda:0"
 
-    if logger:
-        logger.info(f"Loaded sentence embedding model, device: {device}")
+    logging.info(f"Loaded sentence embedding model, device: {device}")
 
     sentence_embeddings_model = SentenceTransformer(
         sentence_embeddings_model_name, device=device
@@ -101,23 +102,20 @@ def get_existing_conversation_starters(
 
         # extends embeddings with batch
         embeddings.extend(emb)
-        if logger:
-            logger.info(
-                f"Computed embeddings - {len(batch)*(i+1)}/{len(existing_conversation_starters)}"
-            )
+        logging.info(
+            f"Computed embeddings - {len(batch)*(i+1)}/{len(existing_conversation_starters)}"
+        )
 
     # flatten embeddings
     embeddings = np.array(embeddings)
-    if logger:
-        logger.info(f"Done, embeddings shape: {embeddings.shape}")
+    logging.info(f"Done, embeddings shape: {embeddings.shape}")
 
     # delete "embeddings" and "indexes" folders
     for folder in ["embeddings", "indexes"]:
         if os.path.exists(folder):
             shutil.rmtree(folder)
 
-    if logger:
-        logger.info("Saving embeddings to disk and building index to disk")
+    logging.info("Saving embeddings to disk and building index to disk")
     os.makedirs("embeddings", exist_ok=True)
     np.save("embeddings/p1.npy", embeddings)
     index, _ = build_index(
@@ -141,7 +139,6 @@ def generate_conversation_starter(
     tokenizer: Optional[AutoTokenizer] = None,
     use_gpu: bool = False,
     deterministic: bool = False,
-    logger: Optional[Logger] = None,
     use_classification: bool = False,
     parallel_completions: int = 3,
     fix_grammar: bool = False,
@@ -163,7 +160,6 @@ def generate_conversation_starter(
     :param tokenizer: The tokenizer to use if using local completion.
     :param use_gpu: Whether to use the GPU if using local completion.
     :param deterministic: Whether to use the deterministic version of local completion.
-    :param logger: The logger to use.
     :param use_classification: Whether to use the classification model.
     :param parallel_completion: The number of parallel completion to use.
     :param fix_grammar: Whether to fix grammar.
@@ -173,8 +169,7 @@ def generate_conversation_starter(
     :param api_classification_model: The api classification model to use.
     :return: topics and conversation starters.
     """
-    if logger:
-        logger.info("Building prompt using sentence embeddings")
+    logging.info("Building prompt using sentence embeddings")
 
     topics, prompt = build_prompt(
         index=index,
@@ -183,8 +178,7 @@ def generate_conversation_starter(
         prompt_rows=prompt_rows,
         sentence_embeddings_model=sentence_embeddings_model,
     )
-    if logger:
-        logger.info(f"prompt: {prompt}")
+    logging.info(f"prompt: {prompt}")
 
     async def gen() -> dict:
         text = {"conversation_starter": ""}
@@ -202,8 +196,7 @@ def generate_conversation_starter(
         else:
             return text
         text["conversation_starter"] = text["conversation_starter"].strip()
-        if logger:
-            logger.info(f"conversation starter: {text['conversation_starter']}")
+        logging.info(f"conversation starter: {text['conversation_starter']}")
         if profanity_threshold.value > 1:
             # We check the whole output text,
             # in the future should probably check
@@ -218,19 +211,19 @@ def generate_conversation_starter(
                 model="text-davinci-003",
                 temperature=0,
                 max_tokens=len(text["conversation_starter"]) + 800,
-                stop=["\n\n\n"], # TODO: hack change function code becasue None do stupid stuff
+                stop=[
+                    "\n\n\n"
+                ],  # TODO: hack change function code becasue None do stupid stuff
             ).strip()
-            if logger:
-                logger.info(f"Fixed grammar: {sentence}")
+            logging.info(f"Fixed grammar: {sentence}")
             if (
                 len(sentence) < 20
                 or string_similarity(text["conversation_starter"], sentence) < 0.5
             ):
-                if logger:
-                    logger.warning(
-                        f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
-                        + " after grammar fix"
-                    )
+                logging.warning(
+                    f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
+                    + " after grammar fix"
+                )
                 return text
             elif string_similarity(text["conversation_starter"], sentence) < 0.9:
                 text["broken_grammar"] = sentence
@@ -242,10 +235,9 @@ def generate_conversation_starter(
                 is_classification=True,
             )
             text["classification"] = classification
-            if logger:
-                logger.info(
-                    f"{text['conversation_starter']} classification: {classification}"
-                )
+            logging.info(
+                f"{text['conversation_starter']} classification: {classification}"
+            )
         return text
 
     loop = asyncio.get_event_loop()

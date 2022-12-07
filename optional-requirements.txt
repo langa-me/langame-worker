@@ -6,12 +6,13 @@
 #/ai
 openai
 confuse
+huggingface-hub
 transformers
+datasets
 faiss-cpu
 autofaiss==2.5.0
 sentence_transformers
 torch
-datasets
 
 #/functions
 # ?
