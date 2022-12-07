@@ -155,15 +155,16 @@ async def request_starter_for_service(
         + new_history
     )
     # don't wait these meta updates
-    org_doc.reference.update(
+    t1 = org_doc.reference.update(
         {
             "credits": firestore.Increment(-1),
             "lastSpent": firestore.SERVER_TIMESTAMP,
         }
     )
-    conversation_starters_history_docs.reference.set(
+    t2 = conversation_starters_history_docs.reference.set(
         {"conversation_starters": conversation_starters_history}, merge=True
     )
+    await asyncio.gather(t1, t2)
 
     # Return the conversation starters
     return conversation_starters, None
