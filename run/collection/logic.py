@@ -1,6 +1,7 @@
 import os
 import logging
 from datetime import datetime
+import time
 from typing import Optional
 from flask import request, jsonify
 import sentry_sdk
@@ -154,7 +155,10 @@ async def create_starter():
             400,
             {},
         )
-    with sentry_sdk.start_transaction(op="task", name="request_starter_for_service"):
+    start_time = time.time()
+    with sentry_sdk.start_transaction(
+        op="task", name="request_starter_for_service"
+    ) as span:
         # https://cloud.google.com/run/docs/tips/general#avoid_background_activities_if_cpu_is_allocated_only_during_request_processing
         conversation_starters, error = await request_starter_for_service(
             api_key_doc=api_key_doc,
@@ -166,9 +170,14 @@ async def create_starter():
             profanity_threshold="open",
             personas=personas,
         )
-    logger.info(
-        f"Got conversation starter response: {conversation_starters} error: {error}"
-    )
+        end_time = time.time()
+        span.set_data("duration", end_time - start_time)
+        span.set_data("conversation_starters", conversation_starters)
+        span.set_data("error", error)
+        logger.info(
+            f"Got conversation starter response: {conversation_starters} error: {error}"
+            + f" in {end_time - start_time} seconds"
+        )
 
     if error:
         return (
