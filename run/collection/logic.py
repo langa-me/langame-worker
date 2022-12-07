@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from typing import Optional
 from flask import request, jsonify
+import sentry_sdk
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client
@@ -153,17 +154,18 @@ async def create_starter():
             400,
             {},
         )
-    # https://cloud.google.com/run/docs/tips/general#avoid_background_activities_if_cpu_is_allocated_only_during_request_processing
-    conversation_starters, error = await request_starter_for_service(
-        api_key_doc=api_key_doc,
-        org_doc=org_doc,
-        topics=topics,
-        limit=limit,
-        translated=translated,
-        fix_grammar=False,  # increase latency too much?
-        profanity_threshold="open",
-        personas=personas,
-    )
+    with sentry_sdk.start_transaction(op="task", name="request_starter_for_service"):
+        # https://cloud.google.com/run/docs/tips/general#avoid_background_activities_if_cpu_is_allocated_only_during_request_processing
+        conversation_starters, error = await request_starter_for_service(
+            api_key_doc=api_key_doc,
+            org_doc=org_doc,
+            topics=topics,
+            limit=limit,
+            translated=translated,
+            fix_grammar=False,  # increase latency too much?
+            profanity_threshold="open",
+            personas=personas,
+        )
     logger.info(
         f"Got conversation starter response: {conversation_starters} error: {error}"
     )
