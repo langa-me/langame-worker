@@ -127,7 +127,7 @@ def get_existing_conversation_starters(
     return existing_conversation_starters, index, sentence_embeddings_model
 
 
-def generate_conversation_starter(
+async def generate_conversation_starter(
     index: IndexFlat,
     conversation_starter_examples: List[Any],
     topics: List[str],
@@ -240,9 +240,11 @@ def generate_conversation_starter(
             )
         return text
 
-    loop = asyncio.get_event_loop()
-    conversation_starters = loop.run_until_complete(
-        asyncio.gather(*[gen() for _ in range(parallel_completions)])
-    )
+    # run in parallel
+    conversation_starters = await asyncio.gather(*[gen() for _ in range(parallel_completions)])
+    # loop = asyncio.get_event_loop()
+    # conversation_starters = loop.run_until_complete(
+    #     asyncio.gather(*[gen() for _ in range(parallel_completions)])
+    # )
 
     return topics, conversation_starters
