@@ -14,15 +14,13 @@ spec:
     spec:
       containerConcurrency: 5
       containers:
-        image: gcr.io/langame-86ac4/collection:1.1.9
+        image: gcr.io/langame-86ac4/collection:1.2.0
         ports:
           - containerPort: 8080
             name: http1
         env:
-          - name: GET_MEMES_URL
-            value: "https://us-central1-langame-86ac4.cloudfunctions.net/getMemes"
           - name: SENTRY_RELEASE
-            value: "1.1.9"
+            value: "1.2.0"
           - name: ENVIRONMENT
             value: "production"
         resources:

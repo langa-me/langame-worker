@@ -139,9 +139,9 @@ async def request_starter_for_service(
     # generate in parallel for "limit"
     responses = await asyncio.gather(*[generate() for _ in range(limit)])
     conversation_starters, errors = zip(*responses)
-    # if all are errors, return the first error
-    if all(errors):
-        return None, errors[0]
+    # if any are errors, return the first error
+    if any(errors):
+        return None, [e for e in errors if e][0]
     one_week_ago = datetime.datetime.now(utc) - datetime.timedelta(days=7)
 
     # Filter out memes already seen X time ago

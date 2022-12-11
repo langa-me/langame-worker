@@ -10,7 +10,6 @@ from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client
 
 initialize_app()
-GET_MEMES_URL = os.environ.get("GET_MEMES_URL")
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 db: Client = firestore.client()
@@ -175,7 +174,7 @@ async def create_starter():
         span.set_data("conversation_starters", conversation_starters)
         span.set_data("error", error)
         logger.info(
-            f"Got conversation starter response: {conversation_starters} error: {error}"
+            f"Got conversation starter response, error: {error}"
             + f" in {end_time - start_time} seconds"
         )
 
