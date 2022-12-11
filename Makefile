@@ -21,12 +21,13 @@ dev: ## Set the GCP project to dev
 
 clean:
 	rm -rf env build **/wandb **/embeddings **/indexes *.egg-info **/index_infos.json **/__pycache__
+# git add --all -- :!notebooks
 
 release:
 	@VERSION=$$(cat setup.py | grep version | cut -d '"' -f 2); \
 	echo "Releasing version $$VERSION"; \
-	git add --all -- :!notebooks; \
 	read -p "Commit content:" COMMIT; \
+	git add langame setup.py run Makefile; \
 	echo "Committing '$$VERSION: $$COMMIT'"; \
 	git commit -m "$$VERSION: $$COMMIT"; \
 	git push origin main; \
