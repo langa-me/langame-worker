@@ -8,10 +8,21 @@ import sentry_sdk
 from langame.functions.services import request_starter_for_service
 from firebase_admin import firestore, initialize_app
 from google.cloud.firestore import Client
+import re
 
 initialize_app()
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+# set logging format with time
 logging.basicConfig(level=logging.INFO)
+logging.Formatter.converter = time.gmtime
+logging.Formatter.default_time_format = "%Y-%m-%d %H:%M:%S"
+logging.Formatter.default_msec_format = "%s.%03d"
+logger.addHandler(logging.StreamHandler())
+logger.handlers[0].setFormatter(
+    logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%d-%b-%y %H:%M:%S"
+    )
+)
 db: Client = firestore.client()
 
 
@@ -109,7 +120,7 @@ async def create_starter():
     limit = json_data.get("limit", 1)
     translated = json_data.get("translated", False)
     personas = json_data.get("personas", [])
-    logging.info(f"Inputs:\n{json_data}")
+    logger.info(f"Inputs:\n{json_data}")
     if len(personas) > 4:
         return (
             jsonify(
@@ -139,13 +150,51 @@ async def create_starter():
             {},
         )
 
-    # limit max 20
-    if limit > 20:
+    # if topics is garbage (too long, too short, special characters,
+    # None, non alpha-numeric, etc.)
+    if not topics:
         return (
             jsonify(
                 {
                     "error": {
-                        "message": "You can only request up to 20 memes at a time",
+                        "message": "No topics provided",
+                        "status": "INVALID_ARGUMENT",
+                    },
+                    "results": [],
+                }
+            ),
+            400,
+            {},
+        )
+    if (
+        any(len(topic) > 50 for topic in topics)
+        or any(len(topic) < 3 for topic in topics)
+        or any(not re.match(r"^[a-zA-Z ]+$", topic) for topic in topics)
+    ):
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "Topics are invalid"
+                        + " (only alphanumeric characters and spaces allowed)"
+                        + " for example: 'dating' or 'love, relationships'"
+                        + " and must be between 3 and 50 characters long",
+                        "status": "INVALID_ARGUMENT",
+                    },
+                    "results": [],
+                }
+            ),
+            400,
+            {},
+        )
+
+    # limit max 20
+    if limit > 10:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "You can only request up to 10 conversation starters at a time",
                         "status": "INVALID_ARGUMENT",
                     },
                     "results": [],
@@ -159,7 +208,7 @@ async def create_starter():
         op="task", name="request_starter_for_service"
     ) as span:
         # https://cloud.google.com/run/docs/tips/general#avoid_background_activities_if_cpu_is_allocated_only_during_request_processing
-        conversation_starters, error = await request_starter_for_service(
+        conversation_starters, error = request_starter_for_service(
             api_key_doc=api_key_doc,
             org_doc=org_doc,
             topics=topics,

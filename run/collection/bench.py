@@ -1,13 +1,14 @@
 import os
-import timeit
 
 # disable pylint for docstring
 # pylint: disable=C0116
 # pylint: disable=C0115
 import requests
 import random
+from pyinstrument import Profiler
 
-URL = "https://api.langa.me"
+IS_LOCAL = os.environ.get("IS_TESTING", "false") == "true"
+URL = "http://127.0.0.1:8080" if IS_LOCAL else "https://api.langa.me"
 
 fun_topics = [
     "fun",
@@ -26,6 +27,7 @@ def request():
     data = {
         # pick 2 random topic
         "topics": random.sample(fun_topics, 2),
+        "limit": 3,
     }
     print("querying with topics: ", data["topics"])
     r = requests.post(
@@ -39,4 +41,12 @@ def request():
     print("OUTPUT:", data["results"][0]["conversation_starter"]["en"])
 
 
-timeit.repeat(request, repeat=10, number=1)
+
+profiler = Profiler()
+REPEAT = 2
+
+for i in range(REPEAT):
+    profiler.start()
+    request()
+    profiler.stop()
+    profiler.print()

@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import time
 import asyncio
 from typing import List, Optional, Tuple, Any
@@ -9,14 +10,14 @@ from langame.messages import (
 import pytz
 from random import choice
 from firebase_admin import firestore
-from google.cloud.firestore import DocumentSnapshot, AsyncClient
+from google.cloud.firestore import DocumentSnapshot, Client
 from sentry_sdk import capture_exception
 import logging
 import datetime
 
 utc = pytz.UTC
 
-async def request_starter_for_service(
+def request_starter_for_service(
     api_key_doc: DocumentSnapshot,
     org_doc: DocumentSnapshot,
     topics: List[str],
@@ -42,12 +43,13 @@ async def request_starter_for_service(
     Returns:
         Tuple of (starter, user message).
     """
+    logger = logging.getLogger(__name__)
     if org_doc.to_dict().get("credits", -1) <= 0:
         message = (
             "you do not have enough credits, "
             + "please buy more on https://langa.me or contact us at contact@langa.me"
         )
-        logging.warning(message)
+        logger.warning(message)
         return None, {
             "message": message,
             "code": 402,
@@ -55,10 +57,10 @@ async def request_starter_for_service(
             "user_message": message,
         }
 
-    db: AsyncClient = AsyncClient()
+    db: Client = Client()
 
     conversation_starters_history_docs = (
-        await db.collection("history").document(org_doc.id).get()
+        db.collection("history").document(org_doc.id).get()
     )
     conversation_starters_history_list = (
         conversation_starters_history_docs.to_dict().get("conversation_starters", [])
@@ -68,10 +70,12 @@ async def request_starter_for_service(
     new_history = []
     poll_interval = 0.1
 
-    async def generate() -> Tuple[Optional[DocumentSnapshot], Optional[dict]]:
+    def generate(i: int) -> Tuple[Optional[DocumentSnapshot], Optional[dict]]:
         timeout = 60
         start_time = time.time()
-        _, ref = await db.collection("memes").add(
+        # format to human readable date time
+        logger.info(f"[{i}] Generating starter at {datetime.datetime.now(utc)}")
+        _, ref = db.collection("memes").add(
             {
                 "state": "to-process",
                 "topics": topics,
@@ -88,7 +92,7 @@ async def request_starter_for_service(
 
         # poll until it's in state "processed" or "error", timeout after 1 minute
         while True:
-            prompt_doc = await db.collection("memes").document(ref.id).get()
+            prompt_doc = db.collection("memes").document(ref.id).get()
             data = prompt_doc.to_dict()
             if data.get("state") == "processed" and data.get("content", None):
                 if translated and not data.get("translated", None):
@@ -99,9 +103,10 @@ async def request_starter_for_service(
                         "createdAt": datetime.datetime.now(utc),
                     }
                 )
+                logger.info(f"[{i}] Generated starter in {time.time() - start_time}s")
                 return prompt_doc, None
             if data.get("state") == "error":
-                logging.error(
+                logger.error(
                     f"Failed to request starter for {api_key_doc.id}", exc_info=1
                 )
                 error = data.get("error", "unknown error")
@@ -137,7 +142,8 @@ async def request_starter_for_service(
             time.sleep(poll_interval)
 
     # generate in parallel for "limit"
-    responses = await asyncio.gather(*[generate() for _ in range(limit)])
+    with ThreadPoolExecutor(limit) as executor:
+        responses = executor.map(generate, range(limit))
     conversation_starters, errors = zip(*responses)
     # if any are errors, return the first error
     if any(errors):
@@ -154,14 +160,13 @@ async def request_starter_for_service(
         )
         + new_history
     )
-    # sync
     org_doc.reference.update(
         {
             "credits": firestore.Increment(-1),
             "lastSpent": firestore.SERVER_TIMESTAMP,
         }
     )
-    await conversation_starters_history_docs.reference.set(
+    conversation_starters_history_docs.reference.set(
         {"conversation_starters": conversation_starters_history}, merge=True
     )
 
