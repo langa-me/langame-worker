@@ -43,7 +43,7 @@ def request():
 
 
 profiler = Profiler()
-REPEAT = 2
+REPEAT = 3
 
 for i in range(REPEAT):
     profiler.start()

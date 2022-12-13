@@ -20,7 +20,8 @@ logging.Formatter.default_msec_format = "%s.%03d"
 logger.addHandler(logging.StreamHandler())
 logger.handlers[0].setFormatter(
     logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%d-%b-%y %H:%M:%S"
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%d-%b-%y %H:%M:%S",
     )
 )
 db: Client = firestore.client()
@@ -103,7 +104,7 @@ def base():
     )
 
 
-async def create_starter():
+def create_starter():
     """
     foo
     """
@@ -245,18 +246,21 @@ async def create_starter():
     results = []
     topics = set()
     for conversation_starter in conversation_starters:
-        d = conversation_starter.to_dict()
+        if not conversation_starter.get("id"):
+            continue
         results.append(
             {
-                "id": conversation_starter.id,
+                "id": conversation_starter.get("id"),
                 # merge "content" (original english version) with "translated" (multi-language version)
                 "conversation_starter": {
-                    "en": d.get("content", ""),
-                    **(d.get("translated", {}) if translated else {}),
+                    "en": conversation_starter.get("content", ""),
+                    **(
+                        conversation_starter.get("translated", {}) if translated else {}
+                    ),
                 },
             }
         )
-        for topic in d.get("topics", []):
+        for topic in conversation_starter.get("topics", []):
             topics.add(topic)
     # TODO: return ID and let argument to say "I want different CS than these IDs" (semantically)
     return (

@@ -40,8 +40,8 @@ def before_request():
 
 
 @app.route("/v1/conversation/starter", methods=["POST"])
-async def path_create_starter():
-    return await create_starter()
+def path_create_starter():
+    return create_starter()
 
 
 @app.route(BASE, methods=["GET"])

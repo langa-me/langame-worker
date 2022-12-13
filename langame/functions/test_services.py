@@ -36,7 +36,7 @@ class TestServices(IsolatedAsyncioTestCase):
         buckets = [1, 3, 5, 7]
         for limit in buckets:
             start_time = time.time()
-            conversation_starters, error = await request_starter_for_service(
+            conversation_starters, error = request_starter_for_service(
                 api_key_doc=api_key_doc,
                 org_doc=org_doc,
                 topics=["biology", "symbiosis", "love"],
