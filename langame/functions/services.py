@@ -1,5 +1,4 @@
-from multiprocessing import Pool
-
+from multiprocessing.pool import ThreadPool
 import time
 from typing import List, Optional, Tuple, Any
 from langame.messages import (
@@ -9,8 +8,8 @@ from langame.messages import (
 )
 import pytz
 from random import choice
-from firebase_admin import firestore, initialize_app
-from google.cloud.firestore import DocumentSnapshot, Client
+from firebase_admin import firestore
+from google.cloud.firestore import DocumentSnapshot, Client, CollectionReference
 from sentry_sdk import capture_exception
 import logging
 import datetime
@@ -21,6 +20,7 @@ poll_interval = 0.1
 
 def _generate(
     i: int,
+    memes_collection_ref: CollectionReference,
     api_key_doc_id: str,
     logger: logging.Logger,
     topics: List[str],
@@ -30,16 +30,16 @@ def _generate(
     profanity_threshold: str,
     translated: bool,
 ) -> Tuple[Optional[dict], Optional[dict], Optional[dict]]:
-    try:
-        initialize_app()
+    # try:
+        # initialize_app()
     # pylint: disable=W0703
-    except: pass
-    db: Client = firestore.client()
+    # except: pass
+    # db: Client = firestore.client()
     timeout = 60
     start_time = time.time()
     # format to human readable date time
     logger.info(f"[{i}] Generating starter at {datetime.datetime.now(utc)}")
-    _, ref = db.collection("memes").add(
+    _, ref = memes_collection_ref.add(
         {
             "state": "to-process",
             "topics": topics,
@@ -56,7 +56,7 @@ def _generate(
 
     # poll until it's in state "processed" or "error", timeout after 1 minute
     while True:
-        prompt_doc = db.collection("memes").document(ref.id).get()
+        prompt_doc = memes_collection_ref.document(ref.id).get()
         data = prompt_doc.to_dict()
         if data.get("state") == "processed" and data.get("content", None):
             if translated and not data.get("translated", None):
@@ -168,13 +168,14 @@ def request_starter_for_service(
     )
 
     # generate in parallel for "limit"
-    with Pool(processes=limit) as pool:
+    with ThreadPool(processes=limit) as pool:
 
         responses = pool.starmap(
             _generate,
             [
                 (
                     i,
+                    db.collection("memes"),
                     api_key_doc.id,
                     logger,
                     topics,

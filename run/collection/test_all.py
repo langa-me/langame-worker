@@ -25,6 +25,7 @@ class TestAll(IsolatedAsyncioTestCase):
         data = {
             # pick 2 random topic
             "topics": random.sample(fun_topics, 2),
+            "limit": 3,
         }
         print("querying with topics: ", data["topics"])
         r = requests.post(
