@@ -3,11 +3,6 @@ name: Continuous delivery production
 # GitHub Action ran when changes have been made in the directory "run/*"
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "run/**"
   workflow_run:
     workflows: ["Release"]
     types:
@@ -69,8 +64,6 @@ jobs:
           docker build ./run/collection -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest -f ./run/collection/Dockerfile
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
-      # docker build . --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }} -f ./deploy/Dockerfile
-      # docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ env.VERSION }}
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v0

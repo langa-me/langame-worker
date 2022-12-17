@@ -30,7 +30,7 @@ def k(api_key: str):
 class TestServices(IsolatedAsyncioTestCase):
     def setUp(self):
         initialize_app()
-    async def test_request_starter_for_service(self):
+    def test_request_starter_for_service(self):
         api_key_doc, org_doc, _, error = k(os.environ["LANGAME_API_KEY"])
         assert error is None, error
         buckets = [1, 3, 5, 7]

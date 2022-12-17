@@ -27,7 +27,7 @@ release:
 	@VERSION=$$(cat setup.py | grep version | cut -d '"' -f 2); \
 	echo "Releasing version $$VERSION"; \
 	read -p "Commit content:" COMMIT; \
-	git add langame setup.py run Makefile; \
+	git add langame setup.py run Makefile .github .vscode scripts; \
 	echo "Committing '$$VERSION: $$COMMIT'"; \
 	git commit -m "$$VERSION: $$COMMIT"; \
 	git push origin main; \

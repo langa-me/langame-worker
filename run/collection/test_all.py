@@ -20,7 +20,7 @@ fun_topics = [
 
 # make run/collection/local
 class TestAll(IsolatedAsyncioTestCase):
-    async def test_create_starter(self):
+    def test_create_starter(self):
         url = f"{URL}/v1/conversation/starter"
         data = {
             # pick 2 random topic
@@ -38,7 +38,7 @@ class TestAll(IsolatedAsyncioTestCase):
         data = r.json()
         print("OUTPUT:", data["results"][0]["conversation_starter"]["en"])
 
-    async def test_create_starter_scaled(self):
+    def test_create_starter_scaled(self):
         start_time = time.time()
         url = f"{URL}/v1/conversation/starter"
         data = {

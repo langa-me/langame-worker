@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Coroutine, List, Optional, Tuple
+from multiprocessing.pool import ThreadPool
+from typing import Any, List, Tuple
 import openai
 import numpy as np
 from langame.quality import is_garbage
@@ -7,7 +8,6 @@ from faiss.swigfaiss import IndexFlat
 from sentence_transformers import SentenceTransformer
 import openai
 from typing import List
-import asyncio
 
 
 def post_process_inputs(topics: List[str], prioritize_short_topics: bool = True) -> List[str]:
@@ -91,9 +91,9 @@ def build_prompt(
     return topics, prompt + "\n" + ",".join(topics) + " ###"
 
 
-async def extract_topics_from_personas(
+def extract_topics_from_personas(
     personas: List[str], aligned: bool = True
-) -> Coroutine[Any, Any, List[str]]:
+) -> List[str]:
     """
     Extract a list of unique topics from a list of personas
     :param personas: list of personass
@@ -101,9 +101,8 @@ async def extract_topics_from_personas(
     if there is no intersection, return an union of topics
     :return: list of topics
     """
-    topics_per_persona = []
 
-    async def _compute_persona(bio: str):
+    def _compute_persona(bio: str):
         prompt = f"User biography:\n{bio}\nList of interests:\n-"
         try:
             response = openai.Completion.create(
@@ -117,13 +116,14 @@ async def extract_topics_from_personas(
             )
             topics = response["choices"][0]["text"].split("\n-")
             topics = [topic.strip() for topic in topics]
-            topics_per_persona.append(topics)
+            return topics
         except Exception as e:
             logging.warning(f"Error while computing topics for persona: {e}")
             return []
 
     # run in parallel
-    await asyncio.gather(*[_compute_persona(persona) for persona in personas])
+    with ThreadPool(processes=len(personas)) as pool:
+        topics_per_persona = pool.map(_compute_persona, personas)
 
     if len(topics_per_persona) == 0:
         logging.warning("Could not extract topics from personas")

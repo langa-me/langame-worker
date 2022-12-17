@@ -1,7 +1,6 @@
-from typing import List
+from multiprocessing.pool import ThreadPool
 import requests
 import fire
-import asyncio
 import json
 from random import randint, choices
 import time
@@ -26,7 +25,7 @@ _topics = [
 ]
 
 
-async def _load_test_api(
+def _load_test_api(
     api_key: str,
     is_prod: bool = False,
     max_requests: int = 10,
@@ -64,6 +63,7 @@ async def _load_test_api(
         print(f"requesting with data: {data}")
         # count time elapsed for request
         start = time.time()
+        # pylint: disable=missing-timeout
         response = requests.post(
             url,
             headers=headers,
@@ -85,7 +85,7 @@ async def _load_test_api(
     print(f"average response time: {average_response_time}")
 
 
-async def load_test_api(
+def load_test_api(
     api_keys_file: str = ".keys",
     is_prod: bool = False,
     max_requests: int = 10,
@@ -98,19 +98,21 @@ async def load_test_api(
     :param seconds_between_requests:
     """
     assert isinstance(api_keys_file, str), "api_keys_file must be a string"
+    # pylint: disable=unspecified-encoding
     with open(api_keys_file, "r") as f:
         api_keys = f.read().splitlines()
 
         print(f"found {len(api_keys)} API keys in {api_keys_file}")
 
         # for each api key, run _load_test_api in parallel
-
-        await asyncio.gather(
-            *[
-                _load_test_api(api_key, is_prod, max_requests, seconds_between_requests)
-                for api_key in api_keys
-            ]
-        )
+        with ThreadPool(processes=len(api_keys)) as pool:
+            pool.starmap(
+                _load_test_api,
+                [
+                    (api_key, is_prod, max_requests, seconds_between_requests)
+                    for api_key in api_keys
+                ],
+            )
 
 
 if __name__ == "__main__":

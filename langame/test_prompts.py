@@ -57,19 +57,19 @@ class TestPrompts(IsolatedAsyncioTestCase):
         # Check that prompt end with "\nfoo,bar ###"
         assert prompt.endswith("\nnThis is a conversation starter about foo,bar ###")
 
-    async def test_extract_topics_from_bio(self):
+    def test_extract_topics_from_bio(self):
         personas = [
             "I am a biology student, I like to play basketball on my free time. On my weekends I like to go to the beach with my friends.",
             "I am a computer science student, I like to play video games on my free time. I also like to read books",
         ]
-        topics = await extract_topics_from_personas(personas)
+        topics = extract_topics_from_personas(personas)
         assert topics is not None
         # should contains "biology" and "computer science" at least
         lower_cased_topics = [t.lower() for t in topics]
         assert "biology" in lower_cased_topics
         assert "computer science" in lower_cased_topics
 
-    async def test_post_process_inputs(self):
+    def test_post_process_inputs(self):
         topics = [
             "What is your favorite video game?",
             "Biology",

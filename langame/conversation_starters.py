@@ -1,5 +1,5 @@
-import asyncio
 import logging
+from multiprocessing.pool import ThreadPool
 import os
 import shutil
 from typing import Any, Optional, Tuple, List
@@ -127,7 +127,7 @@ def get_existing_conversation_starters(
     return existing_conversation_starters, index, sentence_embeddings_model
 
 
-async def generate_conversation_starter(
+def generate_conversation_starter(
     index: IndexFlat,
     conversation_starter_examples: List[Any],
     topics: List[str],
@@ -142,8 +142,6 @@ async def generate_conversation_starter(
     use_classification: bool = False,
     parallel_completions: int = 3,
     fix_grammar: bool = False,
-    grammar_model: Optional[T5ForConditionalGeneration] = None,
-    grammar_tokenizer: Optional[T5Tokenizer] = None,
     api_completion_model: Optional[str] = None,
     api_classification_model: Optional[str] = "ada:ft-personal-2022-02-08-19-57-38",
 ) -> Tuple[List[str], List[dict]]:
@@ -163,8 +161,6 @@ async def generate_conversation_starter(
     :param use_classification: Whether to use the classification model.
     :param parallel_completion: The number of parallel completion to use.
     :param fix_grammar: Whether to fix grammar.
-    :param grammar_model: The grammar model to use.
-    :param grammar_tokenizer: The grammar tokenizer to use.
     :param api_completion_model: The api model to use.
     :param api_classification_model: The api classification model to use.
     :return: topics and conversation starters.
@@ -180,7 +176,7 @@ async def generate_conversation_starter(
     )
     logging.info(f"prompt: {prompt}")
 
-    async def gen() -> dict:
+    def gen(i: int) -> dict:
         text = {"conversation_starter": ""}
         if completion_type is CompletionType.openai_api:
             text["conversation_starter"] = openai_completion(
@@ -196,7 +192,7 @@ async def generate_conversation_starter(
         else:
             return text
         text["conversation_starter"] = text["conversation_starter"].strip()
-        logging.info(f"conversation starter: {text['conversation_starter']}")
+        logging.info(f"[{i}] conversation starter: {text['conversation_starter']}")
         if profanity_threshold.value > 1:
             # We check the whole output text,
             # in the future should probably check
@@ -215,13 +211,14 @@ async def generate_conversation_starter(
                     "\n\n\n"
                 ],  # TODO: hack change function code becasue None do stupid stuff
             ).strip()
-            logging.info(f"Fixed grammar: {sentence}")
+            logging.info(f"[{i}] Fixed grammar: {sentence}")
             if (
                 len(sentence) < 20
                 or string_similarity(text["conversation_starter"], sentence) < 0.5
             ):
+                # pylint: disable=logging-not-lazy
                 logging.warning(
-                    f"Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
+                    f"[{i}] Sentence \"{sentence}\" is too short or disimilar to \"{text['conversation_starter']}\""
                     + " after grammar fix"
                 )
                 return text
@@ -236,15 +233,11 @@ async def generate_conversation_starter(
             )
             text["classification"] = classification
             logging.info(
-                f"{text['conversation_starter']} classification: {classification}"
+                f"[{i}] {text['conversation_starter']} classification: {classification}"
             )
         return text
 
     # run in parallel
-    conversation_starters = await asyncio.gather(*[gen() for _ in range(parallel_completions)])
-    # loop = asyncio.get_event_loop()
-    # conversation_starters = loop.run_until_complete(
-    #     asyncio.gather(*[gen() for _ in range(parallel_completions)])
-    # )
-
-    return topics, conversation_starters
+    with ThreadPool(processes=parallel_completions) as pool:
+        conversation_starters = pool.map(gen, range(parallel_completions))
+        return topics, conversation_starters

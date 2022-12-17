@@ -8,8 +8,8 @@
         ".",
         "--verbose",
         "--log-cli-level=DEBUG",
-        // "--ignore",
-        // "${workspaceFolder}/functions/**/**"
+        "--ignore",
+        "${workspaceFolder}/notebooks/**/**"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

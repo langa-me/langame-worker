@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, List
 from langame.conversation_starters import (
     get_existing_conversation_starters,
@@ -14,8 +13,6 @@ import openai
 import os
 import numpy as np
 from transformers import (
-    T5ForConditionalGeneration,
-    T5Tokenizer,
     AutoTokenizer,
     GPT2LMHeadModel,
 )
@@ -109,15 +106,14 @@ class TestConversationStarters(unittest.TestCase):
             limit=400,
         )
         start = time.time()
-        loop = asyncio.get_event_loop()
-        topics, new_conversation_starters = loop.run_until_complete(generate_conversation_starter(
+        topics, new_conversation_starters = generate_conversation_starter(
             index=index,
             conversation_starter_examples=conversation_starters,
             topics=["monkey"],
             sentence_embeddings_model=sentence_embeddings_model,
             api_completion_model="curie:ft-personal-2022-02-09-05-17-08",
             prompt_rows=3,
-        ))
+        )
         elapsed_seconds = str(time.time() - start)
         print(f"Elapsed seconds: {elapsed_seconds}")
         print(new_conversation_starters)
