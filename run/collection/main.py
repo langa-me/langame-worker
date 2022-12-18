@@ -8,10 +8,12 @@ from logic import (
     add_to_collection,
     remove_from_collection,
     create_starter,
+    create_collection,
 )
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_cors import CORS
+
 
 sentry_sdk.init(
     dsn="https://89b0a4a5cf3747ff9989710804f50dbb@o404046.ingest.sentry.io/6346831",
@@ -52,6 +54,11 @@ def path_list_collections():
 @app.route(f"{BASE}/<collection_id>", methods=["GET"])
 def path_get_collection(collection_id: str):
     return get_collection(collection_id)
+
+
+@app.route(f"{BASE}", methods=["POST"])
+def path_create_collection():
+    return create_collection()
 
 
 @app.route(f"{BASE}/<collection_id>/starter", methods=["GET"])

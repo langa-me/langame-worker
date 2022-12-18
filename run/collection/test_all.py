@@ -61,7 +61,20 @@ class TestAll(IsolatedAsyncioTestCase):
         print("Time taken: ", end_time - start_time)
         assert len(data["results"]) == 10
 
-
+    def test_create_collection(self):
+        url = f"{URL}/v1/conversation/collection"
+        data = {
+            "name": "brainy",
+        }
+        r = requests.post(
+            url,
+            headers={"X-Api-Key": os.environ["LANGAME_API_KEY"]},
+            json=data,
+            timeout=10000,
+        )
+        assert r.status_code == 200
+        data = r.json()
+        print("OUTPUT:", data)
 # TODO test with personas
 # "personas": [
 #     "I am a biology student, I like to play basketball on my free time",

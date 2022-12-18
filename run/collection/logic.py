@@ -403,6 +403,61 @@ def list_collections():
     )
 
 
+def create_collection():
+    """TODO"""
+    (
+        _,
+        _,
+        member_id,
+        error,
+    ) = base()
+    if error:
+        return error
+
+    data = request.get_json()
+    if not data:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "No data",
+                        "status": "BAD_REQUEST",
+                    },
+                }
+            ),
+            400,
+            {},
+        )
+
+    collection_name = data.get("name", "")
+    if not collection_name:
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "message": "No collection name",
+                        "status": "BAD_REQUEST",
+                    },
+                }
+            ),
+            400,
+            {},
+        )
+
+    data_response = {
+        "id": db.collection("collections").document().id,
+        "name": collection_name,
+    }
+    db.collection("preferences").document(member_id).update(
+        {"collections": firestore.ArrayUnion([data_response])}
+    )
+    return (
+        jsonify(data_response),
+        200,
+        {},
+    )
+
+
 def get_collection(
     collection_id: str,
 ):
