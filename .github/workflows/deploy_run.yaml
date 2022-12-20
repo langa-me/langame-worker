@@ -3,6 +3,11 @@ name: Continuous delivery production
 # GitHub Action ran when changes have been made in the directory "run/*"
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "run/**"
   workflow_run:
     workflows: ["Release"]
     types:

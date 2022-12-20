@@ -506,7 +506,7 @@ def get_collection_starter(
     return (
         jsonify(
             {
-                "results": [conversation_starters],
+                "results": conversation_starters,
             }
         ),
         200,
