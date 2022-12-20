@@ -153,7 +153,7 @@ def create_starter():
 
     # if topics is garbage (too long, too short, special characters,
     # None, non alpha-numeric, etc.)
-    if not topics:
+    if not personas and not topics:
         return (
             jsonify(
                 {
